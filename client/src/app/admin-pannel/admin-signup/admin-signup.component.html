@@ -1,0 +1,61 @@
+<div class="auth-container">
+  <form (ngSubmit)="onSubmit()" #form="ngForm" class="auth-form">
+    <h2>Admin Sign Up</h2>
+
+    <!-- Name Input -->
+    <div class="input-group" [ngClass]="{ 'error': nameRef.invalid && nameRef.touched }">
+      <mat-icon>person</mat-icon>
+      <input
+        type="text"
+        placeholder="Name"
+        [(ngModel)]="name"
+        name="name"
+        required
+        #nameRef="ngModel"
+      />
+    </div>
+    <div class="error-msg" *ngIf="nameRef.invalid && nameRef.touched">
+      Name is required.
+    </div>
+
+    <!-- Email Input -->
+    <div class="input-group" [ngClass]="{ 'error': emailRef.invalid && emailRef.touched }">
+      <mat-icon>email</mat-icon>
+      <input
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="email"
+        name="email"
+        required
+        #emailRef="ngModel"
+      />
+    </div>
+    <div class="error-msg" *ngIf="emailRef.invalid && emailRef.touched">
+      Valid email is required.
+    </div>
+
+    <!-- Password Input -->
+    <div class="input-group" [ngClass]="{ 'error': passwordRef.invalid && passwordRef.touched }">
+      <mat-icon>lock</mat-icon>
+      <input
+        type="password"
+        placeholder="Password (min 8 characters)"
+        [(ngModel)]="password"
+        name="password"
+        required
+        minlength="8"
+        #passwordRef="ngModel"
+      />
+    </div>
+    <div class="error-msg" *ngIf="passwordRef.invalid && passwordRef.touched">
+      Password must be at least 8 characters.
+    </div>
+
+    <button type="submit" [disabled]="form.invalid">Register</button>
+
+    <p class="link">
+      Already have an account?
+      <a routerLink="/admin/admin-signin">Login</a>
+    </p>
+  </form>
+</div>

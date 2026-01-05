@@ -1,0 +1,104 @@
+.contact {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-primary);
+  min-height: 60vh;
+  transition: background-color 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+}
+
+.contact-form {
+  background-color: var(--card-bg);
+  width: 550px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+  }
+}
+
+.form-ele {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 300px;
+
+  label {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease-in-out;
+  }
+}
+
+input[type="text"],
+input[type="email"],
+select,
+textarea {
+  box-shadow: 0 2px 8px var(--card-shadow);
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: none;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+
+  &::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+
+  &:focus {
+    border-color: var(--input-focus-border);
+    outline: none;
+  }
+}
+
+select {
+  cursor: pointer;
+}
+
+input[type="submit"] {
+  border: none;
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  width: 120px;
+  height: 40px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+
+  &:hover {
+    background-color: var(--btn-primary-hover);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

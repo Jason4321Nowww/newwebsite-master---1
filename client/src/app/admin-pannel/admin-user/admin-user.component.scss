@@ -1,0 +1,153 @@
+.admin-users {
+  background-color: #f0f4f8;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+
+  h2 {
+    font-size: 26px;
+    margin-bottom: 1.8rem;
+    color: #333;
+  }
+
+  .registration-key-box {
+    background-color: #e3f2fd;
+    padding: 1.2rem 1.8rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    border: 1px solid #bbdefb;
+
+    h3 {
+      margin: 0 0 1rem 0;
+      font-size: 19px;
+      font-weight: 600;
+      color: #1565c0;
+    }
+
+    form {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+
+      input {
+        padding: 0.5rem 0.8rem;
+        border: 1px solid #90caf9;
+        border-radius: 6px;
+        font-size: 1rem;
+        width: 160px;
+        background-color: #fff;
+      }
+
+      button {
+        padding: 0.55rem 1.2rem;
+        background-color: #1976d2;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-color: #1565c0;
+        }
+
+        &:disabled {
+          background-color: #ccc;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .key-message {
+      margin-top: 0.6rem;
+      font-size: 0.95rem;
+      color: green;
+    }
+
+    .key-preview {
+      margin-left: auto;
+      font-size: 0.95rem;
+      color: #333;
+    }
+  }
+
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+    th,
+    td {
+      padding: 0.85rem 1rem;
+      // border-bottom: 1px solid #e0e0e0;
+      vertical-align: middle;
+    }
+
+    th {
+      text-align: left;
+      background-color: #f4f4f4;
+      font-size: 15px;
+      font-weight: 600;
+      color: #555;
+    }
+
+    td {
+      font-size: 14.5px;
+    }
+
+    .role-dropdown {
+      padding: 0.45rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      outline: none;
+      background-color: #fff;
+      font-weight: 500;
+      font-size: 0.95rem;
+      min-width: 140px;
+      cursor: pointer;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      mat-icon {
+        // font-size: 28px;
+        cursor: pointer;
+        // border-radius: 100%;
+        // padding: 4px;
+        transition: all 0.2s ease-in-out;
+
+        &.active {
+          color: #4caf50;
+          // background-color: rgba(76, 175, 80, 0.15);
+        }
+
+        &:not(.active) {
+          color: #f44336;
+          // background-color: rgba(244, 67, 54, 0.15);
+        }
+
+        &.delete-icon {
+          color: #e53935;
+          // background-color: rgba(229, 57, 53, 0.15);
+
+          &:hover {
+            // background-color: rgba(229, 57, 53, 0.35);
+          }
+        }
+
+        &:hover:not(.delete-icon) {
+          transform: scale(1.1);
+        }
+      }
+    }
+  }
+}

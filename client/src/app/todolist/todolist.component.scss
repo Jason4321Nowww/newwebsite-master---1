@@ -1,0 +1,27 @@
+.title-screen {
+    overflow: hidden;
+    // background: rgba(96, 108, 131, 0.565);
+  }
+  
+  .articles {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    padding: 0 10rem;
+  }
+  
+  .link {
+    cursor: pointer;
+    min-height: 5rem;
+    width: 150px; //no fixed measurements like this!
+    background-color: red;
+  }
+  
+  .link:hover {
+    background-color: rgba(250, 27, 27, 0.559);
+  }
+  
+  li {
+    margin: 10px 0;
+  }
+  

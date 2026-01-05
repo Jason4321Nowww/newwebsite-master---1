@@ -1,0 +1,49 @@
+<div class="calendar-container">
+  <!-- Calendar Header -->
+  <div class="calendar-header">
+    <button (click)="prevMonth()">&laquo;</button>
+    <h3>{{ currentMonth | date: 'MMMM yyyy' }}</h3>
+    <button (click)="nextMonth()">&raquo;</button>
+  </div>
+
+  <!-- Week Days -->
+  <div class="calendar-grid">
+    <div class="calendar-day" *ngFor="let day of weekDays">{{ day }}</div>
+
+    <!-- Calendar Dates -->
+    <div
+      class="calendar-cell"
+      *ngFor="let date of calendarDates"
+      [class.other-month]="!date.inCurrentMonth"
+    >
+      <div class="date-label">{{ date.date.getDate() }}</div>
+
+      <!-- Event Dot -->
+      <div
+        *ngIf="date.event"
+        class="event-dot"
+        [ngClass]="{ 'mobile-view': isMobile, 'desktop-view': !isMobile }"
+        [matTooltip]="getTooltipText(date.event)"
+        matTooltipPosition="above"
+        matTooltipClass="custom-tooltip"
+      >
+        <!-- Repeating event -->
+        <mat-icon
+          *ngIf="date.event.repeat && date.event.repeat !== 'none'"
+          class="repeat-icon"
+        >
+          autorenew
+        </mat-icon>
+
+        <!-- One-time event -->
+        <!-- Non-repeating event -->
+  <mat-icon
+    *ngIf="!date.event.repeat || date.event.repeat === 'none'"
+    class="one-time-icon"
+  >
+    event
+  </mat-icon>
+      </div>
+    </div>
+  </div>
+</div>

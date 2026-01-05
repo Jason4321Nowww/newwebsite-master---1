@@ -1,0 +1,138 @@
+.values-container {
+  margin-top: 2rem;
+  color: var(--text-primary) !important;
+  transition: color 0.3s ease-in-out;
+  .top-row {
+    display: flex;
+    justify-content: center;
+     flex-wrap: wrap; // ✅ allows wrapping on small screens
+    gap: 40px;
+    margin-bottom: 20px;
+
+    .extra-box {
+      width: 430px;
+      height: auto;
+      background-color: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 3px 5px 10px -2px var(--card-shadow);
+      padding: 2rem;
+      display: flex;
+      justify-content: center;
+      text-align: center;
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+      @media (max-width: 830px) {
+        width: 90%;
+        height: auto;
+        margin-bottom: 1rem;
+      }
+
+      @media (max-width: 480px) {
+        width: 95%;
+        padding: 1.5rem;
+      }
+    }
+  }
+}
+
+.values {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 20px;
+  text-align: center;
+  overflow: hidden;
+  padding: 2rem;
+
+  @media (max-width: 830px) {
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.5rem;
+    gap: 1rem;
+  }
+
+  div {
+     padding: 20px;
+    border-radius: 5%;
+    box-shadow: 3px 5px 10px -2px var(--card-shadow);
+    height: auto; // 👈 allow height to grow
+    max-width: 100%; // 👈 prevent content from overflowing horizontally
+    overflow-wrap: break-word; // 👈 break long words
+    word-break: break-word;
+    box-sizing: border-box; // 👈 include padding in width calculation
+    color: var(--text-primary);
+    transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+  }
+
+  .arbeit {
+    width: 300px;
+    background-color: var(--card-bg);
+    // Keep lightcoral in light mode, adjust for dark mode
+    @media (prefers-color-scheme: light) {
+      background-color: lightcoral;
+    }
+
+    @media (max-width: 830px) {
+      width: 90%;
+      max-width: 400px;
+    }
+
+    @media (max-width: 480px) {
+      width: 95%;
+    }
+  }
+
+  .technologie {
+    width: 250px;
+    background-color: var(--card-bg);
+    // Keep lightblue in light mode, adjust for dark mode
+    @media (prefers-color-scheme: light) {
+      background-color: lightblue;
+    }
+
+    @media (max-width: 830px) {
+      width: 90%;
+      max-width: 400px;
+      height: auto;
+    }
+
+    @media (max-width: 480px) {
+      width: 95%;
+    }
+  }
+
+  .umwelt {
+    width: 300px;
+    background-color: var(--card-bg);
+    // Keep lightgreen in light mode, adjust for dark mode
+    @media (prefers-color-scheme: light) {
+      background-color: lightgreen;
+    }
+
+    @media (max-width: 830px) {
+      width: 90%;
+      max-width: 400px;
+    }
+
+    @media (max-width: 480px) {
+      width: 95%;
+    }
+  }
+}
+
+:root.dark-mode .values {
+  .arbeit {
+    background-color: rgba(240, 128, 128, 0.3); // Semi-transparent lightcoral
+  }
+  .technologie {
+    background-color: rgba(173, 216, 230, 0.3); // Semi-transparent lightblue
+  }
+  .umwelt {
+    background-color: rgba(144, 238, 144, 0.3); // Semi-transparent lightgreen
+  }
+}

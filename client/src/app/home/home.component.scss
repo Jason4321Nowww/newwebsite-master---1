@@ -1,0 +1,58 @@
+.infoBanner {
+  padding: 0.75rem 1rem;
+  background-color: var(--info-banner-bg);
+  border-left: 4px solid var(--info-banner-border);
+  color: var(--info-banner-text);
+  font-size: 1rem;
+  font-weight: 500;
+  border-radius: 4px;
+  margin-bottom: .5rem;
+  width: 100%;
+  text-align: left;
+  line-height: 1.6;
+  box-shadow: 0 1px 3px var(--card-shadow);
+  transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  
+  .learn-more-btn {
+    display: inline-block;
+    margin-left: .5rem;
+    color: var(--link-color);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.3s ease, color 0.3s ease-in-out;
+
+    &:hover {
+      background-color: var(--hover-bg);
+      color: var(--link-hover);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+    .learn-more-btn {
+      display: block;
+      margin: 0.5rem 0 0 0;
+      font-size: 0.8rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+}
+.info-icon {
+  vertical-align: middle;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+    margin-right: 0.4rem;
+  }
+}

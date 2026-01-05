@@ -1,0 +1,89 @@
+<form (ngSubmit)="submit()" #pressForm="ngForm" class="press-form">
+  <div class="field-icon">
+    <i class="fas fa-heading"></i>
+    <input
+      type="text"
+      [(ngModel)]="title"
+      name="title"
+      placeholder="Title"
+      required
+    />
+  </div>
+
+  <div class="field-icon">
+    <i class="fas fa-pen-nib"></i>
+ <textarea
+  [(ngModel)]="content"
+  name="content"
+  rows="1"
+  placeholder="Write your press release..."
+  required
+  #textArea
+  (input)="autoGrowTextArea(textArea)"
+></textarea>
+
+<input type="file" name="" (change)="onImageSelected($event)" accept="image/*">
+
+  </div>
+
+  <!-- <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="" srcset=""> -->
+
+  <button type="submit" [disabled]="pressForm.invalid">
+    <i class="fas fa-save"></i> Save
+  </button>
+</form>
+
+<hr />
+
+<h2><i class="fas fa-bullhorn"></i> Saved Press Releases</h2>
+<div *ngFor="let release of pressReleases" class="press-item">
+  <h3>{{ release.title }}</h3>
+  <p [innerHTML]="release.content"></p>
+
+  <p><i>{{ release.date | date: 'medium' }}</i></p>
+    <img
+  *ngIf="release.image"
+  [src]="'http://localhost:5000' + release.image"
+  class="thumb"
+/>
+  <button (click)="openEmailDialog(release)">
+    <i class="fas fa-paper-plane"></i> Send as Gmail + PDF
+  </button>
+
+  <button class="delete-btn" (click)="deletePress(release._id!)">
+  <i class="fas fa-trash-alt"></i> Delete
+</button>
+
+</div>
+
+
+<!-- Email Modal -->
+<div class="email-modal" *ngIf="selectedRelease">
+  <div class="email-dialog">
+    <h3><i class="fas fa-paper-plane"></i> Send Press Release</h3>
+    <p class="subtext">Enter recipient Gmail address to send the press release as PDF.</p>
+
+    <!-- Select Recipients -->
+    <select multiple (change)="onSelectChange($event)">
+      <optgroup label="Lists">
+        <option *ngFor="let list of lists" [value]="'list:' + list">{{ list }}</option>
+      </optgroup>
+
+      <optgroup label="Individual Emails">
+        <option *ngFor="let e of emails" [value]="'email:' + e.email">
+          {{ e.name }} ({{ e.email }})
+        </option>
+      </optgroup>
+    </select>
+
+ 
+    <div class="modal-actions">
+      <button (click)="confirmSend()" [disabled]="selectedRecipients.length === 0">
+        <i class="fas fa-envelope-open-text"></i> Send
+      </button>
+      <button class="cancel" (click)="cancelSend()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+

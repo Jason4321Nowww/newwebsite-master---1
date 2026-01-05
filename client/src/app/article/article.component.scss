@@ -1,0 +1,122 @@
+.article-detail-container {
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.75rem;
+  }
+
+ .header-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .text-info {
+    flex: 1;
+    order: 1;
+      h1, p {
+    
+    color: var(--text-primary);
+    margin-bottom: 0.3rem;
+    transition: color 0.3s ease-in-out;
+  }
+
+    @media (max-width: 768px) {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  .image-container {
+    flex-shrink: 0;
+    width: 380px;
+    order: 2;
+
+    img {
+      width: 380px;
+      height: auto;
+      border-radius: 8px;
+      object-fit: cover;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      order: -1; // Move to top
+      width: 100%;
+      background-color: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: 10px;
+      transition: background-color 0.3s ease-in-out;
+
+      img {
+        width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      padding: 0.75rem;
+
+      img {
+        max-height: 180px;
+        border-radius: 6px;
+      }
+    }
+  }
+}
+
+
+  .body {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    text-align: justify;
+    transition: color 0.3s ease-in-out;
+
+    @media (max-width: 768px) {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 0.95rem;
+      text-align: left;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    br {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+     // ✅ Add this for link styling
+  a {
+    text-decoration: underline;
+    cursor: pointer;
+    color: var(--link-color);
+    transition: color 0.3s ease-in-out;
+
+    &:hover {
+      color: var(--link-hover);
+    }
+  }
+  }
+}

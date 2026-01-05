@@ -1,0 +1,67 @@
+<div class="gallery-container">
+  <h2 class="gallery-heading">Action Gallery</h2>
+
+  <div class="gallery-grid">
+    <div
+      class="gallery-card"
+      *ngFor="let action of allActions"
+      (click)="openPreview(action)"
+    >
+      <ng-container *ngIf="action.media?.length">
+        <img
+          *ngIf="isImage(action.media[0])"
+          [src]="'http://localhost:5000' + action.media[0]"
+          alt="Action Media"
+        />
+        <video
+          *ngIf="isVideo(action.media[0])"
+          [src]="'http://localhost:5000' + action.media[0]"
+        ></video>
+      </ng-container>
+
+      <div class="gallery-info">
+        <h3>{{ action.title }}</h3>
+        <p>{{ action.description | slice: 0:100 }}...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Preview -->
+  <div class="modal-overlay" *ngIf="previewAction" (click)="closePreview()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>{{ previewAction.title }}</h2>
+     
+
+     <div class="modal-media-wrapper">
+  <!-- Large selected preview -->
+  <div class="main-media">
+    <img *ngIf="isImage(selectedMedia!)" [src]="'http://localhost:5000' + selectedMedia" />
+    <video *ngIf="isVideo(selectedMedia!)" [src]="'http://localhost:5000' + selectedMedia" controls></video>
+  </div>
+
+  <!-- Thumbnails -->
+  <div class="thumbnail-list">
+    <ng-container *ngFor="let item of previewAction.media">
+      <img
+        *ngIf="isImage(item)"
+        [src]="'http://localhost:5000' + item"
+        [class.selected]="item === selectedMedia"
+        (click)="selectMedia(item)"
+      />
+      <video
+        *ngIf="isVideo(item)"
+        [src]="'http://localhost:5000' + item"
+        [class.selected]="item === selectedMedia"
+        (click)="selectMedia(item)"
+        preload="metadata"
+        muted
+        ></video>
+    </ng-container>
+  </div>
+</div>
+
+ <p>{{ previewAction.description }}</p>
+      <button class="close-btn" (click)="closePreview()">Close</button>
+    </div>
+  </div>
+</div>

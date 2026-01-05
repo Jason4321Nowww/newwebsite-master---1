@@ -1,0 +1,92 @@
+/* Wrapper */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+}
+
+/* Inputs */
+.controls input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  flex: 1 1 200px;
+  transition: 0.2s;
+}
+
+.controls input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
+
+/* Buttons */
+.controls button {
+  background: #007bff;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.controls button:hover {
+  background: #0056b3;
+}
+
+.controls button:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+.controls button.cancel,
+.controls .cancel {
+  background: #dc3545;
+}
+
+.controls button.cancel:hover {
+  background: #b02a37;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+table th,
+table td {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+table tr {
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+table tr:hover {
+  background: #eef6ff;
+}
+
+/* Active row highlight */
+table tr.active-row {
+  background: #cfe2ff !important;
+  border-left: 4px solid #0056b3;
+}
+
+/* Heading */
+h3 {
+  margin-top: 20px;
+  color: #333;
+  font-weight: 600;
+}

@@ -1,0 +1,46 @@
+<div class="shop-container">
+  <h2 class="title"><mat-icon>shopping_bag</mat-icon> Featured Items</h2>
+  <div class="products-grid">
+    <div *ngFor="let product of featuredProducts" class="product-card">
+      <a [routerLink]="['/product', product.id]">
+        <img [src]="'http://localhost:5000' + product.mediaUrl" [alt]="product.name" />
+        <h5>{{ product.name }}</h5>
+        <p *ngIf="product.price">CHF {{ product.price.toFixed(2) }}</p>
+      </a>
+
+      <!-- Warning if stock is 0 or exceeded -->
+      <p *ngIf="product.stockWarning" class="stock-warning">
+        No more items left in stock!
+      </p>
+
+      <a *ngIf="product.isExternal" [href]="product.externalUrl" target="_blank" class="btn">Zum Artikel</a>
+
+      <button *ngIf="!product.isExternal" class="btn" (click)="addToCart(product)">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+
+  <h2 class="title"><mat-icon>shopping_cart</mat-icon> All Products</h2>
+  <div class="products-grid">
+    <div *ngFor="let product of regularProducts" class="product-card">
+      <a [routerLink]="['/product', product.id]">
+        <img [src]="'http://localhost:5000' + product.mediaUrl" [alt]="product.name" />
+        
+        <h5>{{ product.name }}</h5>
+        <p *ngIf="product.price">CHF {{ product.price.toFixed(2) }}</p>
+      </a>
+
+      <!-- Warning if stock is 0 or exceeded -->
+      <p *ngIf="product.stockWarning" class="stock-warning">
+               No more items left in stock!
+      </p>
+
+      <a *ngIf="product.isExternal" [href]="product.externalUrl" target="_blank" class="btn">External Item</a>
+
+      <button *ngIf="!product.isExternal" class="btn" (click)="addToCart(product)">
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</div>

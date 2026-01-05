@@ -1,0 +1,24 @@
+<div class="member-dashboard">
+
+  <h2 class="welcome-text">👋 Welcome back, {{ userName }}</h2>
+
+  <p class="sub-text">
+    Below are events for your rank and your location.
+  </p>
+
+  <div *ngIf="loading">Loading...</div>
+
+  <div *ngIf="!loading && events.length === 0" class="no-events">
+    No events available for your rank and location.
+  </div>
+
+  <div *ngFor="let event of events" class="event-card">
+    <h3>{{ event.title }}</h3>
+    <p><strong>Date:</strong> {{ event.eventDate | date:'longDate' }}</p>
+    <p><strong>Location:</strong> {{ event.eventLocation }}</p>
+<div [innerHTML]="truncateHtml(event.description, 125)"></div>
+
+
+  </div>
+
+</div>

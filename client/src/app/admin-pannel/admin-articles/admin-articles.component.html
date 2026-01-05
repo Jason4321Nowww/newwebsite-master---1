@@ -1,0 +1,82 @@
+<!-- admin-articles.component.html -->
+<div class="admin-page">
+  <h2>Manage Articles</h2>
+
+  <form [formGroup]="articleForm" (ngSubmit)="submit()" class="article-form" novalidate>
+    <div class="row">
+      <label>Title</label>
+      <input formControlName="title" required />
+    </div>
+
+    <div class="row">
+      <label>Author</label>
+      <input formControlName="author" />
+    </div>
+
+    <div class="blocks">
+      <div class="block-controls">
+        <button type="button" (click)="addTextBlock()">+ Text</button>
+        <button type="button" (click)="addImageBlock()">+ Image</button>
+        <button type="button" (click)="addSample()">Sample</button>
+      </div>
+
+      <div formArrayName="blocks" class="block-list">
+        <div *ngFor="let block of blocks.controls; let i = index" [formGroupName]="i" class="block">
+          <div *ngIf="block.get('type')?.value === 'text'">
+            <label>Text</label>
+            <textarea formControlName="value" 
+            placeholder="Paragraph text"
+            (input)="autoGrow($event)"
+            #descriptionTextarea
+            ></textarea>
+          </div>
+
+          <div *ngIf="block.get('type')?.value === 'image'">
+            <label>Image</label>
+            <div class="image-input">
+              <input type="file" accept="image/*" (change)="onFileSelected($event, i)" />
+              <div class="preview" *ngIf="filePreviews.get(i)">
+                <img [src]="filePreviews.get(i)" alt="preview" />
+              </div>
+              <div class="preview" *ngIf="!filePreviews.get(i) && block.get('url')?.value">
+                <img [src]="'http://localhost:5000' + block.get('url')?.value" alt="current" />
+              </div>
+            </div>
+          </div>
+
+          <div class="block-actions">
+            <button type="button" (click)="removeBlock(i)">Remove</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit"  class="btn-primary"  >{{ editingArticleId ? 'Update' : 'Create' }} Article</button>
+      <button type="button" class="btn-secondary"  (click)="cancelEdit()" *ngIf="editingArticleId">Cancel</button>
+    </div>
+  </form>
+
+  <hr/>
+<h1>Articles List </h1>
+  <div class="article-list">
+    <div *ngFor="let a of articles" class="article-card">
+      <h3>{{ a.title }}</h3>
+      <p><strong>Author:</strong> {{ a.author }}</p>
+      <div class="preview-body">
+        <ng-container *ngFor="let b of a.body">
+          <img *ngIf="b.type === 'image' && b.url" [src]="'http://localhost:5000' + b.url" />
+          <p *ngIf="b.type === 'text'">{{ b.value | slice: 0:215 }}...</p>
+
+        </ng-container>
+      </div>
+
+    <div class="card-actions">
+  <button class="btn-edit" (click)="editArticle(a)">Edit</button>
+
+  <button class="btn-danger" (click)="deleteArticle(a.id)">Delete</button>
+</div>
+
+    </div>
+  </div>
+</div>

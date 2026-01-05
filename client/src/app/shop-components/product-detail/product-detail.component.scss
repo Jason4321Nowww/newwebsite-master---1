@@ -1,0 +1,189 @@
+.product-detail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 960px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  font-family: 'Segoe UI', sans-serif;
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    margin: 2rem auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  &__image {
+    flex: 1 1 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    img {
+      width: 100%;
+      max-width: 100%;
+      max-height: 360px;
+      object-fit: contain;
+      border-radius: 8px;
+      background: var(--bg-secondary);
+      transition: background-color 0.3s ease-in-out;
+    }
+  }
+
+  &__info {
+    flex: 1 1 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h2 {
+      font-size: 1.8rem;
+      color: var(--link-color);
+      margin-bottom: 1rem;
+      transition: color 0.3s ease-in-out;
+
+      @media (max-width: 480px) {
+        font-size: 1.5rem;
+      }
+    }
+
+    .description {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      line-height: 1.6;
+      transition: color 0.3s ease-in-out;
+    }
+
+    .price {
+      font-weight: bold;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+      transition: color 0.3s ease-in-out;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      button {
+        background-color: var(--btn-secondary-bg);
+        color: var(--text-primary);
+        border: 2px solid var(--border-color);
+        font-size: 1.2rem;
+        font-weight: bold;
+        width: 36px;
+        height: 36px;
+        cursor: pointer;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+
+        &:hover {
+          background-color: var(--hover-bg);
+          border-color: var(--link-color);
+          transform: scale(1.1);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
+      }
+
+      input {
+        width: 50px;
+        text-align: center;
+        font-size: 1rem;
+        border: 2px solid var(--input-border);
+        background-color: var(--input-bg);
+        color: var(--input-text);
+        border-radius: 6px;
+        padding: 0.25rem;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+      }
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.2s ease-in-out;
+      margin-bottom: 0.75rem;
+
+      &.primary {
+        background-color: var(--btn-primary-bg);
+        color: var(--btn-primary-text);
+
+        &:hover {
+          background-color: var(--btn-primary-hover);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+
+      &.secondary {
+        background-color: var(--link-color);
+        color: #fff;
+
+        &:hover {
+          background-color: var(--link-hover);
+          transform: translateY(-2px);
+        }
+
+        &:active {
+          transform: translateY(0);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+
+    &__image,
+    &__info {
+      flex: 1 1 100%;
+    }
+
+    &__image img {
+      max-height: 280px;
+    }
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 480px) {
+    &__image img {
+      max-height: 220px;
+    }
+  }
+}
+
+.stock-warning {
+  color: #f44336 !important;
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}

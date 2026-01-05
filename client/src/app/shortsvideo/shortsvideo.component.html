@@ -1,0 +1,21 @@
+<!-- <div class="short-container">
+  <div class="videotitle">{{ videoInfo.title }}</div>
+  <iframe
+    #iframeRef
+    class="short-video"
+    [src]="videoUrl"
+    frameborder="0"
+    allow="autoplay"
+    allowfullscreen
+  ></iframe>
+</div> -->
+<div class="short-container">
+  <iframe
+    #iframeRef
+    [ngClass]="{'short-video': true, 'landscape': videoInfo?.orientation === 'landscape'}"
+    [src]="videoUrl"
+    frameborder="0"
+    allow="autoplay"
+    allowfullscreen
+  ></iframe>
+</div>

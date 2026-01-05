@@ -1,0 +1,133 @@
+#join-and-donate-popup {
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  z-index: 999999999;
+}
+
+.hide {
+  display: none;
+}
+
+.container {
+  position: fixed;
+  z-index: 999999999;
+  top: 58%;
+  left: 65%;
+  right: 10px;
+  background: rgb(243, 243, 243);
+  padding: 20px;
+  max-width: 500px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.466);
+  border-radius: 15px;
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+.head h4 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.head p {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.selection {
+  text-align: center;
+}
+
+button {
+  border: 1px solid white;
+  padding: 10px 20px;
+  margin: 10px 0 0 10px;
+  background: lightcoral;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+button:hover {
+  color: white;
+  background: rgb(238, 67, 67);
+}
+
+.close {
+  cursor: pointer;
+  color: white;
+  text-align: right;
+  margin-bottom: 10px;
+
+  img {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* ✅ Responsive for small screens */
+@media (max-width: 600px) {
+  .container {
+     position: fixed;
+  z-index: 999999999;
+  top: 60%;
+  left: 68%;
+  right: 5px;
+    width: 70vw;
+    padding: 12px;
+    border-radius: 10px;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  // .head {
+  //   text-align: center;
+  // }
+  .head h4 {
+  font-size: .8rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.head p {
+  font-size: .6rem;
+  margin-bottom: 10px;
+  color: #333;
+  line-height: .9;
+}
+
+  .selection {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  button {
+    flex: 1 1 40%;
+    min-width: 100px;
+    max-width: 120px;
+    margin: 0;
+    font-size: .6rem;
+    padding: 10px;
+    text-align: center;
+  }
+
+  .close {
+    text-align: right;
+  }
+
+  .close img {
+    width: 25px;
+    height: 25px;
+  }
+}

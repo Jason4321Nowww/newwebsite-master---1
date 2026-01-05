@@ -1,0 +1,39 @@
+<div class="slider-wrapper">
+  <div class="slider-container">
+    <div
+      class="slider-item"
+      *ngFor="let item of items; let i = index; trackBy: trackByFn"
+      [class.active]="i === currentIndex"
+    >
+      <ng-container *ngIf="item.type === 'video'; else imageTemplate">
+        <video
+          class="media"
+          autoplay
+           [muted]="true"
+          playsinline
+          [src]="item.src"
+          (loadedmetadata)="setVideoDuration($event)"
+        ></video>
+      </ng-container>
+      <ng-template #imageTemplate id="image-template">
+        <div class="image-wrapper">
+          <img class="media" [src]="item.src" />
+          <div class="caption">{{ item.caption }}</div>
+        </div>
+      </ng-template>
+    </div>
+
+    <button class="nav-button prev" (click)="prevSlide()">&#10094;</button>
+    <button class="nav-button next" (click)="nextSlide()">&#10095;</button>
+
+    <div class="indicator-wrapper">
+      <div
+        class="indicator"
+        *ngFor="let item of items; let i = index"
+        [class.active]="i === currentIndex"
+        (click)="goToSlide(i)"
+      ></div>
+    </div>
+  </div>
+  //Remove the red lines. They do not suit the website. No lines needed!
+</div>

@@ -1,0 +1,59 @@
+<nav class="navbar" [class.mobile-open]="isMenuOpen"  [class.hide-navbar]="hideNavbar">
+  <div class="title">
+    <a routerLink="">
+      <img
+        class="pageLogo"
+        src="assets/logo/starlinelessbigger.png"
+        alt="derbuezer"
+        (click)="toggleMenu()"
+        [class.burger]="isMobileView"
+        [class.rotate]="isMenuOpen"
+      />
+    </a>
+    <h1 class="responsive-title">{{ webseitenTitel }}</h1>
+  </div>
+
+  <div class="links" [class.hidden]="isMobileView && !isMenuOpen">
+    <a routerLink="">Home</a>
+    <a href="https://bkps.ch/HTML/mitgliedschaft/formular.php#kontakt-anchor" target="_blank" rel="noopener">
+  Mitmachen
+</a>
+
+    <a [routerLink]="['/values']" fragment="werte-anchor">Werte</a>
+    <!-- <a [routerLink]="['/spenden']">Spenden</a> -->
+    <a [routerLink]="['/shop']">Geschäft</a>
+    <a [routerLink]="['/actions']">Aktionen</a>
+    <a [routerLink]="['/events']">Veranstaltungen</a>
+    <!-- <a [routerLink]="['/about']">Um</a> -->
+    <a [routerLink]="['/press']">Pressemitteilung</a>
+    <!-- Only show when user is logged in -->
+  </div>
+
+<div class="navbar-right">
+  <!-- If user is logged in, show username + logout -->
+  <span *ngIf="userName" class="user-info">
+    <span class="user-name">{{ userName }}</span>
+    <mat-icon class="logout-icon" (click)="logout()" matTooltip="Logout">power_settings_new</mat-icon>
+  </span>
+
+  <!-- If user is not logged in, show Sign In -->
+  <a *ngIf="!userName" [routerLink]="['/signin']" class="signin-link">
+    <mat-icon class="signin-icon">login</mat-icon>
+  </a>
+  <a [routerLink]="['/cart-details']" class="cart-link"  *ngIf="cartCount > 0">
+    <mat-icon class="cart-icon">shopping_cart</mat-icon>
+    <span class="cart-badge" >{{ cartCount }}</span>
+  </a>
+
+  <!-- special member page -->
+  <a *ngIf="userName != null" [routerLink]="['/special-member-page']" class="member-link">Member Page</a>
+
+  <!-- Theme Toggle Button -->
+  <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'" title="{{ isDarkMode ? 'Switch to light mode' : 'Switch to dark mode' }}">
+    <mat-icon *ngIf="!isDarkMode" class="theme-icon">light_mode</mat-icon>
+    <mat-icon *ngIf="isDarkMode" class="theme-icon">dark_mode</mat-icon>
+  </button>
+</div>
+</nav>
+
+<!-- <div class="content-area"></div> -->

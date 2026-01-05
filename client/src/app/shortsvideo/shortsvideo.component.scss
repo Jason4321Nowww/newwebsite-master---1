@@ -1,0 +1,42 @@
+// .videotitle {
+//   background-color: #1f1f1f; // dark gray/black tone
+//   font-size: 20px;
+//   text-align: center;
+//   color: white;
+//   width: 270px;
+//   height: 68px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+.videotitle {
+  background-color: #1f1f1f; // dark gray/black tone
+  font-size: 16px;
+  text-align: center;
+  color: white;
+  width: 270px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.short-container {
+  font-weight: bold;
+}
+
+.short-video {
+  height: 480px;
+  width: 270px;
+}
+.short-video {
+  width: 270px;
+  height: 480px;
+
+  // Landscape mode adjustments (16:9)
+  &.landscape {
+    width: 350px;
+    height: 220px;
+  }
+}

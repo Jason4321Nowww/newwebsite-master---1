@@ -1,0 +1,87 @@
+<div class="page-container">
+  <h1>Alle Beiträge</h1>
+  <div class="search-container">
+    <input [(ngModel)]="searchTerm" type="text" placeholder="Suchen..." />
+    <!-- <span class="search-icon">🔍</span> -->
+     <mat-icon class="search-icon">search</mat-icon>
+  </div>
+
+ <div class="article-grid">
+  <div class="article-card"
+       *ngFor="let article of filteredArticles"
+       (click)="openArticle(article.id)">
+
+    <!-- FIRST IMAGE FROM BODY -->
+    <div class="article-images" *ngIf="getFirstImage(article)">
+      <img
+        [src]="'http://localhost:5000' + getFirstImage(article)"
+        alt="Article image"
+        style="width: 100%; height: auto; object-fit: contain; border-radius: 8px;"
+      />
+    </div>
+    
+
+    <h2>{{ article.title }}</h2>
+
+    <!-- TEXT PREVIEW -->
+    <div class="body">
+      <ng-container *ngFor="let block of article.body">
+        <div *ngIf="block.type === 'text'"
+             [innerHTML]="convertToParagraphs(block.value)">
+        </div>
+      </ng-container>
+    </div>
+
+    <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>
+
+    <p class="author">
+      <mat-icon inline>person</mat-icon>
+      {{ article.author }}
+    </p>
+  </div>
+</div>
+
+
+  <!-- <div class="article-grid">
+ <div class="article-card"
+     *ngFor="let article of filteredArticles"
+     (click)="openArticle(article.id)">
+
+
+  <div class="article-images">
+    <img
+      *ngIf="article.imageUrls && article.imageUrls.length > 0"
+      [src]="'http://localhost:5000' + article.imageUrls[0]"
+      alt="Article image"
+    />
+  </div>
+
+  <h2>{{ article.title }}</h2>
+
+ 
+  <div class="body">
+    <ng-container *ngFor="let block of article.body">
+      <div *ngIf="block.type === 'text'"
+           [innerHTML]="convertToParagraphs(block.value)">
+      </div>
+    </ng-container>
+  </div>
+
+  <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>
+
+  <p class="author">
+    <mat-icon inline>person</mat-icon>
+    {{ article.author }}
+  </p>
+
+</div>
+
+    
+
+
+
+</div> -->
+
+
+</div>
+

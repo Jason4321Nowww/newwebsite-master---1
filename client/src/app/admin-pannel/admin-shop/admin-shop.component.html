@@ -1,0 +1,119 @@
+<h2>Admin - Manage Products</h2>
+
+<form [formGroup]="productForm" (ngSubmit)="submitForm()">
+  <label>Name
+    <input formControlName="name" placeholder="Enter product name">
+  </label>
+
+  <label>Category
+    <select formControlName="category">
+      <option value="" disabled selected>Select category</option>
+      <option value="clothing">Clothing</option>
+      <option value="merchandise">Merchandise</option>
+      <option value="educational">Educational</option>
+      <option value="activism">Activism</option>
+      <option value="other">Other</option>
+    </select>
+  </label>
+
+  <label>Price
+    <input type="number" formControlName="price" placeholder="Enter price">
+  </label>
+
+  <label>Stock
+    <input type="number" formControlName="stock" placeholder="Enter stock quantity">
+  </label>
+
+  <!-- <label>Media Type
+    <select formControlName="mediaType">
+      <option value="image">Image</option>
+      <option value="video">Video</option>
+    </select>
+  </label> -->
+
+  <label>Size
+    <select formControlName="size">
+      <option value="none">None</option>
+      <option value="S">S</option>
+      <option value="M">M</option>
+      <option value="L">L</option>
+    </select>
+  </label>
+
+  <label>Description
+    <textarea formControlName="description" rows="3" placeholder="Enter product description"></textarea>
+  </label>
+
+ <label>Upload Image
+    <input type="file" (change)="onFileSelected($event)">
+  </label>
+
+<label>
+  <input type="checkbox" formControlName="featured"> Featured Product
+</label>
+
+<label>
+  <input type="checkbox" formControlName="isExternal"> External Link
+</label>
+
+<!-- Only show when checkbox is checked -->
+<div *ngIf="productForm.get('isExternal')?.value">
+  <label>External URL
+    <input formControlName="externalUrl" placeholder="https://example.com">
+  </label>
+</div>
+
+
+
+ 
+
+  <button type="submit">{{ selectedProduct ? 'Update Product' : 'Create Product' }}</button>
+</form>
+
+<hr />
+
+<table>
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Category</th>
+      <th>Price</th>
+      <th>Stock</th>
+       <th>Featured</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let p of products">
+      <td>
+        <img [src]="'http://localhost:5000' + p.mediaUrl" alt="Product Image" class="product-thumb" >
+      </td>
+      <td>{{ p.name }}</td>
+      <td>{{ p.category }}</td>
+      <td>{{ p.price }}</td>
+      <td>{{ p.stock }}</td>
+<td>
+   <mat-icon [ngStyle]="{ color: p.isFeatured ? '#4caf50' : '#f44336' }" (click)="toggleFeatured(p.id!)" [matTooltip]="p.isFeatured ? 'Deactivate' : 'Activate'">
+            {{ p.isFeatured ? 'toggle_on' : 'toggle_off' }}
+          </mat-icon>
+</td>
+
+      <td>
+              
+          <mat-icon [ngStyle]="{ color: p.isActive ? '#4caf50' : '#f44336' }" (click)="toggleActive(p.id!)" [matTooltip]="p.isActive ? 'Deactivate' : 'Activate'">
+            {{ p.isActive ? 'toggle_on' : 'toggle_off' }}
+          </mat-icon>
+      
+      </td>
+      <td>
+      
+          <mat-icon color="primary" (click)="editProduct(p)" matTooltip="Edit">edit</mat-icon>
+      
+          <mat-icon  color="warn" (click)="deleteProduct(p.id!)" matTooltip="Delete">delete</mat-icon>
+        
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -1,0 +1,82 @@
+<h2><mat-icon class="icon">movie</mat-icon> Add YouTube Video</h2>
+
+<div class="video-input-preview-container">
+  <form (ngSubmit)="onSubmit()" class="video-form">
+    <label for="videoId">YouTube Video ID:</label>
+    <input
+      type="text"
+      [(ngModel)]="videoId"
+      
+      name="videoId"
+      id="videoId"
+      placeholder="e.g. RlcQwaI6Lwc"
+      required
+    />
+
+    <label for="orientation">Orientation:</label>
+    <select id="orientation" name="videoIdOrientation" [(ngModel)]="videoIdOrientation"  required>
+      <option value="landscape">Landscape</option>
+      <option value="portrait">Portrait</option>
+    </select>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <div class="video-preview" *ngIf="videoId">
+    <h3>
+      Preview
+      <span *ngIf="videoIdOrientation">({{ videoIdOrientation | titlecase }})</span>
+    </h3>
+    <div class="video-wrapper">
+      <iframe
+        [src]="('https://www.youtube.com/embed/' + videoId) | safe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+<h3><mat-icon class="icon">video_library</mat-icon> Landscape Videos</h3>
+<ul>
+  <li *ngFor="let video of landscapeVideos">
+
+    <div class="video-card-header">
+      <strong>{{ video.title }}</strong>
+    </div>
+    <div class="video-wrapper landscape" >
+      <iframe
+        [src]="'https://www.youtube.com/embed/' + video.videoId | safe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="delete-wrapper">
+      <button mat-icon-button color="warn" (click)="deleteVideo(video._id!)">
+        <mat-icon>delete_forever</mat-icon>
+      </button>
+    </div>
+  </li>
+</ul>
+
+<h3><mat-icon class="icon">video_library</mat-icon> Portrait Videos</h3>
+<ul>
+  <li *ngFor="let video of portraitVideos">
+
+    <div class="video-card-header">
+      <strong>{{ video.title }}</strong>
+    </div>
+    <div class="video-wrapper portrait">
+      <iframe
+        [src]="'https://www.youtube.com/embed/' + video.videoId | safe"
+        frameborder="0"
+        allowfullscreen
+      ></iframe>
+    </div>
+    <div class="delete-wrapper">
+      <button mat-icon-button color="warn" (click)="deleteVideo(video._id!)">
+        <mat-icon>delete_forever</mat-icon>
+      </button>
+    </div>
+  </li>
+</ul>

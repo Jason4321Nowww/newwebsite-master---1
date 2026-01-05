@@ -1,0 +1,103 @@
+/* ------------------------------
+   GLOBAL CONTAINER
+------------------------------ */
+.member-dashboard {
+  padding: 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: 'Inter', sans-serif;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* ------------------------------
+   HEADER TEXT
+------------------------------ */
+.welcome-text {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--link-color);
+  margin-bottom: 0.5rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.sub-text {
+  font-size: 1.15rem;
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+  transition: color 0.3s ease-in-out;
+}
+
+/* ------------------------------
+   NO EVENTS MESSAGE
+------------------------------ */
+.no-events {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 2rem;
+  font-style: italic;
+  font-size: 1.15rem;
+  transition: color 0.3s ease-in-out;
+}
+
+/* ------------------------------
+   EVENT CARD
+------------------------------ */
+.event-card {
+  background: var(--card-bg);
+  padding: 1.7rem;
+  border-radius: 14px;
+  margin-bottom: 1.7rem;
+  box-shadow: 0px 4px 22px var(--card-shadow);
+  border-left: 6px solid var(--link-color);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+
+  /* Event Title */
+  h3 {
+    margin-bottom: 0.7rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--link-color);
+    transition: color 0.3s ease-in-out;
+  }
+
+  /* Text sections */
+  p {
+    margin: 0.4rem 0;
+    font-size: 1.05rem;
+    color: var(--text-primary);
+    transition: color 0.3s ease-in-out;
+
+    strong {
+      color: var(--link-hover);
+      font-weight: 600;
+    }
+  }
+
+  /* Inner sliced description */
+  div {
+    margin-top: 0.8rem;
+    color: var(--text-secondary);
+    font-size: 0.98rem;
+    line-height: 1.5;
+    transition: color 0.3s ease-in-out;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 26px var(--card-shadow);
+  }
+}
+
+/* ------------------------------
+   SMOOTH FADE-IN ANIMATION
+------------------------------ */
+.event-card {
+  animation: fadeIn 0.4s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}

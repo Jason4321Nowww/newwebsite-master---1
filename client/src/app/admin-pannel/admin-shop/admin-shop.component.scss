@@ -1,0 +1,111 @@
+:host {
+  display: block;
+  padding: 1rem; // reduced space
+  background-color: #f4f6f8;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+/* Title */
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  color: #222;
+}
+
+/* Form Section */
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem; // tighter spacing
+  padding: 1.2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+input,
+select,
+textarea {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  width: 100%;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #1976d2;
+  outline: none;
+}
+
+button[type='submit'] {
+  grid-column: span 2;
+  background-color: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button[type='submit']:hover {
+  background-color: #145aa2;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  background-color: #fff;
+  border-collapse: collapse;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  font-size: 13px;
+}
+
+thead {
+  background-color: #f0f0f0;
+}
+
+th,
+td {
+  padding: 0.7rem;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #eee;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+/* Thumbnail Image */
+.product-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Tooltip Buttons */
+button[mat-icon-button] {
+  margin-right: 0.2rem;
+}
+
+mat-icon {
+  font-size: 22px;
+  vertical-align: middle;
+}

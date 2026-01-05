@@ -1,0 +1,78 @@
+<div class="events-page">
+  <p class="calendar-heading"><mat-icon  class="fs-5 me-1 align-middle text-secondary">calendar_today</mat-icon> Upcoming Events</p>
+
+  <div *ngIf="loading">Loading events...</div>
+  <div *ngIf="!loading && events.length === 0" class="no-events">No events available</div>
+<app-calendar [events]="events"></app-calendar>
+
+  
+  <div *ngFor="let event of events" class="event-card" [class.expanded]="isExpanded(event.id)">
+  
+  <!-- Date Box -->
+  <div class="date-box">
+    {{ event.eventDate | date: 'd. MMMM yyyy' }}
+  </div>
+
+  <!-- ✅ Event Image (place it here, just before .event-details) -->
+  <img *ngIf="event.image"
+       class="event-image"
+       [class.expanded-img]="isExpanded(event.id)"
+       [src]="'http://localhost:5000' + event.image"
+       [alt]="event.title" />
+
+  <!-- Event Details Block -->
+  <div class="event-details">
+
+    <div class="event-title">
+      {{ event.title }}
+      <span *ngIf="event.isMandatory" class="mandatory-blink">MANDATORY</span>
+    </div>
+
+    <div class="event-description-wrapper">
+      <div class="event-description body" [class.clamped]="!isExpanded(event.id)"  [innerHTML]="convertToParagraphs(event.description!)">
+         
+      </div>
+
+      <div class="description-spacer" *ngIf="!isExpanded(event.id)"></div>
+
+      <a *ngIf="hasLongDescription(event.description)"
+         (click)="toggleReadMore(event.id)"
+         class="read-more-link">
+        {{ isExpanded(event.id) ? 'Read Less' : 'Read More' }}
+      </a>
+    </div>
+
+ <div class="attendance-row">
+  <mat-icon
+    (click)="toggleAttendance(event)"
+    [title]="event.isAttending ? 'You are attending this event' : 'Click to attend anonymously'"
+    [ngClass]="{ 'attending': event.isAttending }">
+    {{ event.isAttending ? 'how_to_reg' : 'person_add' }}
+  </mat-icon>
+
+  <!-- ✅ Group icon and count, without 'attending' for admins -->
+  <span class="attendance-text" *ngIf="roleLevel == 0">
+    <mat-icon class="group-icon">group</mat-icon>
+    {{ event.attendeesCount || 0 }}
+  </span>
+
+  <!-- ✅ Group icon and count + "attending" for normal users -->
+  <span class="attendance-text" *ngIf="roleLevel != 0">
+        attending
+  </span>
+
+  <!-- ✅ Show "You're in" for ALL users if attending -->
+  <span class="attendance-text" *ngIf="event.isAttending">
+    <small class="status">(You're in)</small>
+  </span>
+</div>
+
+
+
+
+  </div>
+</div>
+
+
+
+</div>

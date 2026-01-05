@@ -1,0 +1,17 @@
+<div class="faq-container">
+
+ <h2 class="faq-title">Häufig gestellte Fragen</h2>
+
+<mat-accordion class="faq-accordion" [ngClass]="{'accordion-expanded': isAnyPanelOpen()}" multi>
+  <mat-expansion-panel *ngFor="let faq of faqs" [(expanded)]="faq.expanded" hideToggle>
+    <mat-expansion-panel-header>
+      <div class="faq-header-content">
+        <mat-panel-title>{{ faq.question }}</mat-panel-title>
+        <span class="faq-icon" [class.rotated]="faq.expanded">&gt;</span>
+      </div>
+    </mat-expansion-panel-header>
+    <p class="faq-answer">{{ faq.answer }}</p>
+  </mat-expansion-panel>
+</mat-accordion>
+
+</div>

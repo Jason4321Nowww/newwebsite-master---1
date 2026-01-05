@@ -1,0 +1,67 @@
+<div class="action-wrapper">
+  <h2>{{ isEditing ? 'Edit' : 'Create' }} Action</h2>
+
+  <form [formGroup]="actionForm" (ngSubmit)="submitForm()">
+    <!-- Title -->
+    <label>Title
+      <input formControlName="title" type="text" required />
+    </label>
+
+    <!-- Description -->
+    <label>Description
+      <textarea formControlName="description" required></textarea>
+    </label>
+
+    <!-- Media Upload -->
+    <label>Media (Images or Videos)
+      <input
+  type="file"
+  multiple
+  accept="image/*,video/*"
+  (change)="onMediaSelected($event)"
+/>
+
+    </label>
+
+    <!-- Preview -->
+    <div class="media-preview">
+      <ng-container *ngFor="let url of previewUrls">
+        <img *ngIf="isImage(url)" [src]="url" class="preview-media" />
+        <video *ngIf="isVideo(url)" controls [src]="url" class="preview-media"></video>
+      </ng-container>
+    </div>
+
+    <button type="submit">{{ isEditing ? 'Update' : 'Create' }}</button>
+    <button type="button" (click)="resetForm()" *ngIf="isEditing">Cancel</button>
+  </form>
+
+  <hr />
+
+  <h2>All Actions</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Media</th>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let action of actions">
+        <td>
+          <ng-container *ngFor="let media of action.media">
+            <img *ngIf="isImage(media)" [src]="'http://localhost:5000' + media" class="thumb" />
+            <video *ngIf="isVideo(media)" controls [src]="'http://localhost:5000' + media" class="thumb"></video>
+          </ng-container>
+        </td>
+        <td>{{ action.title }}</td>
+        <td>{{ action.description }}</td>
+        <td>
+          <mat-icon class="text-success" (click)="editAction(action)">edit</mat-icon>
+          <mat-icon class="text-danger" (click)="deleteAction(action._id!)">delete</mat-icon>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

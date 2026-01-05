@@ -1,0 +1,84 @@
+<h2>Admin - Manage Info Banners</h2>
+
+<form [formGroup]="bannerForm" (ngSubmit)="submitForm()" class="mb-4" novalidate>
+  <label>Statement
+    <textarea formControlName="statement"
+  placeholder="Enter banner statement"
+  rows="3"
+  (input)="autoGrow($event)">
+</textarea>
+
+    <div class="error" *ngIf="bannerForm.get('statement')?.invalid && bannerForm.get('statement')?.touched">
+      Statement is required.
+    </div>
+  </label>
+<label>Learn More Link
+  <input formControlName="link" type="url" placeholder="https://example.com" />
+</label>
+
+  <div class="btn-group">
+    <button type="submit" [disabled]="bannerForm.invalid"
+      [class.invalid]="bannerForm.invalid">
+      {{ selectedBanner ? 'Update Banner' : 'Create Banner' }}
+    </button>
+
+    <button type="button" *ngIf="selectedBanner" (click)="cancelEdit()">
+      Cancel
+    </button>
+  </div>
+</form>
+
+<hr />
+
+
+<table>
+  <thead>
+    <tr>
+      <th class="col-statement">Statement</th>
+      <th class="col-status">Status</th>
+      <th class="col-actions">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let b of banners" class="banner-row">
+      <!-- 80% -->
+      <td class="col-statement" [matTooltip]="b.statement">{{ b.statement }}</td>
+
+      <!-- 10% -->
+      <td class="col-status">
+        <mat-icon
+          (click)="toggleActive(b.id!)"
+          [ngStyle]="{ color: b.isActive ? '#4caf50' : '#f44336' }"
+          [matTooltip]="b.isActive ? 'Deactivate' : 'Activate'"
+          class="icon-action"
+        >
+          {{ b.isActive ? 'toggle_on' : 'toggle_off' }}
+        </mat-icon>
+      </td>
+
+      <!-- 10% -->
+   <td class="col-actions">
+  <div class="d-flex justify-content-center align-items-center gap-2">
+    <mat-icon
+      (click)="editBanner(b)"
+      matTooltip="Edit"
+      class="icon-action icon-edit"
+    >
+      edit
+    </mat-icon>
+
+    <mat-icon
+      (click)="deleteBanner(b.id!)"
+      matTooltip="Delete"
+      class="icon-action icon-delete text-danger"
+    >
+      delete
+    </mat-icon>
+  </div>
+</td>
+ <hr>
+    </tr>
+   
+  </tbody>
+</table>
+

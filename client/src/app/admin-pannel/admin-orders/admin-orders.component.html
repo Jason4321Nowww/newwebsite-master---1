@@ -1,0 +1,67 @@
+<div class="admin-orders-page">
+ 
+<h2>🛒 Orders Management</h2>
+
+<!-- Filters -->
+<button (click)="loadOrders()">All</button>
+<button (click)="loadOrders('pending')">Pending</button>
+<button (click)="loadOrders('paid')">Paid</button>
+<button (click)="loadOrders('shipped')">Shipped</button>
+
+<!-- Orders List -->
+<table>
+  <thead>
+    <tr>
+      <th>Customer</th>
+      <th>Email</th>
+      <th>Total</th>
+      <th>Status</th>
+      <th>Actions</th>
+      <th>Details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let order of orders">
+      <td>{{ order.customerName }}</td>
+      <td>{{ order.customerEmail }}</td>
+      <td>CHF {{ order.totalAmount }}</td>
+      <td>{{ order.status | titlecase }}</td>
+      <td>
+        <button *ngIf="order.status === 'pending'" (click)="markAsPaid(order._id)">Mark Paid</button>
+        <button *ngIf="order.status === 'paid'" (click)="markAsShipped(order._id)">Mark Shipped</button>
+      </td>
+      <td><button (click)="viewDetails(order)">View</button></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Detail Modal -->
+<div *ngIf="selectedOrder" class="order-details">
+  <h3>📝 Order Details - {{ selectedOrder._id }}</h3>
+
+  <p><strong>Customer:</strong> {{ selectedOrder.customerName }}</p>
+  <p><strong>Email:</strong> {{ selectedOrder.customerEmail }}</p>
+   <p><strong>customerIBAN:</strong> {{ selectedOrder.customerIBAN }}</p>
+  <p><strong>Address:</strong> 
+    {{ selectedOrder.customerAddress.street }},
+    {{ selectedOrder.customerAddress.city }},
+    {{ selectedOrder.customerAddress.country }},
+    {{ selectedOrder.customerAddress.postalCode }}
+  </p>
+
+  <p><strong>Payment Method:</strong> {{ selectedOrder.paymentMethod }}</p>
+  <p><strong>Status:</strong> {{ selectedOrder.status }}</p>
+
+  <h4>🛍️ Items:</h4>
+  <ul>
+    <li *ngFor="let item of selectedOrder.items">
+      {{ item.product?.name || 'Product' }} × {{ item.quantity }}
+    </li>
+  </ul>
+
+  <p><strong>Total:</strong> CHF {{ selectedOrder.totalAmount }}</p>
+
+  <button (click)="closeDetails()">Close</button>
+</div>
+
+</div>

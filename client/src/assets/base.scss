@@ -1,0 +1,17 @@
+/* this is where we will have the css variables for dark and light mode */
+
+:root {
+    --c-bg: white;
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --c-bg: white;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --c-bg: rgb(43, 43, 43);
+    }
+}

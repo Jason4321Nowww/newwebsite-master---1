@@ -1,0 +1,11 @@
+#wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: linear-gradient(to right, #baf3d7, #ddfaef);
+}
+
+#page-content-wrapper {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}

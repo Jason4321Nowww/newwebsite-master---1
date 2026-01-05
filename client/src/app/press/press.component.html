@@ -1,0 +1,80 @@
+<div class="latest-release" *ngIf="latestRelease">
+  <div class="header-line">
+    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
+    <h1>{{ latestRelease.title }}</h1>
+    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
+  </div>
+
+  <hr />
+
+  <div class="content" [innerHTML]="latestRelease.content"></div>
+
+  <div class="date-box">
+    <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#666">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M19 4h-1V2h-2v2H8V2H6v2H5
+               c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14
+               a2 2 0 002-2V6c0-1.1-.9-2-2-2zm0
+               16H5V9h14v11zm0-13H5V6h14v1z"/>
+    </svg>
+    <span>{{ latestRelease.date | date: 'fullDate' }}</span> 
+
+
+  </div>
+     <div class="press-image" *ngIf="latestRelease.image">
+  <img
+    [src]="'http://localhost:5000' + latestRelease.image"
+    alt="Press Image"
+  />
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="latest-release" *ngIf="latestRelease">
+  <div class="header-line">
+    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
+    <h1>{{ latestRelease.title }}</h1>
+    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
+  </div>
+
+  <hr />
+
+  <div class="content" [innerHTML]="latestRelease.content"></div>
+
+  <div class="date-box">
+    <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#666">
+      <path d="M0 0h24v24H0z" fill="none" />
+      <path d="M19 4h-1V2h-2v2H8V2H6v2H5
+               c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14
+               a2 2 0 002-2V6c0-1.1-.9-2-2-2zm0
+               16H5V9h14v11zm0-13H5V6h14v1z"/>
+    </svg>
+    <span>{{ latestRelease.date | date: 'fullDate' }}</span>
+  </div>
+</div> -->

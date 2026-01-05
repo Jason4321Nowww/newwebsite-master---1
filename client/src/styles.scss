@@ -1,0 +1,259 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Light Mode (Default) */
+:root,
+:root.light-mode {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --navbar-bg: #ffffff;
+  --text-primary: #000000;
+  --text-secondary: #333333;
+  --text-hover: #1e3a8a;
+  --link-color: #3a4f8a;
+  --link-hover: #1e3a8a;
+  --border-color: #e0e0e0;
+  --hover-bg: #f0f0f0;
+  --user-name-color: rgb(105, 245, 66);
+  --logout-color: rgb(184, 6, 6);
+  --logout-hover: #d32f2f;
+  --footer-bg: #2c2c2c;
+  --footer-text: #e0e0e0;
+  --footer-link: #ffffff;
+  --footer-link-hover: #4caf50;
+  
+  /* Card and Container Variables */
+  --card-bg: #ffffff;
+  --card-border: #e0e0e0;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  
+  /* Button Variables */
+  --btn-primary-bg: #3a4f8a;
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover: #1e3a8a;
+  --btn-secondary-bg: #f0f0f0;
+  --btn-secondary-text: #333333;
+  --btn-secondary-hover: #e0e0e0;
+  
+  /* Input Variables */
+  --input-bg: #ffffff;
+  --input-text: #000000;
+  --input-border: #e0e0e0;
+  --input-focus-border: #3a4f8a;
+  
+  /* Event Card Variables */
+  --event-card-bg: #f9f9f9;
+  --event-card-text: #333333;
+  --event-card-description: #444444;
+  --event-date-bg: #e74c3c;
+  --event-date-text: #ffffff;
+  
+  /* Info Banner Variables */
+  --info-banner-bg: #d1ecf1;
+  --info-banner-border: #0c5460;
+  --info-banner-text: #0c5460;
+  
+  /* Calendar Variables */
+  --calendar-cell-bg: #fdfdfd;
+  --calendar-cell-other: #f1f1f1;
+  --calendar-text: #555555;
+  --calendar-heading: #2a5b9e;
+}
+
+/* Dark Mode */
+:root.dark-mode {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --navbar-bg: #121212;
+  --text-primary: #f5f5f5;
+  --text-secondary: #e0e0e0;
+  --text-hover: #90caf9;
+  --link-color: #90caf9;
+  --link-hover: #64b5f6;
+  --border-color: #333333;
+  --hover-bg: #2a2a2a;
+  --user-name-color: rgb(105, 245, 66);
+  --logout-color: rgb(255, 82, 82);
+  --logout-hover: #ff5252;
+  --footer-bg: #1a1a1a;
+  --footer-text: #e0e0e0;
+  --footer-link: #ffffff;
+  --footer-link-hover: #4caf50;
+  
+  /* Card and Container Variables */
+  --card-bg: #1e1e1e;
+  --card-border: #333333;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Button Variables */
+  --btn-primary-bg: #90caf9;
+  --btn-primary-text: #121212;
+  --btn-primary-hover: #64b5f6;
+  --btn-secondary-bg: #2a2a2a;
+  --btn-secondary-text: #f5f5f5;
+  --btn-secondary-hover: #333333;
+  
+  /* Input Variables */
+  --input-bg: #2a2a2a;
+  --input-text: #f5f5f5;
+  --input-border: #333333;
+  --input-focus-border: #90caf9;
+  
+  /* Event Card Variables */
+  --event-card-bg: #1e1e1e;
+  --event-card-text: #e0e0e0;
+  --event-card-description: #cccccc;
+  --event-date-bg: #e74c3c;
+  --event-date-text: #ffffff;
+  
+  /* Info Banner Variables */
+  --info-banner-bg: #1a3a4a;
+  --info-banner-border: #4a9bb8;
+  --info-banner-text: #90caf9;
+  
+  /* Calendar Variables */
+  --calendar-cell-bg: #1e1e1e;
+  --calendar-cell-other: #2a2a2a;
+  --calendar-text: #e0e0e0;
+  --calendar-heading: #90caf9;
+}
+
+body {
+  margin: 0;
+  font-family: "Montserrat", sans-serif;
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  //background: url(assets/background/backgroundverlauf60.png) no-repeat;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--link-color);
+  transition: color 0.3s ease-in-out;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  transition: background-color 0.3s ease-in-out;
+  // margin: 0 3rem;
+}
+
+@font-face {
+  font-family: "Montserrat-bold";
+  src: url("/assets/fonts/Montserrat-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat-regular";
+  src: url("/assets/fonts/Montserrat-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Montserrat-light";
+  src: url("/assets/fonts/Montserrat-Light.ttf") format("truetype");
+}
+
+/* 
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url("/assets/fonts/MaterialIcons.woff2") format('woff2');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -moz-font-feature-settings: 'liga';
+  -moz-osx-font-smoothing: grayscale;
+}*/
+
+html, body { 
+  height: 100%;
+  overflow-x: hidden; 
+  scroll-behavior: smooth;
+}
+body { 
+  margin: 0; 
+  font-family: Roboto, "Helvetica Neue", sans-serif; 
+}
+
+/* Apply theme transitions to all elements */
+* {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+/* Material Icons should respect theme */
+mat-icon {
+  color: var(--text-primary);
+  transition: color 0.3s ease-in-out;
+}
+
+/* Ensure cards and containers use theme */
+.card, .mat-card {
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+}
+
+/* Buttons should use theme */
+button, .mat-button, .mat-icon-button {
+  color: var(--text-primary);
+  transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+}
+
+/* Inputs should use theme */
+input, textarea, select {
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  border-color: var(--input-border);
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+  
+  &:focus {
+    border-color: var(--input-focus-border);
+    outline-color: var(--input-focus-border);
+  }
+}
+
+/* Admin Panel - Force Light Mode (Exclude from theme) */
+app-admin-layout,
+app-admin-layout *,
+[class*="admin-"]:not([class*="admin-pannel"]) {
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #f5f5f5 !important;
+  --navbar-bg: #ffffff !important;
+  --text-primary: #000000 !important;
+  --text-secondary: #333333 !important;
+  --card-bg: #ffffff !important;
+  --input-bg: #ffffff !important;
+  --input-text: #000000 !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Ensure admin routes don't get theme classes */
+router-outlet + app-admin-layout,
+router-outlet + [class*="admin-"] {
+  .dark-mode,
+  .light-mode {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}

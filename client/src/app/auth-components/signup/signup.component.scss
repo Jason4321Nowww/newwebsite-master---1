@@ -1,0 +1,136 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  transition: background-color 0.3s ease-in-out;
+}
+
+form {
+  max-width: 400px;
+  width: 100%;
+  padding: 2.5rem;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px var(--card-shadow);
+  transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+
+  @media (max-width: 480px) {
+    padding: 1.5rem;
+    max-width: 100%;
+  }
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
+  transition: color 0.3s ease-in-out;
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 2px solid var(--input-border);
+  padding: 0.75rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
+
+  &:focus-within {
+    border-color: var(--input-focus-border);
+  }
+}
+
+.input-group mat-icon {
+  margin-right: 0.75rem;
+  color: var(--text-secondary);
+  transition: color 0.3s ease-in-out;
+}
+
+.input-group input {
+  border: none;
+  outline: none;
+  width: 100%;
+  background: transparent;
+  font-size: 1rem;
+  color: var(--input-text);
+  transition: color 0.3s ease-in-out;
+
+  &::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+}
+
+.input-group.error {
+  border-color: #f44336;
+}
+
+.error-msg {
+  color: #f44336;
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+  margin-top: -0.5rem;
+}
+
+button {
+  width: 100%;
+  padding: 0.875rem;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+  margin-top: 0.5rem;
+
+  &:hover:not(:disabled) {
+    background: var(--btn-primary-hover);
+    transform: translateY(-2px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    background: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.signin-link {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  transition: color 0.3s ease-in-out;
+
+  a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.25rem;
+    transition: color 0.3s ease-in-out;
+  }
+
+  a:hover {
+    color: var(--link-hover);
+    text-decoration: underline;
+  }
+}

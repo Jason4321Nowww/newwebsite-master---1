@@ -1,0 +1,45 @@
+<footer>
+  <div class="foot">
+    <div class="description">
+         <h5><a  href="#" (click)="scrollTo('home-anchor')">Home</a></h5>
+
+      <p>
+        Die Büezer und KMU Partei (BKP) ist eine schweizweite Partei. Ihre
+        Themen sind Arbeit, Technologie und Umwelt.
+      </p>
+      <h5><a href="#" (click)="scrollTo('werte-anchor')">Werte</a></h5>
+      <h5><a  [routerLink]="['/contact-form']" >Kontakt</a></h5>
+      <h5><a  href="#" (click)="scrollTo('faq-anchor')">FAQ</a></h5>
+      <h5><a [routerLink]="['/admin']">Adminpannel</a></h5>
+    </div>
+
+    <div class="links">
+         <h5> <a [routerLink]="['/about']">Über</a> </h5>
+         <h5> <a [routerLink]="['/article-list']">Alle Artikel</a> </h5>
+      <!-- <h5><a href="#" (click)="scrollTo('impressum-anchor')" >Impressum</a></h5> -->
+      <h5><a [routerLink]="['/impressum']">Impressum</a></h5>
+       <h5><a [routerLink]="['/signup']">Register</a></h5>
+      <h5><a [routerLink]="['/signin']">Login</a></h5>
+     
+    </div>
+
+    <div class="social-media">
+      <h5>Folgen Sie uns</h5>
+      <div class="icons">
+        <a href="https://www.tiktok.com" target="_blank" rel="noopener">
+          <img src="/assets/images/tiktoklogo.webp" alt="TikTok" />
+        </a>
+        <a href="https://www.instagram.com" target="_blank" rel="noopener">
+          <img src="/assets/images/Instagram_logo.webp" alt="Instagram" />
+        </a>
+        <a href="https://www.youtube.com" target="_blank" rel="noopener">
+          <img src="/assets/images/YouTube_icon.webp" alt="YouTube" />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="copyright">
+    <h4>&copy; 2024 {{ webseitenTitel }}</h4>
+  </div>
+</footer>

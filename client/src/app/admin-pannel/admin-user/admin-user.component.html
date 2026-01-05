@@ -1,0 +1,90 @@
+<div class="admin-users">
+  <h2>All Users</h2>
+
+  <!-- Registration Key Update Section -->
+  <div class="registration-key-box">
+    <h3>Set Registration Key</h3>
+    <form (ngSubmit)="submitKey()" #keyForm="ngForm">
+      <input
+        type="text"
+        [(ngModel)]="registrationKey"
+        name="registrationKey"
+        maxlength="4"
+        required
+        pattern="[A-Za-z0-9]{4}"
+        placeholder="Enter 4-character key"
+        title="Only 4 letters or numbers allowed"
+      />
+      <button type="submit" [disabled]="keyForm.invalid">Update Key</button>
+
+      <span class="key-preview" *ngIf="keyPreview">
+        🔒 <strong>Current:</strong> {{ keyPreview }}
+      </span>
+    </form>
+
+    <p *ngIf="keyUpdateMessage" class="key-message">{{ keyUpdateMessage }}</p>
+  </div>
+
+  <!-- Users Table -->
+  <table *ngIf="!loading" class="user-table">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Role Level</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.username }}</td>
+        <td>
+          <select
+            [(ngModel)]="user.roleLevel"
+            (ngModelChange)="onRoleChange($event, user)"
+            class="role-dropdown"
+          >
+            <option *ngFor="let role of roleOptions" [value]="role.value">
+              {{ role.label }}
+            </option>
+          </select>
+        </td>
+       <td>
+  <select
+    [(ngModel)]="user.userLocation"
+    (ngModelChange)="onLocationChange($event, user)"
+    class="role-dropdown"
+  >
+    <option *ngFor="let loc of locationOptions" [value]="loc.value">
+      {{ loc.label }}
+    </option>
+  </select>
+</td>
+
+        <td>{{ user.isActive ? 'Active' : 'Inactive' }}</td>
+        <td class="action-buttons">
+          <!-- Activate / Deactivate -->
+          <mat-icon
+            (click)="toggleActivation(user)"
+            [class.active]="user.isActive"
+            matTooltip="{{ user.isActive ? 'Deactivate' : 'Activate' }}"
+          >
+            {{ user.isActive ? 'toggle_on' : 'toggle_off' }}
+          </mat-icon>
+
+          <!-- Delete -->
+          <mat-icon
+            (click)="deleteUser(user)"
+            class="delete-icon"
+            matTooltip="Delete User"
+          >
+            delete
+          </mat-icon>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="loading">Loading users...</div>
+</div>

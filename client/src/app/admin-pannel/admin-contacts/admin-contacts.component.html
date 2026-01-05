@@ -1,0 +1,22 @@
+<div class="admin-contact-list">
+  <h2>Kontaktanfragen</h2>
+  <table >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Participation </th>
+        <th>Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let contact of contacts">
+        <td>{{ contact.name }}</td>
+        <td>{{ contact.email }}</td>
+        <td>{{ contact.participation }}</td>
+        <td>{{ contact.createdAt | date: 'short' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+

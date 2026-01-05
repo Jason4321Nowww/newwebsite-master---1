@@ -1,0 +1,35 @@
+<div class="product-detail">
+  <div class="product-detail__image">
+    <img [src]="'http://localhost:5000' + product.mediaUrl" [alt]="product.name" />
+  </div>
+
+  <div class="product-detail__info">
+     <!-- Warning if stock is 0 or exceeded -->
+      <p *ngIf="product.stockWarning" class="stock-warning">
+               No more items left in stock!
+      </p>
+    <h2>{{ product.name }}</h2>
+    <p class="description">{{ product.description }}</p>
+
+    <!-- ✅ Show only for NON-external products -->
+    <ng-container *ngIf="!product.isExternal; else externalBlock">
+      <p class="price">Price: {{ product.price.toFixed(2) }}</p>
+
+      <div class="quantity-controls">
+        <button (click)="decreaseQty()">−</button>
+        <input type="number" [value]="quantity" readonly />
+        <button (click)="increaseQty()">+</button>
+      </div>
+
+      <button class="btn primary" (click)="addToCart()">Add to Cart</button>
+      <button class="btn secondary" routerLink="/order">Go to Cart</button>
+    </ng-container>
+
+    <!-- ✅ External product block -->
+    <ng-template #externalBlock>
+      <a [href]="product.externalUrl" target="_blank" class="btn primary">
+        External Item
+      </a>
+    </ng-template>
+  </div>
+</div>

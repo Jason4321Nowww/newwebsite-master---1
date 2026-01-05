@@ -1,0 +1,46 @@
+<div class="container">
+  <form (ngSubmit)="onLogin()" #form="ngForm" class="auth-form">
+    <h2 class="form-title">Admin Login</h2>
+
+    <!-- Email Field -->
+    <div class="input-group" [ngClass]="{ 'error': emailRef.invalid && emailRef.touched }">
+      <mat-icon>email</mat-icon>
+      <input
+        type="email"
+        placeholder="Email"
+        [(ngModel)]="email"
+        name="email"
+        required
+        #emailRef="ngModel"
+      />
+    </div>
+    <div class="error-msg" *ngIf="emailRef.invalid && emailRef.touched">
+      Email is required.
+    </div>
+
+    <!-- Password Field -->
+    <div class="input-group" [ngClass]="{ 'error': passwordRef.invalid && passwordRef.touched }">
+      <mat-icon>lock</mat-icon>
+      <input
+        type="password"
+        placeholder="Password"
+        [(ngModel)]="password"
+        name="password"
+        required
+        #passwordRef="ngModel"
+      />
+    </div>
+    <div class="error-msg" *ngIf="passwordRef.invalid && passwordRef.touched">
+      Password is required.
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit" [disabled]="form.invalid">Login</button>
+
+    <!-- Register Link -->
+    <p class="register-link">
+      Don't have an account?
+      <a routerLink="/admin/admin-signup">Sign Up</a>
+    </p>
+  </form>
+</div>

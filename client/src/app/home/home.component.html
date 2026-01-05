@@ -1,0 +1,19 @@
+<main id="home-anchor">
+  <!-- Show only if activeBanner is present -->
+<div class="infoBanner" *ngIf="activeBanner">
+  <mat-icon class="info-icon">info</mat-icon>
+  {{ activeBanner.statement }}
+  <a *ngIf="activeBanner.link" [href]="activeBanner.link" target="_blank" class="learn-more-btn">
+    Learn More
+  </a>
+</div>
+
+
+  <app-titlescreen></app-titlescreen>
+  <app-values id="werte-anchor"></app-values>
+  <app-shorts-videoplayer></app-shorts-videoplayer>
+   <!-- <app-impressum id="impressum-anchor"></app-impressum> -->
+   <app-faq id="faq-anchor"></app-faq>
+  <app-todolist></app-todolist> 
+  <app-join-and-donate-popup></app-join-and-donate-popup>
+</main>
