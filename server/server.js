@@ -65,6 +65,14 @@ app.use('/api/contacts', contactRoutes);
 
 
 
+// Global error handler — catches multer errors, validation errors, etc.
+app.use((err, req, res, next) => {
+  console.error('Server error:', err.message);
+  const status = err.status || err.statusCode || 500;
+  const message = err.code ? `Upload error: ${err.code}` : (err.message || 'Internal server error');
+  res.status(status).json({ error: message });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

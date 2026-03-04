@@ -10,6 +10,7 @@
   padding: 1rem 1rem;
   z-index: 1000;
   transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  animation: slideFromTop 0.45s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 .hide-navbar {
   transform: translateY(-100%);
@@ -27,8 +28,32 @@
   transition: transform 0.3s;
 }
 
-.pageLogo.burger.rotate {
-  transform: rotate(90deg);
+// Hamburger button — hidden on desktop, shown on mobile via media query
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 28px;
+  height: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.hamburger-line {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: var(--text-primary);
+  border-radius: var(--radius-sm);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center;
+
+  &.open-1 { transform: translateY(9.5px) rotate(45deg); }
+  &.open-2 { opacity: 0; transform: scaleX(0); }
+  &.open-3 { transform: translateY(-9.5px) rotate(-45deg); }
 }
 
 .responsive-title {
@@ -155,7 +180,7 @@
     width: 100%;
     padding: 0.75rem 1rem;
     font-size: 0.95rem;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     transition: background-color 0.2s ease-in-out;
 
     &:hover {
@@ -166,6 +191,10 @@
   .navbar-right {
     gap: 0.25rem;
     flex-wrap: wrap;
+  }
+
+  .hamburger-btn {
+    display: flex;
   }
 
   .user-info {
@@ -329,4 +358,167 @@
   padding: 2px 6px;
   line-height: 1;
   font-weight: bold;
+}
+
+// ── Profile Dropdown ────────────────────────────────────────
+.profile-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--btn-primary-bg, #3a4f8a);
+  border: none;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  transition: box-shadow 0.2s, transform 0.15s;
+
+  &:hover {
+    box-shadow: 0 0 0 3px rgba(58, 79, 138, 0.3);
+    transform: scale(1.05);
+  }
+}
+
+.profile-avatar {
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.profile-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border-color, #e0e0e0);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  z-index: 1100;
+  overflow: hidden;
+  animation: profileFade 0.15s ease;
+}
+
+@keyframes profileFade {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.profile-avatar-lg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--btn-primary-bg, #3a4f8a);
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-divider {
+  height: 1px;
+  background: var(--border-color, #e0e0e0);
+  margin: 2px 0;
+}
+
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.15s;
+
+  mat-icon {
+    font-size: 1.15rem;
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--text-secondary, #666);
+    flex-shrink: 0;
+  }
+
+  span:first-of-type {
+    flex: 1;
+  }
+
+  &:hover {
+    background: var(--hover-bg, #f0f4ff);
+  }
+
+  &.danger {
+    color: #d32f2f;
+
+    mat-icon {
+      color: #d32f2f;
+    }
+
+    &:hover {
+      background: #fff0f0;
+    }
+  }
+}
+
+// Dark mode pill toggle inside profile menu
+.mode-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  width: 34px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--border-color, #ccc);
+  transition: background 0.2s;
+  position: relative;
+  flex-shrink: 0;
+
+  &.on {
+    background: var(--btn-primary-bg, #3a4f8a);
+  }
+}
+
+.pill-knob {
+  position: absolute;
+  left: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+
+  .on & {
+    transform: translateX(16px);
+  }
 }

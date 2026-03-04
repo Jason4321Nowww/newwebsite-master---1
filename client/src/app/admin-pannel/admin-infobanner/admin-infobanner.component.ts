@@ -12,6 +12,7 @@ export class AdminInfobannerComponent  implements OnInit {
   bannerForm!: FormGroup;
   banners: InfoBanner[] = [];
   selectedBanner: InfoBanner | null = null;
+  activeLang: string = 'de';
 
   constructor(
     private fb: FormBuilder,
@@ -21,7 +22,10 @@ export class AdminInfobannerComponent  implements OnInit {
   ngOnInit(): void {
     this.bannerForm = this.fb.group({
       statement: ['', Validators.required],
-      link: [''],  
+      statement_it: [''],
+      statement_fr: [''],
+      statement_en: [''],
+      link: [''],
       isActive: [false]
     });
 
@@ -54,7 +58,10 @@ export class AdminInfobannerComponent  implements OnInit {
  editBanner(banner: InfoBanner): void {
   this.bannerForm.patchValue({
     statement: banner.statement,
-    link: banner.link || '', 
+    statement_it: banner.statement_it || '',
+    statement_fr: banner.statement_fr || '',
+    statement_en: banner.statement_en || '',
+    link: banner.link || '',
     isActive: banner.isActive
   });
   this.selectedBanner = banner;

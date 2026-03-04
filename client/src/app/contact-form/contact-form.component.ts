@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ContactService } from '../services/contact.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-contact-form',
@@ -11,7 +12,7 @@ name: string = '';
 email: string = '';
 participation: string = 'member'; //by default
 
-constructor(private contact:ContactService){}
+constructor(private contact: ContactService, public langService: LanguageService) {}
  ngOnInit(): void {
     // Force smooth scroll to top whenever this component loads
     setTimeout(() => {
@@ -21,7 +22,7 @@ constructor(private contact:ContactService){}
 
 onSubmit(): void{
      if (!this.name || !this.email || !this.participation) {
-      alert('Bitte füllen Sie alle Felder aus.');
+      alert(this.langService.t('contact.fillAllFields'));
       return;
     }
 
@@ -30,17 +31,17 @@ onSubmit(): void{
       email: this.email,
       participation: this.participation
     };
-    
+
     this.contact.submitContact(contactData).subscribe({
        next: (res) => {
-        alert(res.message || 'Kontaktformular wurde erfolgreich gesendet!');
+        alert(res.message || this.langService.t('contact.success'));
         this.name = '';
         this.email = '';
         this.participation = 'member';
       },
        error: (err) => {
         console.error(err);
-        alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+        alert(this.langService.t('contact.error'));
       }
     })
 }

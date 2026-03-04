@@ -13,6 +13,7 @@ export class AdminShopComponent implements OnInit {
   products: Product[] = [];
   selectedProduct: Product | null = null;
   selectedFile: File | null = null;
+  activeLang: string = 'de';
 
   constructor(
     private fb: FormBuilder,
@@ -20,9 +21,15 @@ export class AdminShopComponent implements OnInit {
   ) {
     this.productForm = this.fb.group({
       name: [''],
+      name_it: [''],
+      name_fr: [''],
+      name_en: [''],
       category: [''],
       price: [''],
       description: [''],
+      description_it: [''],
+      description_fr: [''],
+      description_en: [''],
       stock: [''],
       mediaType: ['image'],
       isExternal: [false],
@@ -54,10 +61,16 @@ export class AdminShopComponent implements OnInit {
     const formData = new FormData();
 
     formData.append('name', formValues.name || '');
+    formData.append('name_it', formValues.name_it || '');
+    formData.append('name_fr', formValues.name_fr || '');
+    formData.append('name_en', formValues.name_en || '');
     formData.append('category', formValues.category || '');
     formData.append('price', formValues.price?.toString() || '0');
     formData.append('stock', formValues.stock?.toString() || '0');
     formData.append('description', formValues.description || '');
+    formData.append('description_it', formValues.description_it || '');
+    formData.append('description_fr', formValues.description_fr || '');
+    formData.append('description_en', formValues.description_en || '');
     // formData.append('mediaType', formValues.mediaType || '');
     formData.append('size', formValues.size || '');
     formData.append('isExternal', formValues.isExternal ? 'true' : 'false');

@@ -6,13 +6,13 @@ body {
 }
 
 .events-page {
-  // padding: 1rem;
   max-width: 1200px;
   margin: auto;
+  padding: 0 1rem;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
-  // padding-left: 1rem;
+  box-sizing: border-box;
 
   .calendar-heading {
     font-size: 2rem;
@@ -52,7 +52,7 @@ body {
   margin-bottom: 2rem;
   padding: 1rem;
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   background-color: var(--card-bg);
   color: var(--text-primary);
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
@@ -67,7 +67,7 @@ body {
     @media (max-width: 480px) {
       padding: 0.5rem;
       margin-bottom: 1rem;
-      border-radius: 6px;
+      border-radius: var(--radius-md);
     }
 
     &.expanded {
@@ -90,7 +90,7 @@ body {
   width: 300px;
   height: 200px;
   object-fit: contain;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   background-color: var(--bg-secondary);
   display: block;
   transition: background-color 0.3s ease-in-out;
@@ -98,8 +98,8 @@ body {
 
   @media (max-width: 992px) {
     width: 100%;
-    height: 200px;        // Allow height to scale with width
-   object-fit: fill;
+    height: 200px;
+    object-fit: cover;
   }
 }
 

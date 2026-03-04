@@ -1,25 +1,27 @@
-@keyframes slideInFromLeft {
-  0% {
-    opacity: 0;
-    transform: translateX(-100%);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
+// ── Shared nav button ─────────────────────────────────────────
+.carousel-nav {
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.15s;
+  z-index: 20;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.65);
+    transform: scale(1.12);
   }
 }
 
-@keyframes fadeInUp {
-  0% {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+// ── Portrait Carousel ─────────────────────────────────────────
 .carousel1 {
   display: flex;
   justify-content: center;
@@ -27,185 +29,122 @@
   margin-bottom: 5rem;
 }
 
-.carousel1-container {
+.carousel1-wrapper {
   display: flex;
-  justify-content: center;
-}
-
-.carousel1-slide {
-  display: flex;
-  gap: 12px;
   align-items: center;
-  position: relative;
-  touch-action: pan-y;
+  gap: 16px;
 }
 
-.carousel1-item {
+// `perspective` goes on the CONTAINER — this gives all child slots a
+// SHARED vanishing point (the center of the stage) which creates the
+// true coverflow look.  Do NOT use perspective() inside the slot's own
+// transform — that gives each card its own vanishing point and causes
+// the "opened book" / trapezoid distortion seen previously.
+//
+// No `will-change`, `filter`, or `backface-visibility` on slots —
+// those properties create isolated GPU compositing layers that ignore
+// the parent's perspective context.
+.carousel1-stage {
   position: relative;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+  perspective: 800px;
+  perspective-origin: 50% 50%;
   overflow: hidden;
+  height: 590px;   // title(110px) + iframe(480px)
+
+  @media (max-width: 768px) { height: 466px; }  // title(110) + iframe(356)
+  @media (max-width: 480px) { height: 364px; }  // title(80)  + iframe(284)
 }
 
-.carousel1-item.center {
-  transform: scale(1.1);
-  cursor: default;
-}
-
-.carousel1-item.center app-shorts-video {
-  filter: none;
-  transform: scale(1.1);
-  pointer-events: auto;
-  animation: fadeInUp 0.5s ease-in-out;
-}
-
-.carousel1-item.side app-shorts-video {
-  filter: blur(1px);
-  transform: scale(0.95);
-  pointer-events: none;
-  animation: slideInFromLeft 0.6s ease-in-out;
-}
-
-/* Arrows on side slides */
-/* ✅ Styled Arrow Indicators for Side Slides */
-.carousel1-item.side::before {
-  content: '';
+.portrait-slot {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-   border: solid white;  
-  // border: solid rgba(255, 255, 255, 0.5);  
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  pointer-events: none;
-  z-index: 5;
-  opacity: 0.5; /* More subtle appearance */
+  top: 50%;    // combined with translateY(-50%) in TS → vertical centre
+  left: 50%;   // combined with translateX(-50% + offset) in TS → horizontal position
+  cursor: pointer;
+  // transition always-on: changing `shift` automatically triggers animation
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity   0.5s ease;
+
+  &.no-transition {
+    transition: none !important;
+  }
+
+  &.is-center {
+    cursor: default;
+  }
 }
 
-/* Left Arrow */
-.carousel1-item.side:first-child::before {
-  left: 12px;
-  transform: translateY(-50%) rotate(135deg); /* ← direction */
+// Side cards get a subtle darkening via CSS (no `filter` on the slot
+// itself — apply it to the child so it doesn't create a compositing layer
+// that would break the parent's perspective context).
+.portrait-slot:not(.is-center) app-shorts-video {
+  filter: brightness(0.6);
+  transition: filter 0.5s ease;
+}
+.portrait-slot.is-center app-shorts-video {
+  filter: brightness(1);
+  transition: filter 0.5s ease;
 }
 
-/* Right Arrow */
-.carousel1-item.side:last-child::before {
-  right: 12px;
-  left: auto;
-  transform: translateY(-50%) rotate(-45deg); /* → direction */
-}
-/* make sure the arows responsible for mobile view */
-@media (max-width: 480px) {
-/* Left Arrow */
-.carousel1-item.side:first-child::before {
-  right: 12px;
- left: auto;
-  transform: translateY(-50%) rotate(135deg); /* ← direction */
-}
-
-/* Right Arrow */
-.carousel1-item.side:last-child::before {
-  left: 12px;
-  //  right: auto;
-  transform: translateY(-50%) rotate(-45deg); /* → direction */
-}
-
-}
-
-/* Optional: Slightly more visible on hover */
-.carousel1-item.side:hover::before {
-  opacity: 0.8;
-}
-
-  
-/* Clickable overlay remains unchanged */
-.clickable-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 10;
-}
-
-//landscape video player scss 
+// ── Landscape Carousel ────────────────────────────────────────
 .carousel2 {
   display: flex;
   justify-content: center;
-  margin: 2rem 0;
+  margin: 2rem 0 5rem;
 }
 
-.carousel2-container {
+.carousel2-wrapper {
   display: flex;
-  justify-content: center;
-}
-
-.carousel2-slide {
-  display: flex;
-  gap: 0;
   align-items: center;
-  position: relative;
-}
-.carousel2-item.side {
-  margin: 0 -8px; 
-  z-index: 1;
-  // width: calc(50% + 8px); 
+  gap: 16px;
 }
 
-.carousel2-item {
+.carousel2-stage {
   position: relative;
-  transition: transform 0.3s ease;
-  cursor: pointer;
+  perspective: 800px;
+  perspective-origin: 50% 50%;
   overflow: hidden;
+  height: 290px;   // title(70px) + iframe(220px)
+
+  @media (max-width: 768px) { height: 223px; }
+  @media (max-width: 480px) { height: 180px; }
 }
 
-.carousel2-item.center {
-  transform: scale(1.05);
-  cursor: default;
-  z-index: 3;
-}
-
-.carousel2-item.center app-shorts-video {
-  // filter: none;
-  transform: scale(0.88);
-  pointer-events: auto;
-  animation: fadeInUp 0.5s ease-in-out;
-}
-
-.carousel2-item.side app-shorts-video {
-  filter: blur(1px);
-  transform: scale(0.9);
-  pointer-events: none;
-  animation: slideInFromLeft 0.6s ease-in-out;
-}
-
-/* Arrows for landscape carousel */
-.carousel2-item.side::before {
-  content: '';
+.landscape-slot {
   position: absolute;
   top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  pointer-events: none;
-  z-index: 5;
-  opacity: 0.5;
+  left: 50%;
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              opacity   0.5s ease;
+
+  &.no-transition {
+    transition: none !important;
+  }
+
+  &.is-center {
+    cursor: default;
+  }
 }
 
-.carousel2-item.side:first-child::before {
-  left: 12px;
-  transform: translateY(-50%) rotate(135deg);
+.landscape-slot:not(.is-center) app-shorts-video {
+  filter: brightness(0.6);
+  transition: filter 0.5s ease;
+}
+.landscape-slot.is-center app-shorts-video {
+  filter: brightness(1);
+  transition: filter 0.5s ease;
 }
 
-.carousel2-item.side:last-child::before {
-  right: 12px;
-  left: auto;
-  transform: translateY(-50%) rotate(-45deg);
+// ── Mobile tweaks ─────────────────────────────────────────────
+@media (max-width: 480px) {
+  .carousel1-wrapper,
+  .carousel2-wrapper {
+    gap: 8px;
+  }
+
+  .carousel-nav {
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+  }
 }
-
-

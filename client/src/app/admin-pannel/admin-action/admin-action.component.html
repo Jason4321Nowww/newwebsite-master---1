@@ -2,14 +2,34 @@
   <h2>{{ isEditing ? 'Edit' : 'Create' }} Action</h2>
 
   <form [formGroup]="actionForm" (ngSubmit)="submitForm()">
-    <!-- Title -->
-    <label>Title
+
+    <!-- Language Picker -->
+    <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+
+    <label *ngIf="activeLang === 'de'">Title (DE)
       <input formControlName="title" type="text" required />
     </label>
+    <label *ngIf="activeLang === 'it'">Title (IT)
+      <input formControlName="title_it" type="text" />
+    </label>
+    <label *ngIf="activeLang === 'fr'">Title (FR)
+      <input formControlName="title_fr" type="text" />
+    </label>
+    <label *ngIf="activeLang === 'en'">Title (EN)
+      <input formControlName="title_en" type="text" />
+    </label>
 
-    <!-- Description -->
-    <label>Description
+    <label *ngIf="activeLang === 'de'">Description (DE)
       <textarea formControlName="description" required></textarea>
+    </label>
+    <label *ngIf="activeLang === 'it'">Description (IT)
+      <textarea formControlName="description_it"></textarea>
+    </label>
+    <label *ngIf="activeLang === 'fr'">Description (FR)
+      <textarea formControlName="description_fr"></textarea>
+    </label>
+    <label *ngIf="activeLang === 'en'">Description (EN)
+      <textarea formControlName="description_en"></textarea>
     </label>
 
     <!-- Media Upload -->

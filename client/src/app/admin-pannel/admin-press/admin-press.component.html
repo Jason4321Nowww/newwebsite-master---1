@@ -1,29 +1,41 @@
 <form (ngSubmit)="submit()" #pressForm="ngForm" class="press-form">
-  <div class="field-icon">
+
+  <!-- Language Picker -->
+  <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+
+  <div class="field-icon" *ngIf="activeLang === 'de'">
     <i class="fas fa-heading"></i>
-    <input
-      type="text"
-      [(ngModel)]="title"
-      name="title"
-      placeholder="Title"
-      required
-    />
+    <input type="text" [(ngModel)]="title" name="title" placeholder="Title (DE)" required />
+  </div>
+  <div class="field-icon" *ngIf="activeLang === 'it'">
+    <i class="fas fa-heading"></i>
+    <input type="text" [(ngModel)]="title_it" name="title_it" placeholder="Title (IT)" />
+  </div>
+  <div class="field-icon" *ngIf="activeLang === 'fr'">
+    <i class="fas fa-heading"></i>
+    <input type="text" [(ngModel)]="title_fr" name="title_fr" placeholder="Title (FR)" />
+  </div>
+  <div class="field-icon" *ngIf="activeLang === 'en'">
+    <i class="fas fa-heading"></i>
+    <input type="text" [(ngModel)]="title_en" name="title_en" placeholder="Title (EN)" />
   </div>
 
-  <div class="field-icon">
+  <div class="field-icon" *ngIf="activeLang === 'de'">
     <i class="fas fa-pen-nib"></i>
- <textarea
-  [(ngModel)]="content"
-  name="content"
-  rows="1"
-  placeholder="Write your press release..."
-  required
-  #textArea
-  (input)="autoGrowTextArea(textArea)"
-></textarea>
-
-<input type="file" name="" (change)="onImageSelected($event)" accept="image/*">
-
+    <textarea [(ngModel)]="content" name="content" rows="1" placeholder="Write your press release (DE)..." required #textArea (input)="autoGrowTextArea(textArea)"></textarea>
+    <input type="file" name="" (change)="onImageSelected($event)" accept="image/*">
+  </div>
+  <div class="field-icon" *ngIf="activeLang === 'it'">
+    <i class="fas fa-pen-nib"></i>
+    <textarea [(ngModel)]="content_it" name="content_it" rows="1" placeholder="Write your press release (IT)..." #textAreaIt (input)="autoGrowTextArea(textAreaIt)"></textarea>
+  </div>
+  <div class="field-icon" *ngIf="activeLang === 'fr'">
+    <i class="fas fa-pen-nib"></i>
+    <textarea [(ngModel)]="content_fr" name="content_fr" rows="1" placeholder="Write your press release (FR)..." #textAreaFr (input)="autoGrowTextArea(textAreaFr)"></textarea>
+  </div>
+  <div class="field-icon" *ngIf="activeLang === 'en'">
+    <i class="fas fa-pen-nib"></i>
+    <textarea [(ngModel)]="content_en" name="content_en" rows="1" placeholder="Write your press release (EN)..." #textAreaEn (input)="autoGrowTextArea(textAreaEn)"></textarea>
   </div>
 
   <!-- <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="" srcset=""> -->

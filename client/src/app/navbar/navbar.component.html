@@ -1,59 +1,95 @@
-<nav class="navbar" [class.mobile-open]="isMenuOpen"  [class.hide-navbar]="hideNavbar">
+<nav class="navbar" [class.mobile-open]="isMenuOpen" [class.hide-navbar]="hideNavbar">
   <div class="title">
     <a routerLink="">
       <img
         class="pageLogo"
         src="assets/logo/starlinelessbigger.png"
         alt="derbuezer"
-        (click)="toggleMenu()"
-        [class.burger]="isMobileView"
-        [class.rotate]="isMenuOpen"
       />
     </a>
     <h1 class="responsive-title">{{ webseitenTitel }}</h1>
   </div>
 
   <div class="links" [class.hidden]="isMobileView && !isMenuOpen">
-    <a routerLink="">Home</a>
-    <a href="https://bkps.ch/HTML/mitgliedschaft/formular.php#kontakt-anchor" target="_blank" rel="noopener">
-  Mitmachen
-</a>
-
-    <a [routerLink]="['/values']" fragment="werte-anchor">Werte</a>
-    <!-- <a [routerLink]="['/spenden']">Spenden</a> -->
-    <a [routerLink]="['/shop']">Geschäft</a>
-    <a [routerLink]="['/actions']">Aktionen</a>
-    <a [routerLink]="['/events']">Veranstaltungen</a>
-    <!-- <a [routerLink]="['/about']">Um</a> -->
-    <a [routerLink]="['/press']">Pressemitteilung</a>
-    <!-- Only show when user is logged in -->
+    <a routerLink="">{{ langService.t('nav.home') }}</a>
+    <a href="https://bkps.ch/HTML/mitgliedschaft/formular.php#kontakt-anchor" target="_blank" rel="noopener">{{ langService.t('nav.join') }}</a>
+    <a [routerLink]="['/values']" fragment="werte-anchor">{{ langService.t('nav.values') }}</a>
+    <a [routerLink]="['/shop']">{{ langService.t('nav.shop') }}</a>
+    <a [routerLink]="['/actions']">{{ langService.t('nav.actions') }}</a>
+    <a [routerLink]="['/events']">{{ langService.t('nav.events') }}</a>
+    <a [routerLink]="['/press']">{{ langService.t('nav.press') }}</a>
   </div>
 
-<div class="navbar-right">
-  <!-- If user is logged in, show username + logout -->
-  <span *ngIf="userName" class="user-info">
-    <span class="user-name">{{ userName }}</span>
-    <mat-icon class="logout-icon" (click)="logout()" matTooltip="Logout">power_settings_new</mat-icon>
-  </span>
+  <div class="navbar-right">
 
-  <!-- If user is not logged in, show Sign In -->
-  <a *ngIf="!userName" [routerLink]="['/signin']" class="signin-link">
-    <mat-icon class="signin-icon">login</mat-icon>
-  </a>
-  <a [routerLink]="['/cart-details']" class="cart-link"  *ngIf="cartCount > 0">
-    <mat-icon class="cart-icon">shopping_cart</mat-icon>
-    <span class="cart-badge" >{{ cartCount }}</span>
-  </a>
+    <!-- Cart -->
+    <a [routerLink]="['/cart-details']" class="cart-link" *ngIf="cartCount > 0">
+      <mat-icon class="cart-icon">shopping_cart</mat-icon>
+      <span class="cart-badge">{{ cartCount }}</span>
+    </a>
 
-  <!-- special member page -->
-  <a *ngIf="userName != null" [routerLink]="['/special-member-page']" class="member-link">Member Page</a>
+    <!-- Language Switcher -->
+    <app-lang></app-lang>
 
-  <!-- Theme Toggle Button -->
-  <button class="theme-toggle" (click)="toggleTheme()" [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'" title="{{ isDarkMode ? 'Switch to light mode' : 'Switch to dark mode' }}">
-    <mat-icon *ngIf="!isDarkMode" class="theme-icon">light_mode</mat-icon>
-    <mat-icon *ngIf="isDarkMode" class="theme-icon">dark_mode</mat-icon>
-  </button>
-</div>
+    <!-- Not logged in: sign-in + standalone dark mode -->
+    <ng-container *ngIf="!userName">
+      <a [routerLink]="['/signin']" class="signin-link">
+        <mat-icon class="signin-icon">login</mat-icon>
+      </a>
+      <button class="theme-toggle" (click)="toggleTheme()"
+        [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">
+        <mat-icon class="theme-icon">{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</mat-icon>
+      </button>
+    </ng-container>
+
+    <!-- Logged in: profile dropdown -->
+    <div class="profile-dropdown" *ngIf="userName" [class.open]="isProfileOpen">
+      <button class="profile-trigger" (click)="toggleProfile()" type="button">
+        <span class="profile-avatar">{{ userName!.charAt(0).toUpperCase() }}</span>
+      </button>
+
+      <div class="profile-menu" *ngIf="isProfileOpen">
+
+        <!-- Header -->
+        <div class="profile-header">
+          <span class="profile-avatar-lg">{{ userName!.charAt(0).toUpperCase() }}</span>
+          <span class="profile-name">{{ userName }}</span>
+        </div>
+
+        <div class="profile-divider"></div>
+
+        <!-- Member Page -->
+        <a [routerLink]="['/special-member-page']" class="profile-menu-item" (click)="isProfileOpen = false">
+          <mat-icon>person</mat-icon>
+          <span>{{ langService.t('nav.memberPage') }}</span>
+        </a>
+
+        <!-- Dark Mode Toggle -->
+        <button class="profile-menu-item" (click)="toggleTheme()" type="button">
+          <mat-icon>{{ isDarkMode ? 'dark_mode' : 'light_mode' }}</mat-icon>
+          <span>{{ isDarkMode ? langService.t('nav.darkMode') : langService.t('nav.lightMode') }}</span>
+          <span class="mode-toggle-pill" [class.on]="isDarkMode">
+            <span class="pill-knob"></span>
+          </span>
+        </button>
+
+        <div class="profile-divider"></div>
+
+        <!-- Logout -->
+        <button class="profile-menu-item danger" (click)="logout()" type="button">
+          <mat-icon>power_settings_new</mat-icon>
+          <span>{{ langService.t('nav.logout') }}</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Hamburger button — visible on mobile only -->
+    <button class="hamburger-btn" (click)="toggleMenu()" type="button" [attr.aria-expanded]="isMenuOpen" aria-label="Toggle navigation">
+      <span class="hamburger-line" [class.open-1]="isMenuOpen"></span>
+      <span class="hamburger-line" [class.open-2]="isMenuOpen"></span>
+      <span class="hamburger-line" [class.open-3]="isMenuOpen"></span>
+    </button>
+
+  </div>
 </nav>
-
-<!-- <div class="content-area"></div> -->

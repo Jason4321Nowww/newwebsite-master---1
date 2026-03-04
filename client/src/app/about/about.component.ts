@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
- 
+import { LanguageService } from '../services/language.service';
+
 
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
   styleUrls: ['./about.component.scss']
 })
-export class AboutComponent implements OnInit { 
+export class AboutComponent implements OnInit {
 
     supporters = [
     { image: '/assets/images/FrancescoL.png', name: 'Francesco L.' },
@@ -20,7 +21,7 @@ export class AboutComponent implements OnInit {
     { image: '/assets/images/StephanieBeere_Kreis.png', name: 'Mark T.' }
   ];
 
- constructor(private router:Router){}
+ constructor(private router: Router, public langService: LanguageService) {}
 
    ngOnInit(): void {
     // Force smooth scroll to top whenever this component loads

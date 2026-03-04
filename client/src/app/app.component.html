@@ -1,3 +1,23 @@
+<!-- Page spinner overlay -->
+<div class="page-spinner-overlay" *ngIf="isLoading">
+  <div class="scene">
+    <svg class="face front" viewBox="0 0 200 200">
+      <defs>
+        <clipPath id="spinner-star">
+          <polygon points="100,10 123,75 190,75 135,115 155,180 100,140 45,180 65,115 10,75 77,75" />
+        </clipPath>
+      </defs>
+      <rect x="0"     y="0" width="66.6" height="200" fill="#e53935" clip-path="url(#spinner-star)" />
+      <rect x="66.6"  y="0" width="66.6" height="200" fill="#4db6ac" clip-path="url(#spinner-star)" />
+      <rect x="133.3" y="0" width="66.6" height="200" fill="#66bb6a" clip-path="url(#spinner-star)" />
+    </svg>
+    <svg class="face back" viewBox="0 0 200 200">
+      <polygon points="100,10 123,75 190,75 135,115 155,180 100,140 45,180 65,115 10,75 77,75" fill="#cccccc"/>
+    </svg>
+    <div class="edge"></div>
+  </div>
+</div>
+
 <app-navbar  *ngIf="!isAdminRoute"></app-navbar>
- <router-outlet></router-outlet>
+<router-outlet></router-outlet>
 <app-footer class="foooter"></app-footer>

@@ -1,21 +1,29 @@
-<!-- <div class="short-container">
-  <div class="videotitle">{{ videoInfo.title }}</div>
+<div class="short-container" [class.landscape]="isLandscape">
+
+  <div class="videotitle" [class.landscape]="isLandscape">{{ getTitle() }}</div>
+
+  <!-- Thumbnail + play button (shown until user clicks play) -->
+  <div *ngIf="!playing"
+       class="thumbnail-wrap"
+       [class.landscape]="isLandscape"
+       (click)="play()">
+    <img class="thumbnail" [src]="thumbnailUrl" alt="" />
+    <div class="play-btn">
+      <svg viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+        <path class="play-btn-bg"  d="M66.5 7.7a8.5 8.5 0 0 0-6-6C56 0 34 0 34 0S12 0 7.5 1.7a8.5 8.5 0 0 0-6 6C0 12.1 0 24 0 24s0 11.9 1.5 16.3a8.5 8.5 0 0 0 6 6C12 48 34 48 34 48s22 0 26.5-1.7a8.5 8.5 0 0 0 6-6C68 35.9 68 24 68 24s0-11.9-1.5-16.3z"/>
+        <path class="play-btn-icon" d="M45 24 27 14v20z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Iframe loaded only after user clicks play -->
   <iframe
-    #iframeRef
-    class="short-video"
+    *ngIf="playing"
+    [ngClass]="{'short-video': true, 'landscape': isLandscape}"
     [src]="videoUrl"
     frameborder="0"
-    allow="autoplay"
+    allow="autoplay; fullscreen"
     allowfullscreen
   ></iframe>
-</div> -->
-<div class="short-container">
-  <iframe
-    #iframeRef
-    [ngClass]="{'short-video': true, 'landscape': videoInfo?.orientation === 'landscape'}"
-    [src]="videoUrl"
-    frameborder="0"
-    allow="autoplay"
-    allowfullscreen
-  ></iframe>
+
 </div>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Article } from '../_models/article';
 import { ArticlesService } from '../services/articles.service';
 import { Router } from '@angular/router';
+import { LanguageService } from '../services/language.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,7 +18,7 @@ export class ArticleListComponent implements OnInit {
   searchTerm = '';
   articles: Article[] = [];
 
-  constructor(private articleService: ArticlesService, private router: Router) {}
+  constructor(private articleService: ArticlesService, private router: Router, public langService: LanguageService) {}
 
   ngOnInit(): void {
     this.articleService.getArticles().subscribe({

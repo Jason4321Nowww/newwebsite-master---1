@@ -20,7 +20,7 @@ form {
   max-width: 600px;
   background-color: #ffffff;
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
   label {
@@ -36,7 +36,7 @@ form {
       padding: 0.5rem 0.75rem;
       font-size: 0.95rem;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       background-color: #fff;
       color: #333;
       transition: border-color 0.2s ease;
@@ -65,7 +65,7 @@ form {
     button {
       padding: 0.6rem 1.2rem;
       font-size: 14px;
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       border: none;
       cursor: pointer;
       transition: background-color 0.3s ease;

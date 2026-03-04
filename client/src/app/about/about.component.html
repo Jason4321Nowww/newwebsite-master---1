@@ -1,9 +1,7 @@
-<!-- //Don't forget to make this translatable. This entire section belongs on a
-separate page. Also things don't have to look exactly the same like bkps.ch -->
 <div class="about-container">
   <div class="about-container">
-    <h1>About us</h1>
-    <h3><a href="#">Chairman</a></h3>
+    <h1 class="scroll-reveal">{{ langService.t('about.aboutUs') }}</h1>
+    <h3><a href="#">{{ langService.t('about.chairman') }}</a></h3>
 
     <div class="profile-img">
       <img src="/assets/images/jasonBanyer_Kreis.png" alt="Jason Banyer" />
@@ -12,37 +10,31 @@ separate page. Also things don't have to look exactly the same like bkps.ch -->
     <h2>Jason Banyer</h2>
 
     <p>
-      <strong>Position:</strong><br />
-      Party Education<br />
-      International Relations<br />
-      Actor
+      <strong>{{ langService.t('about.position') }}</strong><br />
+      {{ langService.t('about.jasonPosition1') }}<br />
+      {{ langService.t('about.jasonPosition2') }}<br />
+      {{ langService.t('about.jasonPosition3') }}
     </p>
 
     <p>
-      <strong>Occupation:</strong><br />
-      Information technology
+      <strong>{{ langService.t('about.occupation') }}</strong><br />
+      {{ langService.t('about.jasonOccupation') }}
     </p>
 
     <p>
-      <strong>Hobbies:</strong><br />
-      Music, YouTube, Friends, Reading, Cooking and Dancing
+      <strong>{{ langService.t('about.hobbies') }}</strong><br />
+      {{ langService.t('about.jasonHobbies') }}
     </p>
 
     <p class="motivation">
-      <strong>Motivation:</strong><br />
-      <em>
-        As a patriot I see it as a duty to serve my country and my people.<br />
-        Switzerland has given me a lot and now I want to give back
-      </em>
+      <strong>{{ langService.t('about.motivation') }}</strong><br />
+      <em>{{ langService.t('about.jasonMotivation') }}</em>
     </p>
   </div>
 
-  <!-- Existing About Us Content (Jason Banyer) -->
-  <!-- ... -->
+  <h2 class="section-title scroll-reveal">{{ langService.t('about.boardOfDirectors') }}</h2>
 
-  <h2 class="section-title">Board of Directors</h2>
-
-  <div class="board-container">
+  <div class="board-container stagger">
     <!-- Grisha -->
     <div class="member-card">
       <div class="profile-img">
@@ -53,24 +45,20 @@ separate page. Also things don't have to look exactly the same like bkps.ch -->
       </div>
       <h3>Grisha Schuhmacher</h3>
       <p>
-        <strong>Position:</strong><br />
-        Mediadirector
+        <strong>{{ langService.t('about.position') }}</strong><br />
+        {{ langService.t('about.grishaPosition') }}
       </p>
       <p>
-        <strong>Occupation:</strong><br />
-        Information technology
+        <strong>{{ langService.t('about.occupation') }}</strong><br />
+        {{ langService.t('about.grishaOccupation') }}
       </p>
       <p>
-        <strong>Hobbies:</strong><br />
-        Programming, technology, debating, project help
+        <strong>{{ langService.t('about.hobbies') }}</strong><br />
+        {{ langService.t('about.grishaHobbies') }}
       </p>
       <p class="motivation">
-        <strong>Motivation:</strong><br />
-        <em
-          >As a humanitarian, I see it as my duty to,<br />
-          to help as many people as possible and to care for our
-          environment.</em
-        >
+        <strong>{{ langService.t('about.motivation') }}</strong><br />
+        <em>{{ langService.t('about.grishaMotivation') }}</em>
       </p>
     </div>
 
@@ -84,27 +72,27 @@ separate page. Also things don't have to look exactly the same like bkps.ch -->
       </div>
       <h3>Stephanie Beere</h3>
       <p>
-        <strong>Position:</strong><br />
-        Action Organiser<br />Actor
+        <strong>{{ langService.t('about.position') }}</strong><br />
+        {{ langService.t('about.stephaniePosition1') }}<br />{{ langService.t('about.stephaniePosition2') }}
       </p>
       <p>
-        <strong>Occupation:</strong><br />
-        Information technology
+        <strong>{{ langService.t('about.occupation') }}</strong><br />
+        {{ langService.t('about.stephanieOccupation') }}
       </p>
       <p>
-        <strong>Hobbies:</strong><br />
-        Painting, Series, bicycle
+        <strong>{{ langService.t('about.hobbies') }}</strong><br />
+        {{ langService.t('about.stephanieHobbies') }}
       </p>
       <p class="motivation">
-        <strong>Motivation:</strong><br />
-        <em>We need more working woman in politics.</em>
+        <strong>{{ langService.t('about.motivation') }}</strong><br />
+        <em>{{ langService.t('about.stephanieMotivation') }}</em>
       </p>
     </div>
   </div>
 
-  <div class="supporters-container">
-    <h2 class="title">Wertvolle Unterstützer</h2>
-    <div class="grid">
+  <div class="supporters-container scroll-reveal">
+    <h2 class="title">{{ langService.t('about.valuableSupporters') }}</h2>
+    <div class="grid stagger">
       @for (supporter of supporters; track supporter.name) {
       <div class="supporter-card">
         <img [src]="supporter.image" [alt]="supporter.name" class="avatar" />
@@ -115,7 +103,7 @@ separate page. Also things don't have to look exactly the same like bkps.ch -->
   </div>
 
   <div class="social-media-section">
-    <h2 class="title">Social Media</h2>
+    <h2 class="title">{{ langService.t('about.socialMedia') }}</h2>
     <div class="icons">
       <a href="https://www.tiktok.com" target="_blank" rel="noopener">
         <img src="/assets/images/tiktoklogo.webp" alt="TikTok" />

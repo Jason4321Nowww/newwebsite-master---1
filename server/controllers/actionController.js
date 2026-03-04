@@ -4,9 +4,9 @@ const Action = require('../models/Action');
 const createAction = async (req, res) => {
   try {
     const mediaPaths = req.files?.map(file => `/uploads/actions/${file.filename}`) || [];
-    const { title, description } = req.body;
+    const { title, title_it, title_fr, title_en, description, description_it, description_fr, description_en } = req.body;
 
-      const newAction = new Action({ title, description: description, media: mediaPaths });
+    const newAction = new Action({ title, title_it, title_fr, title_en, description, description_it, description_fr, description_en, media: mediaPaths });
     const saved = await newAction.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -39,9 +39,9 @@ const getActionById = async (req, res) => {
 const updateAction = async (req, res) => {
   try {
     const mediaPaths = req.files?.map(file => `/uploads/actions/${file.filename}`) || [];
-    const { title, description } = req.body;
+    const { title, title_it, title_fr, title_en, description, description_it, description_fr, description_en } = req.body;
 
-    const updateData = { title, description }
+    const updateData = { title, title_it, title_fr, title_en, description, description_it, description_fr, description_en };
 
     if (mediaPaths.length) {
       updateData.$push = { media: { $each: mediaPaths } };

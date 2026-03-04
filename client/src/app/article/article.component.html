@@ -1,7 +1,7 @@
 <div class="article-detail-container" *ngIf="article">
   <div class="header-inline">
     <div class="text-info">
-      <h1>{{ article.title }}</h1>
+      <h1>{{ langService.getField(article, 'title') }}</h1>
 
       <!-- Date moved above author -->
       <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>
@@ -11,19 +11,22 @@
      
 
 <div class="body">
-  <ng-container *ngFor="let block of article.body">
-
-    <img 
-      *ngIf="block.type === 'image'"
-      [src]="'http://localhost:5000' + block.url"
-      style="width:auto; height: 500px; margin: 1rem 0; border-radius:8px;
-      object-fit:contain; "
-    />
-
-    <p *ngIf="block.type === 'text'" 
-       [innerHTML]="convertToParagraphs(block.value)">
-    </p>
-
+  <!-- DE: block-based body -->
+  <ng-container *ngIf="langService.current === 'de'">
+    <ng-container *ngFor="let block of article.body">
+      <img *ngIf="block.type === 'image'" [src]="'http://localhost:5000' + block.url" class="article-body-image" />
+      <p *ngIf="block.type === 'text'" [innerHTML]="convertToParagraphs(block.value)"></p>
+    </ng-container>
+  </ng-container>
+  <!-- IT/FR/EN: show translated body string if available, else fall back to DE blocks -->
+  <ng-container *ngIf="langService.current !== 'de'">
+    <div *ngIf="getTranslatedBody()" [innerHTML]="getTranslatedBody()"></div>
+    <ng-container *ngIf="!getTranslatedBody()">
+      <ng-container *ngFor="let block of article.body">
+        <img *ngIf="block.type === 'image'" [src]="'http://localhost:5000' + block.url" class="article-body-image" />
+        <p *ngIf="block.type === 'text'" [innerHTML]="convertToParagraphs(block.value)"></p>
+      </ng-container>
+    </ng-container>
   </ng-container>
 </div>
 

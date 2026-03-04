@@ -1,12 +1,12 @@
 <div class="page-container">
-  <h1>Alle Beiträge</h1>
+  <h1 class="scroll-reveal">{{ langService.t('articles.title') }}</h1>
   <div class="search-container">
-    <input [(ngModel)]="searchTerm" type="text" placeholder="Suchen..." />
+    <input [(ngModel)]="searchTerm" type="text" [placeholder]="langService.t('articles.search')" />
     <!-- <span class="search-icon">🔍</span> -->
      <mat-icon class="search-icon">search</mat-icon>
   </div>
 
- <div class="article-grid">
+ <div class="article-grid stagger">
   <div class="article-card"
        *ngFor="let article of filteredArticles"
        (click)="openArticle(article.id)">
@@ -21,7 +21,7 @@
     </div>
     
 
-    <h2>{{ article.title }}</h2>
+    <h2>{{ langService.getField(article, 'title') }}</h2>
 
     <!-- TEXT PREVIEW -->
     <div class="body">

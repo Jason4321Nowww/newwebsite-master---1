@@ -21,16 +21,19 @@
 }
 
 .slider-item {
-  display: none;
+  display: block;
+  opacity: 0;
+  pointer-events: none;
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
+  transition: opacity 0.9s ease-in-out;
 
   &.active {
-    display: block;
-    animation: fade 1s ease-in-out;
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 
@@ -48,9 +51,8 @@
   overflow: hidden;
 }
 .image-wrapper img {
- object-fit: fill;
- 
- }
+  object-fit: cover;
+}
 
 
 .caption {
@@ -64,29 +66,33 @@
   text-shadow: 2px 2px 8px black;
   // background-color: rgba(0, 0, 0, 0.3);
   padding: 0.6rem 1.2rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
+  animation: enterUp 0.7s 0.4s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 .nav-button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 1.3rem;
-  background-color: transparent;
+  font-size: 1.4rem;
+  background-color: rgba(0, 0, 0, 0.3);
   color: white;
   border: none;
-  padding: 2rem;
+  padding: 0.9rem 1.1rem;
+  animation: enterFade 0.6s 0.2s ease both;
   cursor: pointer;
   z-index: 2;
- 
-}
-.nav-button.prev {
-  left: 0;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.55);
+    transform: translateY(-50%) scale(1.08);
+  }
 }
 
-.nav-button.next {
-  right: 0;
-}
+.nav-button.prev { left: 0.5rem; }
+.nav-button.next { right: 0.5rem; }
 
 
 .indicator-wrapper {
@@ -99,14 +105,20 @@
 }
 
 .indicator {
-  width: 40px;
-  height: 3px;
+  width: 28px;
+  height: 4px;
   background-color: rgba(255, 255, 255, 0.4);
-  border-radius: 5px;
-  transition: background-color 0.3s;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: width 0.35s ease, background-color 0.35s ease;
 
   &.active {
+    width: 48px;
     background-color: white;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.7);
   }
 }
 
@@ -129,25 +141,11 @@
   width: 100%;
 }
 
-.slider-item {
-  display: none;
-  width: 100vw;
-  height: 82%;
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  &.active {
-    display: block;
-    animation: fade 1s ease-in-out;
-  }
-}
-
 .media {
   width: 100%;
-  height: 41vh;
+  height: 50vh;
   object-fit: cover;
-   background-color: black;  
+  background-color: black;
 }
 
 .caption {
@@ -159,20 +157,7 @@
   font-size: 1.2rem;
   font-weight: bold;
   text-shadow: 2px 2px 8px black;
-  // background-color: rgba(0, 0, 0, 0.3);
   padding: 0.6rem 1.2rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
 }
-
-
-  
-}
-
-@keyframes fade {
-  from {
-    opacity: 0.5;
-  }
-  to {
-    opacity: 1;
-  }
 }

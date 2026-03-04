@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
- const {authMiddleware} = require('../middlewares/authMiddleware');
+const { authMiddleware, optionalAuthMiddleware } = require('../middlewares/authMiddleware');
 const {getEvents,       getPublicEvents,
    getAllEventsForAdmin, createEvent, updateEvent, deleteEvent, toggleAttendance} = require('../controllers/eventController');
 const uploadEvent = require('../middlewares/uploadEvent');
@@ -13,7 +13,7 @@ router.delete('/:id',  deleteEvent);
 router.post('/attend', toggleAttendance); // Attend/unattend
 router.get('/public', getPublicEvents); // no login needed
 
-router.get('/events', getEvents); // no login needed
+router.get('/events', optionalAuthMiddleware, getEvents); // role-filtered
 
 
 module.exports = router;

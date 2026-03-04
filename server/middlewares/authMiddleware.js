@@ -47,4 +47,22 @@ const adminMiddleware = async (req, res, next) => {
 };
 
 
-module.exports = { authMiddleware, adminMiddleware };
+// Does not reject if no token — sets req.user = null for unauthenticated requests
+const optionalAuthMiddleware = async (req, res, next) => {
+  const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    req.user = user || null;
+    next();
+  } catch (err) {
+    req.user = null;
+    next();
+  }
+};
+
+module.exports = { authMiddleware, adminMiddleware, optionalAuthMiddleware };

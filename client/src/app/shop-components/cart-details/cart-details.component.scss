@@ -71,7 +71,7 @@
           width: 60px;
           height: auto;
           margin-right: 1rem;
-          border-radius: 6px;
+          border-radius: var(--radius-md);
           background: var(--bg-secondary);
           transition: background-color 0.3s ease-in-out;
 
@@ -113,7 +113,7 @@
           font-size: 1.2rem;
           font-weight: bold;
           cursor: pointer;
-          border-radius: 6px;
+          border-radius: var(--radius-md);
           display: flex;
           align-items: center;
           justify-content: center;
@@ -173,7 +173,7 @@
   .btn {
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.2s ease-in-out;
@@ -210,11 +210,12 @@
       }
     }
   }
-}
+  }
 
-.stock-warning {
-  color: #f44336;
-  font-size: 0.85rem;
-  margin-top: 0.25rem;
-  font-weight: 500;
+  .stock-warning {
+    color: #f44336;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+    font-weight: 500;
+  }
 }

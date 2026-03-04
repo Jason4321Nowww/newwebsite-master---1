@@ -1,0 +1,19 @@
+<div class="lang-picker-row">
+  <span class="lang-label-text">Language:</span>
+  <div class="lang-custom-select" [class.open]="isOpen" (click)="isOpen = !isOpen">
+    <div class="lang-selected">
+      <img [src]="'assets/images/flags/' + current.flagFile" [alt]="current.label" class="flag-img" />
+      <span>{{ current.label }}</span>
+      <span class="lang-arrow">▾</span>
+    </div>
+    <div class="lang-options" *ngIf="isOpen">
+      <div class="lang-option"
+           *ngFor="let lang of langs"
+           [class.active]="activeLang === lang.code"
+           (click)="select(lang.code, $event)">
+        <img [src]="'assets/images/flags/' + lang.flagFile" [alt]="lang.label" class="flag-img" />
+        <span>{{ lang.label }}</span>
+      </div>
+    </div>
+  </div>
+</div>

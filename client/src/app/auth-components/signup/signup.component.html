@@ -1,41 +1,75 @@
 <div class="container">
   <form [formGroup]="signupForm" (ngSubmit)="signup()">
-    <h2 class="form-title">Create Your Account</h2>
+    <h2 class="form-title">{{ langService.t('signup.createAccount') }}</h2>
 
     <!-- Username Field -->
     <div class="input-group" [ngClass]="{ 'error': signupForm.get('username')?.invalid && signupForm.get('username')?.touched }">
       <mat-icon>person</mat-icon>
-      <input formControlName="username" placeholder="Username" />
+      <input formControlName="username" [placeholder]="langService.t('signup.usernamePlaceholder')" />
     </div>
     <div class="error-msg" *ngIf="signupForm.get('username')?.invalid && signupForm.get('username')?.touched">
-      Username is required (min 3 characters).
+      {{ langService.t('signup.usernameRequired') }}
     </div>
 
     <!-- Password Field -->
     <div class="input-group" [ngClass]="{ 'error': signupForm.get('password')?.invalid && signupForm.get('password')?.touched }">
       <mat-icon>lock</mat-icon>
-      <input formControlName="password" type="password" placeholder="Password" />
+      <input formControlName="password" type="password" [placeholder]="langService.t('signup.passwordPlaceholder')" />
     </div>
     <div class="error-msg" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
-      Password must be at least 6 characters.
+      {{ langService.t('signup.passwordRequired') }}
     </div>
     <!-- Registration Key Field -->
 <div class="input-group" [ngClass]="{ 'error': signupForm.get('registrationKey')?.invalid && signupForm.get('registrationKey')?.touched }">
   <mat-icon>vpn_key</mat-icon>
-  <input formControlName="registrationKey" placeholder="Registration Key" />
+  <input formControlName="registrationKey" [placeholder]="langService.t('signup.regKeyPlaceholder')" />
 </div>
 <div class="error-msg" *ngIf="signupForm.get('registrationKey')?.invalid && signupForm.get('registrationKey')?.touched">
-  Registration Key is required and must be 4 letters or numbers.
+  {{ langService.t('signup.regKeyRequired') }}
 </div>
 
 
+    <!-- Location / Branch Field -->
+    <div class="input-group">
+      <mat-icon>location_on</mat-icon>
+      <select formControlName="userLocation">
+        <option value="">{{ langService.t('signup.selectCanton') }}</option>
+        <option value="AG">Aargau</option>
+        <option value="AI">Appenzell Innerrhoden</option>
+        <option value="AR">Appenzell Ausserrhoden</option>
+        <option value="BE">Bern</option>
+        <option value="BL">Basel-Landschaft</option>
+        <option value="BS">Basel-Stadt</option>
+        <option value="FR">Fribourg</option>
+        <option value="GE">Genf</option>
+        <option value="GL">Glarus</option>
+        <option value="GR">Graubünden</option>
+        <option value="JU">Jura</option>
+        <option value="LU">Luzern</option>
+        <option value="NE">Neuenburg</option>
+        <option value="NW">Nidwalden</option>
+        <option value="OW">Obwalden</option>
+        <option value="SG">St. Gallen</option>
+        <option value="SH">Schaffhausen</option>
+        <option value="SO">Solothurn</option>
+        <option value="SZ">Schwyz</option>
+        <option value="TG">Thurgau</option>
+        <option value="TI">Tessin</option>
+        <option value="UR">Uri</option>
+        <option value="VD">Waadt</option>
+        <option value="VS">Wallis</option>
+        <option value="ZG">Zug</option>
+        <option value="ZH">Zürich</option>
+      </select>
+    </div>
+
     <!-- Submit Button -->
-    <button type="submit" [disabled]="signupForm.invalid">Register</button>
+    <button type="submit" [disabled]="signupForm.invalid">{{ langService.t('signup.register') }}</button>
 
     <!-- Sign In Link -->
     <p class="signin-link">
-      Already have an account?
-      <a routerLink="/signin">Sign In</a>
+      {{ langService.t('signup.alreadyHaveAccount') }}
+      <a routerLink="/signin">{{ langService.t('signup.signIn') }}</a>
     </p>
   </form>
 </div>

@@ -6,13 +6,21 @@ export interface Attendee {
 export interface Event {
   id: string;                      // Provided by backend
   title: string;
+  title_it?: string;
+  title_fr?: string;
+  title_en?: string;
   image?: string;
   description?: string;
+  description_it?: string;
+  description_fr?: string;
+  description_en?: string;
   isMandatory: boolean;
   eventDate: string;              // ISO format from backend
   date: string;                   // Legacy or optional use
-  repeat: 'none' | 'weekly' | 'bi-weekly' | 'monthly' | 'annually';
-  visibilityLevel: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+  repeat: 'none' | 'weekly' | 'biweekly' | 'monthly' | 'annually';
+  repeatEveryWeeks?: number;
+  eventType?: 'oeffentlich' | 'nationalversammlung' | 'lokalversammlung' | 'regionalversammlung' | 'rv_zusammenkunft' | 'lv_zusammenkunft' | 'vorstand' | 'vorsitzende' | 'admin';
+  visibilityLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   eventLocation: string;
   attendees: Attendee[];
   isActive?: boolean;

@@ -23,11 +23,13 @@ const signup = async (req, res) => {
     if (existing) return res.status(400).json({ message: 'Username already exists' });
 
     const hashedPassword = await argon2.hash(password, { type: argon2.argon2id });
-    const newUser = await User.create({ 
+    const newUser = await User.create({
       username,
-       password: hashedPassword,
+      password: hashedPassword,
       userLocation: userLocation || '',
-      });
+      roleLevel: 7,    // Oeffentlich by default — admin must activate and promote
+      isActive: false, // Must be activated by admin before login is allowed
+    });
 
     const token = jwt.sign(
       { id: newUser._id, username: newUser.username },
@@ -58,6 +60,10 @@ const signin = async (req, res) => {
 
     const valid = await argon2.verify(user.password, password);
     if (!valid) return res.status(401).json({ message: 'Invalid credentials' });
+
+    if (!user.isActive) {
+      return res.status(403).json({ message: 'Your account is not yet activated. Please contact an administrator.' });
+    }
 
     const token = jwt.sign(
       { id: user._id, username: user.username },

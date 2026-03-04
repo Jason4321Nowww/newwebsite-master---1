@@ -1,21 +1,21 @@
 /* admin-articles.component.scss */
 .admin-page { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
-.article-form { background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.article-form { background: #fff; padding: 1rem; border-radius: var(--radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
 .row { margin-bottom: .75rem; display:flex; flex-direction:column; }
-input, textarea { padding: .5rem; border: 1px solid #ddd; border-radius: 4px; }
+input, textarea { padding: .5rem; border: 1px solid #ddd; border-radius: var(--radius-sm); }
 .blocks { margin-top: 1rem; }
-.block { border: 1px dashed #e3e3e3; padding: .75rem; margin-bottom: .5rem; border-radius: 6px; background: #fafafa; }
+.block { border: 1px dashed #e3e3e3; padding: .75rem; margin-bottom: .5rem; border-radius: var(--radius-md); background: #fafafa; }
 .image-input { display:flex; gap: .75rem; align-items:center; }
-.preview img { width: 160px; height: auto; border-radius: 6px; object-fit:cover; }
+.preview img { width: 160px; height: auto; border-radius: var(--radius-md); object-fit:cover; }
 .form-actions { margin-top: 1rem; display:flex; gap: .5rem; }
 .article-list { margin-top: 1.5rem; }
-.article-card { padding: .75rem; background:#fff; border-radius:6px; margin-bottom:.8rem; box-shadow:0 1px 6px rgba(0,0,0,0.03); }
+.article-card { padding: .75rem; background:#fff; border-radius:var(--radius-lg); margin-bottom:.8rem; box-shadow:0 1px 6px rgba(0,0,0,0.03); }
 .preview-body p { margin: .5rem 0; }
 .preview-body img { max-width: 200px; display:block; margin: .5rem 0; }
 /* General Button Style */
 button {
   padding: 0.55rem 1.1rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   font-size: 0.95rem;
   font-weight: 600;
   border: none;
@@ -85,7 +85,7 @@ button {
 textarea {
     padding: 10px;
   font-size: 1rem;
-  border-radius: 6px;
+  border-radius: var(--radius-md);
   border: 1px solid #ccc;
   margin-top: 0.3rem;
   width: 100%;

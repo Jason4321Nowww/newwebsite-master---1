@@ -2,25 +2,41 @@
   <h2>📅 Admin Event Panel</h2>
 
   <form [formGroup]="eventForm" (ngSubmit)="editingEventId ? updateEventSubmit() : createEvent()" class="event-form">
-    <label>Title: <input formControlName="title" type="text" required /></label>
 
-   <label class="full-width">
-  Description:
-  <textarea
-    formControlName="description"
-    rows="3"
-    placeholder="Enter event description"
-    (input)="autoGrow($event)"
-    #descriptionTextarea
-  ></textarea>
-</label>
+    <!-- Language + Title on the same row (2:8) -->
+    <div class="full-width title-lang-row">
+      <div class="lang-section">
+        <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+      </div>
+      <div class="title-section">
+        <label *ngIf="activeLang === 'de'">Title (DE): <input formControlName="title" type="text" required /></label>
+        <label *ngIf="activeLang === 'it'">Title (IT): <input formControlName="title_it" type="text" /></label>
+        <label *ngIf="activeLang === 'fr'">Title (FR): <input formControlName="title_fr" type="text" /></label>
+        <label *ngIf="activeLang === 'en'">Title (EN): <input formControlName="title_en" type="text" /></label>
+      </div>
+    </div>
 
+    <label *ngIf="activeLang === 'de'" class="full-width">
+      Description (DE):
+      <textarea formControlName="description" rows="3" placeholder="Enter event description (DE)" (input)="autoGrow($event)" #descriptionTextarea></textarea>
+    </label>
+    <label *ngIf="activeLang === 'it'" class="full-width">
+      Description (IT):
+      <textarea formControlName="description_it" rows="3" placeholder="Enter event description (IT)" (input)="autoGrow($event)"></textarea>
+    </label>
+    <label *ngIf="activeLang === 'fr'" class="full-width">
+      Description (FR):
+      <textarea formControlName="description_fr" rows="3" placeholder="Enter event description (FR)" (input)="autoGrow($event)"></textarea>
+    </label>
+    <label *ngIf="activeLang === 'en'" class="full-width">
+      Description (EN):
+      <textarea formControlName="description_en" rows="3" placeholder="Enter event description (EN)" (input)="autoGrow($event)"></textarea>
+    </label>
 
-   <label class="full-width">
-  Image:
-  <input type="file" (change)="onFileSelected($event)" />
-</label>
-
+    <label class="full-width">
+      Image:
+      <input #fileInput type="file" (change)="onFileSelected($event)" />
+    </label>
 
     <label>Event Date: <input formControlName="eventDate" type="date" required /></label>
 
@@ -32,16 +48,22 @@
     </label>
 
     <label>
-      Visibility Level:
-      <select formControlName="visibilityLevel">
-        <option *ngFor="let option of visibilityOptions" [value]="option.value">
+      Repeat every N weeks:
+      <input formControlName="repeatEveryWeeks" type="number" min="0" placeholder="0 = no repeat" />
+    </label>
+
+    <label>
+      Event Type:
+      <select formControlName="eventType">
+        <option *ngFor="let option of eventTypeOptions" [value]="option.value">
           {{ option.label }}
         </option>
       </select>
     </label>
-      <label>
-      Event Location:
-      <select formControlName="eventLocation" >
+
+    <label>
+      Event Location (Kanton):
+      <select formControlName="eventLocation">
         <option *ngFor="let location of locationOptions" [value]="location.value">
           {{ location.label }}
         </option>
@@ -52,66 +74,63 @@
       <input type="checkbox" formControlName="isMandatory" /> Mandatory
     </label>
 
-    <button type="submit" class="full-width" [disabled]="eventForm.invalid">
+    <p *ngIf="formError" class="form-error">{{ formError }}</p>
+
+    <button type="submit" class="full-width" [disabled]="eventForm.invalid || (!editingEventId && !selectedFile)">
       {{ editingEventId ? 'Update Event' : 'Create Event' }}
     </button>
 
     <button type="button" class="cancel-button" *ngIf="editingEventId" (click)="cancelEdit()">Cancel</button>
   </form>
 
-  
+
   <div class="events-table" *ngIf="events.length > 0">
-  <h3><mat-icon>folder</mat-icon> Existing Events ({{ filteredEvents.length }})</h3>
+    <h3><mat-icon>folder</mat-icon> Existing Events ({{ filteredEvents.length }})</h3>
 
-  <!-- 🔽 Filter dropdown by user Level -->
-  <div class="filter-controls">
-    <label for="filter">Filter by Visibility Level:</label>
-   <select id="filter" name="filter" [(ngModel)]="selectedVisibilityFilter" (change)="applyFilter()">
-     
-      <option *ngFor="let option of visibilityOptions" [value]="option.value.toString()">
-        {{ option.label }}
-      </option>
-    </select>
-    <!-- Filter by event Location -->
-       <label for="filter">Filter by Event Location:</label>
-   <select id="filter" name="filter" [(ngModel)]="selectedLocationFilter" (change)="applyFilterByLocation()">
-      <!-- <option value="0">Admin</option> -->
-      <option *ngFor="let location of locationOptions" [value]="location.value.toString()">
-        {{ location.label }}
-      </option>
-    </select>
+    <div class="filter-controls">
+      <label for="typeFilter">Filter by Event Type:</label>
+      <select id="typeFilter" name="typeFilter" [(ngModel)]="selectedEventTypeFilter" (change)="applyFilter()">
+        <option value="all">— All —</option>
+        <option *ngFor="let option of eventTypeOptions" [value]="option.value">
+          {{ option.label }}
+        </option>
+      </select>
+
+      <label for="locationFilter">Filter by Location:</label>
+      <select id="locationFilter" name="locationFilter" [(ngModel)]="selectedLocationFilter" (change)="applyFilterByLocation()">
+        <option *ngFor="let location of locationOptions" [value]="location.value">
+          {{ location.label }}
+        </option>
+      </select>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Date</th>
+            <th>Attendees</th>
+            <th>Event Type</th>
+            <th>Location</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of filteredEvents">
+            <td>{{ event.title }}</td>
+            <td>{{ event.eventDate | date: 'longDate' }}</td>
+            <td>{{ event.attendees.length || 0 }}</td>
+            <td>{{ getEventTypeLabel(event.eventType || '') }}</td>
+            <td>{{ event.eventLocation || '—' }}</td>
+            <td>
+              <mat-icon class="text-primary" (click)="editEvent(event)">edit</mat-icon>
+              <mat-icon class="text-danger" (click)="deleteEvent(event.id!)">delete</mat-icon>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
-
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Date</th>
-          <th>Attendees</th>
-          <!-- <th>Mandatory</th> -->
-          <th>Visibility</th>
-          <th>Event Location</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let event of filteredEvents">
-          <td>{{ event.title }}</td>
-          <td>{{ event.eventDate | date: 'longDate' }}</td>
-          <td>{{ event.attendees.length || 0 }}</td>
-          <!-- <td>{{ event.isMandatory ? 'Yes' : 'No' }}</td> -->
-          <td>{{ getVisibilityLabel(event.visibilityLevel) }}</td>
-          <td>{{event.eventLocation}}</td>
-          <td>
-            <mat-icon class="text-primary" (click)="editEvent(event)">edit</mat-icon>
-            <mat-icon class="text-danger" (click)="deleteEvent(event.id!)">delete</mat-icon>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
 
 </div>

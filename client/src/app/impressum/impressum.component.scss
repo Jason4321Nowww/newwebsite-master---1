@@ -1,0 +1,50 @@
+main {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family: Arial, sans-serif;
+  color: var(--text-primary);
+  line-height: 1.7;
+  box-sizing: border-box;
+
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-primary);
+
+    @media (max-width: 480px) {
+      font-size: 1.5rem;
+    }
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--text-primary);
+
+    @media (max-width: 480px) {
+      font-size: 1.1rem;
+    }
+  }
+
+  p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    word-break: break-word;
+
+    @media (max-width: 480px) {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 1rem;
+    margin: 1.5rem auto;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0 0.75rem;
+    margin: 1rem auto;
+  }
+}

@@ -45,7 +45,7 @@
             (ngModelChange)="onRoleChange($event, user)"
             class="role-dropdown"
           >
-            <option *ngFor="let role of roleOptions" [value]="role.value">
+            <option *ngFor="let role of roleOptions" [ngValue]="role.value">
               {{ role.label }}
             </option>
           </select>

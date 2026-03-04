@@ -1,1 +1,22 @@
-<p>lang works!</p>
+<div class="lang-dropdown" [class.open]="isOpen">
+  <!-- Trigger button showing current language -->
+  <button class="lang-trigger" (click)="toggle()" type="button">
+    <img [src]="'assets/images/flags/' + current.flagFile" [alt]="current.label" class="lang-flag-img" />
+    <span class="lang-code">{{ current.code | uppercase }}</span>
+    <span class="lang-arrow">▾</span>
+  </button>
+
+  <!-- Dropdown menu -->
+  <div class="lang-menu" *ngIf="isOpen">
+    <button
+      *ngFor="let l of langs"
+      class="lang-option"
+      [class.active]="langService.current === l.code"
+      (click)="select(l.code)"
+      type="button"
+    >
+      <img [src]="'assets/images/flags/' + l.flagFile" [alt]="l.label" class="lang-flag-img" />
+      <span class="lang-label">{{ l.label }}</span>
+    </button>
+  </div>
+</div>

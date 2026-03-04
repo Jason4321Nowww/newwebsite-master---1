@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PressService } from '../services/press.service';
 import { PressRelease } from '../_models/press';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-press',
@@ -10,7 +11,7 @@ import { PressRelease } from '../_models/press';
 export class PressComponent implements OnInit {
   latestRelease: PressRelease | null = null;
 
-  constructor(private pressService: PressService) {}
+  constructor(private pressService: PressService, public langService: LanguageService) {}
 
   ngOnInit(): void {
     this.pressService.getAllReleases().subscribe(releases => {

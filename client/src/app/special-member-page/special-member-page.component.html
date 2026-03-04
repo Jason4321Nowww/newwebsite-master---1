@@ -1,24 +1,20 @@
 <div class="member-dashboard">
 
-  <h2 class="welcome-text">👋 Welcome back, {{ userName }}</h2>
+  <h2 class="welcome-text scroll-reveal">👋 {{ langService.t('member.welcomeBack') }}, {{ userName }}</h2>
 
-  <p class="sub-text">
-    Below are events for your rank and your location.
-  </p>
+  <p class="sub-text scroll-reveal">{{ langService.t('member.eventsForRank') }}</p>
 
-  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="loading">{{ langService.t('member.loading') }}</div>
 
   <div *ngIf="!loading && events.length === 0" class="no-events">
-    No events available for your rank and location.
+    {{ langService.t('member.noEvents') }}
   </div>
 
-  <div *ngFor="let event of events" class="event-card">
-    <h3>{{ event.title }}</h3>
-    <p><strong>Date:</strong> {{ event.eventDate | date:'longDate' }}</p>
-    <p><strong>Location:</strong> {{ event.eventLocation }}</p>
-<div [innerHTML]="truncateHtml(event.description, 125)"></div>
-
-
+  <div *ngFor="let event of events" class="event-card scroll-reveal">
+    <h3>{{ langService.getField(event, 'title') }}</h3>
+    <p><strong>{{ langService.t('member.date') }}</strong> {{ event.eventDate | date:'longDate' }}</p>
+    <p><strong>{{ langService.t('member.location') }}</strong> {{ event.eventLocation }}</p>
+    <div [innerHTML]="truncateHtml(langService.getField(event, 'description'), 125)"></div>
   </div>
 
 </div>

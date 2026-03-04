@@ -1,8 +1,8 @@
-import { filter } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { Event } from '../_models/event';
 import { AuthService } from '../services/auth.service';
 import { EventsService } from '../services/events.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-events',
@@ -12,49 +12,32 @@ import { EventsService } from '../services/events.service';
 export class EventsComponent implements OnInit {
   events: Event[] = [];
   loading = false;
-  userId: string = '';
   isLoggedIn = false;
-  roleLevel !: number;
+  roleLevel: number = 7; // default to Oeffentlich; read from localStorage after signin
   expandedEventIds = new Set<string>();
 
 
   constructor(
     private auth: AuthService,
-    private eventService: EventsService
+    private eventService: EventsService,
+    public langService: LanguageService
   ) {}
 
 ngOnInit(): void {
   this.loading = true;
   this.isLoggedIn = this.auth.isLoggedIn();
-
-  if (this.isLoggedIn) {
-    this.auth.getCurrentUser().subscribe({
-      next: (res:any) => {
-        this.roleLevel = res.user.roleLevel;
-        console.log('role level:', this.roleLevel);
-
-        // Now fetch events after roleLevel is known
-        this.eventService.getEvents().subscribe((events: any[]) => {
-          this.events = events.filter(e => e.visibilityLevel == this.roleLevel);
-          this.loading = false;
-        });
-      },
-      error: (err) => {
-        console.error('Error fetching user:', err);
-        // fallback: fetch only public events
-        this.eventService.getEvents().subscribe((events: any[]) => {
-          this.events = events.filter(e => e.visibilityLevel === 7);
-          this.loading = false;
-        });
-      }
-    });
-  } else {
-    // Not logged in → only show public events
-    this.eventService.getEvents().subscribe((events: any[]) => {
-      this.events = events.filter(e => e.visibilityLevel === 7);
+  this.roleLevel = Number(localStorage.getItem('roleLevel') ?? 7);
+  // Server filters events by role+location; client just renders what it receives
+  this.eventService.getEvents().subscribe({
+    next: (events: any[]) => {
+      this.events = events;
       this.loading = false;
-    });
-  }
+    },
+    error: (err) => {
+      console.error('Error fetching events:', err);
+      this.loading = false;
+    }
+  });
 }
 
 

@@ -20,12 +20,13 @@ import { AdminContactsComponent } from './admin-contacts/admin-contacts.componen
 import { AdminSignupComponent } from './admin-signup/admin-signup.component';
 import { AdminSigninComponent } from './admin-signin/admin-signin.component';
 import { AdminEmailComponent } from './admin-email/admin-email.component';
+import { AdminLangPickerComponent } from './admin-lang-picker/admin-lang-picker.component';
 
 
 @NgModule({
   declarations: [
-    AdminLayoutComponent, 
-   AdminInfobannerComponent, 
+    AdminLayoutComponent,
+   AdminInfobannerComponent,
    AdminEventsComponent,
     SidebarComponent,
     AdminArticlesComponent,
@@ -39,6 +40,7 @@ import { AdminEmailComponent } from './admin-email/admin-email.component';
     AdminSignupComponent,
     AdminSigninComponent,
     AdminEmailComponent,
+    AdminLangPickerComponent,
      SafePipe
   ],
   imports: [

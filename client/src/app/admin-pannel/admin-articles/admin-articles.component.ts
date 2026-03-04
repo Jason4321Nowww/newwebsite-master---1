@@ -17,12 +17,19 @@ export class AdminArticlesComponent implements OnInit,  AfterViewInit, AfterView
   filePreviews: Map<number, string> = new Map(); // blockIndex -> dataURL
   articles: any[] = [];
   editingArticleId: string | null = null;
+  activeLang: string = 'de';
 
   constructor(private fb: FormBuilder, public svc: ArticlesService) {
     this.articleForm = this.fb.group({
       title: ['', Validators.required],
+      title_it: [''],
+      title_fr: [''],
+      title_en: [''],
       author: [''],
-      blocks: this.fb.array([], Validators.required)
+      blocks: this.fb.array([], Validators.required),
+      body_it: [''],
+      body_fr: [''],
+      body_en: [''],
     });
   }
 
@@ -99,7 +106,16 @@ export class AdminArticlesComponent implements OnInit,  AfterViewInit, AfterView
 
   editArticle(article: any) {
     this.editingArticleId = article.id;
-    this.articleForm.patchValue({ title: article.title, author: article.author || '' });
+    this.articleForm.patchValue({
+      title: article.title,
+      title_it: article.title_it || '',
+      title_fr: article.title_fr || '',
+      title_en: article.title_en || '',
+      author: article.author || '',
+      body_it: article.body_it || '',
+      body_fr: article.body_fr || '',
+      body_en: article.body_en || '',
+    });
     // reset blocks
     while (this.blocks.length) this.blocks.removeAt(0);
     this.filesMap.clear();
@@ -157,8 +173,14 @@ export class AdminArticlesComponent implements OnInit,  AfterViewInit, AfterView
 
     const formData = new FormData();
     formData.append('title', this.articleForm.get('title')?.value);
+    formData.append('title_it', this.articleForm.get('title_it')?.value || '');
+    formData.append('title_fr', this.articleForm.get('title_fr')?.value || '');
+    formData.append('title_en', this.articleForm.get('title_en')?.value || '');
     formData.append('author', this.articleForm.get('author')?.value || '');
     formData.append('body', JSON.stringify(payloadBlocks));
+    formData.append('body_it', this.articleForm.get('body_it')?.value || '');
+    formData.append('body_fr', this.articleForm.get('body_fr')?.value || '');
+    formData.append('body_en', this.articleForm.get('body_en')?.value || '');
 
     // Append files in order of block indexes (server will map in-order to empty image blocks)
     Array.from(this.filesMap.keys()).sort((a,b)=>a-b).forEach(idx => {

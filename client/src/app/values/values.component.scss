@@ -13,7 +13,7 @@
       width: 430px;
       height: auto;
       background-color: var(--card-bg);
-      border-radius: 10px;
+      border-radius: var(--radius-lg);
       box-shadow: 3px 5px 10px -2px var(--card-shadow);
       padding: 2rem;
       display: flex;
@@ -58,7 +58,7 @@
 
   div {
      padding: 20px;
-    border-radius: 5%;
+    border-radius: var(--radius-lg);
     box-shadow: 3px 5px 10px -2px var(--card-shadow);
     height: auto; // 👈 allow height to grow
     max-width: 100%; // 👈 prevent content from overflowing horizontally
@@ -71,11 +71,7 @@
 
   .arbeit {
     width: 300px;
-    background-color: var(--card-bg);
-    // Keep lightcoral in light mode, adjust for dark mode
-    @media (prefers-color-scheme: light) {
-      background-color: lightcoral;
-    }
+    background-color: lightcoral;
 
     @media (max-width: 830px) {
       width: 90%;
@@ -89,11 +85,7 @@
 
   .technologie {
     width: 250px;
-    background-color: var(--card-bg);
-    // Keep lightblue in light mode, adjust for dark mode
-    @media (prefers-color-scheme: light) {
-      background-color: lightblue;
-    }
+    background-color: lightblue;
 
     @media (max-width: 830px) {
       width: 90%;
@@ -108,11 +100,7 @@
 
   .umwelt {
     width: 300px;
-    background-color: var(--card-bg);
-    // Keep lightgreen in light mode, adjust for dark mode
-    @media (prefers-color-scheme: light) {
-      background-color: lightgreen;
-    }
+    background-color: lightgreen;
 
     @media (max-width: 830px) {
       width: 90%;

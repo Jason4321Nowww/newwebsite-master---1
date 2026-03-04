@@ -1,8 +1,8 @@
 <div class="faq-container">
 
- <h2 class="faq-title">Häufig gestellte Fragen</h2>
+ <h2 class="faq-title scroll-reveal">Häufig gestellte Fragen</h2>
 
-<mat-accordion class="faq-accordion" [ngClass]="{'accordion-expanded': isAnyPanelOpen()}" multi>
+<mat-accordion class="faq-accordion scroll-reveal" [ngClass]="{'accordion-expanded': isAnyPanelOpen()}" multi>
   <mat-expansion-panel *ngFor="let faq of faqs" [(expanded)]="faq.expanded" hideToggle>
     <mat-expansion-panel-header>
       <div class="faq-header-content">

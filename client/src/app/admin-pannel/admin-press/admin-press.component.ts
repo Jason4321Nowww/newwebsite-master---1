@@ -12,8 +12,15 @@ const html2pdf = require('html2pdf.js');
 })
 export class AdminPressComponent implements OnInit {
   title = '';
+  title_it = '';
+  title_fr = '';
+  title_en = '';
   content = '';
+  content_it = '';
+  content_fr = '';
+  content_en = '';
   image: File | null = null;
+  activeLang: string = 'de';
   email = '';
   pressReleases: PressRelease[] = [];
   selectedRelease: PressRelease | null = null;
@@ -45,14 +52,26 @@ export class AdminPressComponent implements OnInit {
 
   const formData = new FormData();
   formData.append('title', this.title);
+  formData.append('title_it', this.title_it || '');
+  formData.append('title_fr', this.title_fr || '');
+  formData.append('title_en', this.title_en || '');
   formData.append('content', this.contentWithBreaks);
+  formData.append('content_it', this.content_it.replace(/\n/g, '<br>') || '');
+  formData.append('content_fr', this.content_fr.replace(/\n/g, '<br>') || '');
+  formData.append('content_en', this.content_en.replace(/\n/g, '<br>') || '');
   formData.append('image', this.image);
 
   this.pressService.createRelease(formData).subscribe(() => {
     alert('✅ Press release saved');
     this.loadPressReleases();
     this.title = '';
+    this.title_it = '';
+    this.title_fr = '';
+    this.title_en = '';
     this.content = '';
+    this.content_it = '';
+    this.content_fr = '';
+    this.content_en = '';
     this.image = null;
   });
 }

@@ -1,19 +1,53 @@
 <main id="home-anchor">
-  <!-- Show only if activeBanner is present -->
-<div class="infoBanner" *ngIf="activeBanner">
-  <mat-icon class="info-icon">info</mat-icon>
-  {{ activeBanner.statement }}
-  <a *ngIf="activeBanner.link" [href]="activeBanner.link" target="_blank" class="learn-more-btn">
-    Learn More
-  </a>
-</div>
+  <!-- Info Banner -->
+  <div class="infoBanner scroll-reveal-left" *ngIf="activeBanner">
+    <mat-icon class="info-icon">info</mat-icon>
+    {{ langService.getField(activeBanner, 'statement') }}
+    <a *ngIf="activeBanner.link" [href]="activeBanner.link" target="_blank" class="learn-more-btn">
+      {{ langService.t('home.learnMore') }}
+    </a>
+  </div>
 
-
+  <!-- Hero Slider -->
   <app-titlescreen></app-titlescreen>
-  <app-values id="werte-anchor"></app-values>
-  <app-shorts-videoplayer></app-shorts-videoplayer>
-   <!-- <app-impressum id="impressum-anchor"></app-impressum> -->
-   <app-faq id="faq-anchor"></app-faq>
-  <app-todolist></app-todolist> 
+
+  <!-- Values -->
+  <app-values id="werte-anchor" class="scroll-reveal"></app-values>
+
+  <!-- Short Videos -->
+  <app-shorts-videoplayer class="scroll-reveal"></app-shorts-videoplayer>
+
+  <!-- Latest Articles -->
+  <section class="latest-articles scroll-reveal" *ngIf="latestArticles.length > 0">
+    <h2 class="section-title">{{ langService.t('home.latestArticles') }}</h2>
+
+    <div class="article-cards stagger">
+      <div
+        class="article-card"
+        *ngFor="let article of latestArticles"
+        (click)="openArticle(article.id)"
+        role="button"
+        tabindex="0"
+        (keyup.enter)="openArticle(article.id)"
+      >
+        <div class="article-card-image" *ngIf="getFirstImage(article)">
+          <img [src]="getFirstImage(article)" [alt]="langService.getField(article, 'title')" loading="lazy" />
+        </div>
+        <div class="article-card-content">
+          <h3 class="article-title">{{ langService.getField(article, 'title') }}</h3>
+          <p class="article-excerpt">{{ getExcerpt(article) }}</p>
+          <div class="article-meta">
+            <span class="article-author">{{ article.author }}</span>
+            <span class="article-date">{{ article.createdAt | date:'dd.MM.yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="all-articles-link">
+      <a [routerLink]="['/article-list']" class="btn-all-articles">{{ langService.t('home.allArticles') }}</a>
+    </div>
+  </section>
+
   <app-join-and-donate-popup></app-join-and-donate-popup>
 </main>

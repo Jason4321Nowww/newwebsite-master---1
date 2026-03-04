@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ShopService } from '../../services/shop.service';
 import { Product } from '../../_models/product';
 import { CartService } from '../../services/cart.service';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-shop',
@@ -11,7 +12,7 @@ import { CartService } from '../../services/cart.service';
 export class ShopComponent implements OnInit {
   products: Product[] = [];
 
-  constructor(private productService: ShopService, private cart: CartService) {}
+  constructor(private productService: ShopService, private cart: CartService, public langService: LanguageService) {}
 
   ngOnInit(): void {
     this.productService.getAllProducts().subscribe({

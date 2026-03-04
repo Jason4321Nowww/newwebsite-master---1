@@ -1,97 +1,47 @@
-<!-- //Not bad! Can you make it, that you have to swipe? Or can you at least //add an
-animation, maybe with css keyframes? Currently the user doesn't know //when the
-next video is selected. It just replaces it, without any animation. That's not
-good. //Also the first video currently autoplays. Don't make that it autoplays.
-//Also don't make it red. It doesn't suit the rest of the website. Maybe black,
-navy or gray. -->
-
+<!-- Portrait Video Carousel -->
 <div class="carousel1" *ngIf="portraitItems.length > 0">
-  <div class="carousel1-container">
-    <div class="carousel1-slide">
-      <!-- Left Video -->
-      <div
-        class="carousel1-item side"
-        (click)="selectVideo(getWrappedIndex(currentIndex - 1))"
-      >
-        <div class="clickable-overlay"></div>
-        <app-shorts-video
-          #videoFrame
-          [videoInfo]="portraitItems[getWrappedIndex(currentIndex - 1)]"
-          [isActive]="false"
-          [index]="getWrappedIndex(currentIndex - 1)"
-        ></app-shorts-video>
-      </div>
+  <div class="carousel1-wrapper">
 
-      <!-- Center Video -->
-      <div class="carousel1-item center">
-        <app-shorts-video
-          #videoFrame
-          [videoInfo]="portraitItems[currentIndex]"
-          [isActive]="true"
-           [index]="currentIndex"
-        ></app-shorts-video>
-      </div>
+    <button class="carousel-nav prev" (click)="prevPortrait()" type="button" aria-label="Previous video">&#10094;</button>
 
-      <!-- Right Video -->
-      <div
-        class="carousel1-item side"
-        (click)="selectVideo(getWrappedIndex(currentIndex + 1))"
-      >
-        <div class="clickable-overlay"></div>
-        <app-shorts-video
-          #videoFrame
-          [videoInfo]="portraitItems[getWrappedIndex(currentIndex + 1)]"
-          [isActive]="false"
-          [index]="getWrappedIndex(currentIndex + 1)"
-        ></app-shorts-video>
+    <div class="carousel1-stage" [style.width.px]="portraitStageWidth">
+      <div *ngFor="let slot of portraitSlots; let i = index"
+           class="portrait-slot"
+           [class.no-transition]="portraitNoTransition"
+           [class.is-center]="slot.isCenter"
+           [style.transform]="getPortraitTransform(i)"
+           [style.opacity]="getPortraitOpacity(i)"
+           [style.zIndex]="getPortraitZIndex(i)"
+           (click)="clickPortraitSlot(i)">
+        <app-shorts-video [videoInfo]="slot.video" [isActive]="slot.isCenter"></app-shorts-video>
       </div>
     </div>
+
+    <button class="carousel-nav next" (click)="nextPortrait()" type="button" aria-label="Next video">&#10095;</button>
+
   </div>
 </div>
 
-<!-- landscape videos view -->
- <!-- Landscape Video Carousel -->
+<!-- Landscape Video Carousel -->
 <div class="carousel2" *ngIf="landscapeItems.length > 0">
-  <div class="carousel2-container">
-    <div class="carousel2-slide">
-      <!-- Left Video -->
-      <div
-        class="carousel2-item side"
-        (click)="selectLandscapeVideo(getWrappedLandscapeIndex(landscapeCurrentIndex - 1))"
-      >
-        <div class="clickable-overlay"></div>
-        <app-shorts-video
-          #videoFrame
-          [videoInfo]="landscapeItems[getWrappedLandscapeIndex(landscapeCurrentIndex - 1)]"
-          [isActive]="false"
-          [index]="getWrappedLandscapeIndex(landscapeCurrentIndex - 1)"
-        ></app-shorts-video>
-      </div>
+  <div class="carousel2-wrapper">
 
-      <!-- Center Video -->
-      <div class="carousel2-item center">
-        <app-shorts-video
-          #videoFrame
-          [videoInfo]="landscapeItems[landscapeCurrentIndex]"
-          [isActive]="true"
-          [index]="landscapeCurrentIndex"
-        ></app-shorts-video>
-      </div>
+    <button class="carousel-nav prev" (click)="prevLandscape()" type="button" aria-label="Previous video">&#10094;</button>
 
-      <!-- Right Video -->
-      <div
-        class="carousel2-item side"
-        (click)="selectLandscapeVideo(getWrappedLandscapeIndex(landscapeCurrentIndex + 1))"
-      >
-        <div class="clickable-overlay"></div>
-        <app-shorts-video
-          #videoFrame
-          [videoInfo]="landscapeItems[getWrappedLandscapeIndex(landscapeCurrentIndex + 1)]"
-          [isActive]="false"
-          [index]="getWrappedLandscapeIndex(landscapeCurrentIndex + 1)"
-        ></app-shorts-video>
+    <div class="carousel2-stage" [style.width.px]="landscapeStageWidth">
+      <div *ngFor="let slot of landscapeSlots; let i = index"
+           class="landscape-slot"
+           [class.no-transition]="landscapeNoTransition"
+           [class.is-center]="slot.isCenter"
+           [style.transform]="getLandscapeTransform(i)"
+           [style.opacity]="getLandscapeOpacity(i)"
+           [style.zIndex]="getLandscapeZIndex(i)"
+           (click)="clickLandscapeSlot(i)">
+        <app-shorts-video [videoInfo]="slot.video" [isActive]="slot.isCenter"></app-shorts-video>
       </div>
     </div>
+
+    <button class="carousel-nav next" (click)="nextLandscape()" type="button" aria-label="Next video">&#10095;</button>
+
   </div>
 </div>
-

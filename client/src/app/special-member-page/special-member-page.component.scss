@@ -9,6 +9,15 @@
   color: var(--text-primary);
   background-color: var(--bg-primary);
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 1.5rem 1rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem 0.75rem;
+  }
 }
 
 /* ------------------------------
@@ -20,6 +29,14 @@
   color: var(--link-color);
   margin-bottom: 0.5rem;
   transition: color 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    font-size: 1.8rem;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.5rem;
+  }
 }
 
 .sub-text {
@@ -27,6 +44,11 @@
   color: var(--text-secondary);
   margin-bottom: 2rem;
   transition: color 0.3s ease-in-out;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
 }
 
 /* ------------------------------
@@ -39,6 +61,10 @@
   font-style: italic;
   font-size: 1.15rem;
   transition: color 0.3s ease-in-out;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 }
 
 /* ------------------------------
@@ -47,11 +73,22 @@
 .event-card {
   background: var(--card-bg);
   padding: 1.7rem;
-  border-radius: 14px;
+  border-radius: var(--radius-lg);
   margin-bottom: 1.7rem;
   box-shadow: 0px 4px 22px var(--card-shadow);
   border-left: 6px solid var(--link-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
+
+  @media (max-width: 768px) {
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+    border-radius: var(--radius-lg);
+  }
+
+  @media (max-width: 480px) {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
 
   /* Event Title */
   h3 {
@@ -60,6 +97,14 @@
     font-weight: 700;
     color: var(--link-color);
     transition: color 0.3s ease-in-out;
+
+    @media (max-width: 768px) {
+      font-size: 1.3rem;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 1.15rem;
+    }
   }
 
   /* Text sections */
@@ -68,6 +113,10 @@
     font-size: 1.05rem;
     color: var(--text-primary);
     transition: color 0.3s ease-in-out;
+
+    @media (max-width: 480px) {
+      font-size: 0.95rem;
+    }
 
     strong {
       color: var(--link-hover);

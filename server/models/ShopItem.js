@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
   name: { type: String, required: true },
+  name_it: { type: String, default: '' },
+  name_fr: { type: String, default: '' },
+  name_en: { type: String, default: '' },
   category: {
     type: String,
     enum: ['clothing', 'merchandise', 'educational', 'activism', 'other'],
@@ -15,6 +18,9 @@ const productSchema = new mongoose.Schema({
 // mediaType: { type: String, enum: ['image', 'video'], default: 'image' },
   price: { type: Number, required: true },
   description: { type: String, default: '' },
+  description_it: { type: String, default: '' },
+  description_fr: { type: String, default: '' },
+  description_en: { type: String, default: '' },
   isExternal: { type: Boolean, default: false },
   externalUrl: { type: String, default: null },     // ✅ Optional
   isActive: { type: Boolean, default: true },

@@ -26,7 +26,7 @@ export class AuthService {
 
   constructor(private router:Router, private snackBar: MatSnackBar ,private http:HttpClient) { }
 
-  signup(data: { username: string; password: string; registrationKey: string  }): Observable<AuthResponse> {
+  signup(data: { username: string; password: string; registrationKey: string; userLocation?: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/signup`, data);
   }
 

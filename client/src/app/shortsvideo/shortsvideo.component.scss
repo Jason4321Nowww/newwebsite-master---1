@@ -1,16 +1,10 @@
-// .videotitle {
-//   background-color: #1f1f1f; // dark gray/black tone
-//   font-size: 20px;
-//   text-align: center;
-//   color: white;
-//   width: 270px;
-//   height: 68px;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// }
+.short-container {
+  font-weight: bold;
+}
+
+// ── Title bar ────────────────────────────────────────────────
 .videotitle {
-  background-color: #1f1f1f; // dark gray/black tone
+  background-color: #1f1f1f;
   font-size: 16px;
   text-align: center;
   color: white;
@@ -19,24 +13,104 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 8px;
+  box-sizing: border-box;
+
+  &.landscape { width: 350px; height: 70px; }
+
+  @media (max-width: 768px) {
+    &.landscape { width: 260px; height: 60px; }
+  }
+  @media (max-width: 480px) {
+    width: 160px;
+    height: 80px;
+    font-size: 13px;
+    &.landscape { width: 200px; height: 55px; }
+  }
 }
 
-
-.short-container {
-  font-weight: bold;
-}
-
-.short-video {
-  height: 480px;
+// ── Thumbnail wrapper ─────────────────────────────────────────
+.thumbnail-wrap {
+  position: relative;
   width: 270px;
+  height: 480px;
+  cursor: pointer;
+  overflow: hidden;
+  background: #000;
+
+  &.landscape { width: 350px; height: 220px; }
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 356px;
+    &.landscape { width: 260px; height: 163px; }
+  }
+  @media (max-width: 480px) {
+    width: 160px;
+    height: 284px;
+    &.landscape { width: 200px; height: 125px; }
+  }
 }
+
+.thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+
+  .thumbnail-wrap:hover & {
+    transform: scale(1.04);
+  }
+}
+
+// ── YouTube-style play button ─────────────────────────────────
+.play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 48px;
+  transition: transform 0.2s ease;
+  pointer-events: none;
+
+  .thumbnail-wrap:hover & {
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+
+  svg { width: 100%; height: 100%; }
+
+  .play-btn-bg {
+    fill: #ff0000;
+    fill-opacity: 0.9;
+  }
+
+  .play-btn-icon {
+    fill: #fff;
+  }
+
+  .thumbnail-wrap:hover & .play-btn-bg {
+    fill: #ff0000;
+    fill-opacity: 1;
+  }
+}
+
+// ── Iframe (shown after clicking play) ───────────────────────
 .short-video {
   width: 270px;
   height: 480px;
 
-  // Landscape mode adjustments (16:9)
-  &.landscape {
-    width: 350px;
-    height: 220px;
+  &.landscape { width: 350px; height: 220px; }
+
+  @media (max-width: 768px) {
+    width: 200px;
+    height: 356px;
+    &.landscape { width: 260px; height: 163px; }
+  }
+  @media (max-width: 480px) {
+    width: 160px;
+    height: 284px;
+    &.landscape { width: 200px; height: 125px; }
   }
 }

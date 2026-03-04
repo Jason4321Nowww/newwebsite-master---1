@@ -32,7 +32,7 @@
     box-shadow: 0 2px 4px var(--card-shadow);
     width: 100%;
     max-width: 1200px;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     transition: border-color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 
     &:focus-within {

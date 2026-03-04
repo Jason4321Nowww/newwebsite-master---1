@@ -10,8 +10,10 @@ const userSchema = new mongoose.Schema(
     userLocation: { type: String, default: '' },    
     roleLevel: {
       type: Number,
-      enum: [0, 1, 2, 3, 4, 5, 6, 7], // 0=Public, 1=Internal, ..., 6=Vorstand
-      default: 0,
+      // 0=Admin, 1=Vorsitzende, 2=Vorstand, 3=Regionalverwaltung,
+      // 4=Lokalverwaltung, 5=Vollmitglied, 6=Regulaermitglied, 7=Oeffentlich
+      enum: [0, 1, 2, 3, 4, 5, 6, 7],
+      default: 7, // New users start as Oeffentlich — admin must promote
     },
 
   },

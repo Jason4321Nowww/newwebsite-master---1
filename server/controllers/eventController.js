@@ -22,14 +22,73 @@ const getAllEventsForAdmin = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch all events for admin' });
   }
 };
-// get evetns
+// Get events filtered by user's role and location (eventType-based)
+// eventType:
+//   oeffentlich        → everyone
+//   nationalversammlung→ all logged-in users
+//   lokalversammlung   → roles 4,5,6 + location
+//   regionalversammlung→ roles 3,4,5,6 + location
+//   rv_zusammenkunft   → roles 1,2,3 (no location filter)
+//   lv_zusammenkunft   → roles 3,4 + location
+//   vorstand           → roles 0,1,2
+//   vorsitzende        → roles 0,1
+//   admin              → role 0 only
 const getEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    let query = { isActive: true };
+
+    if (!req.user) {
+      query.eventType = 'oeffentlich';
+    } else {
+      const roleLevel = req.user.roleLevel;
+      const userLocation = req.user.userLocation || '';
+
+      if (roleLevel === 0) {
+        // Admin: sees all events — no additional filter
+      } else {
+        const locationMatch = [
+          { eventLocation: '' },
+          { eventLocation: null },
+          { eventLocation: { $exists: false } },
+          { eventLocation: userLocation },
+        ];
+
+        const conditions = [
+          { eventType: 'oeffentlich' },
+          { eventType: 'nationalversammlung' },
+        ];
+
+        if (roleLevel === 1) {
+          conditions.push({ eventType: 'vorsitzende' });
+          conditions.push({ eventType: 'vorstand' });
+          conditions.push({ eventType: 'rv_zusammenkunft' });
+        } else if (roleLevel === 2) {
+          conditions.push({ eventType: 'vorstand' });
+          conditions.push({ eventType: 'rv_zusammenkunft' });
+        } else if (roleLevel === 3) {
+          conditions.push({ eventType: 'rv_zusammenkunft' });
+          conditions.push({ $and: [{ eventType: 'lv_zusammenkunft' }, { $or: locationMatch }] });
+          conditions.push({ $and: [{ eventType: 'regionalversammlung' }, { $or: locationMatch }] });
+        } else if (roleLevel === 4) {
+          conditions.push({ $and: [{ eventType: 'lv_zusammenkunft' }, { $or: locationMatch }] });
+          conditions.push({ $and: [{ eventType: 'regionalversammlung' }, { $or: locationMatch }] });
+          conditions.push({ $and: [{ eventType: 'lokalversammlung' }, { $or: locationMatch }] });
+        } else if (roleLevel === 5) {
+          conditions.push({ $and: [{ eventType: 'regionalversammlung' }, { $or: locationMatch }] });
+          conditions.push({ $and: [{ eventType: 'lokalversammlung' }, { $or: locationMatch }] });
+        } else if (roleLevel === 6) {
+          conditions.push({ $and: [{ eventType: 'lokalversammlung' }, { $or: locationMatch }] });
+        }
+
+        query.$or = conditions;
+      }
+    }
+
+    const events = await Event.find(query);
     res.json(events);
   } catch (err) {
-    console.error('Admin fetch error:', err);
-    res.status(500).json({ message: 'Failed to fetch all events for admin' });
+    console.error('Events fetch error:', err);
+    res.status(500).json({ message: 'Failed to fetch events' });
   }
 };
 
@@ -38,12 +97,13 @@ const getEvents = async (req, res) => {
 const createEvent = async (req, res) => {
   try {
     const {
-      title,
-      description,
+      title, title_it, title_fr, title_en,
+      description, description_it, description_fr, description_en,
       isMandatory,
       eventDate,
       repeat,
-      visibilityLevel,
+      repeatEveryWeeks,
+      eventType,
       eventLocation
     } = req.body;
 
@@ -54,15 +114,16 @@ const createEvent = async (req, res) => {
     const imageUrl = `/uploads/events/${req.file.filename}`;
 
     const event = new Event({
-      title,
-      description,
+      title, title_it, title_fr, title_en,
+      description, description_it, description_fr, description_en,
       isMandatory,
       eventDate,
       repeat,
-      visibilityLevel,
+      repeatEveryWeeks: Number(repeatEveryWeeks) || 0,
+      eventType: eventType || 'oeffentlich',
       eventLocation,
       image: imageUrl,
-      date: eventDate, // for backwards compatibility if needed
+      date: eventDate,
     });
 
     await event.save();
@@ -78,24 +139,26 @@ const createEvent = async (req, res) => {
 const updateEvent = async (req, res) => {
   try {
     const {
-      title,
-      description,
+      title, title_it, title_fr, title_en,
+      description, description_it, description_fr, description_en,
       isMandatory,
       eventDate,
       repeat,
+      repeatEveryWeeks,
+      eventType,
       eventLocation,
-      visibilityLevel
     } = req.body;
 
     const updatedData = {
-      title,
-      description,
+      title, title_it, title_fr, title_en,
+      description, description_it, description_fr, description_en,
       isMandatory,
       eventDate,
       repeat,
+      repeatEveryWeeks: Number(repeatEveryWeeks) || 0,
+      eventType: eventType || 'oeffentlich',
       eventLocation,
-      visibilityLevel,
-      date: eventDate // Optional: keep old compatibility
+      date: eventDate,
     };
 
     const event = await Event.findById(req.params.id);

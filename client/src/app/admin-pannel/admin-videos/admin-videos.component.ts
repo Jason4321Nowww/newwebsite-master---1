@@ -12,11 +12,14 @@ import { Video } from 'src/app/_models/video';
 export class AdminVideosComponent implements OnInit {
   videoId = '';
   videoTitle = '';
-  videoIdOrientation: 'portrait' | 'landscape' = 'landscape';
+  videoTitle_it = '';
+  videoTitle_fr = '';
+  videoTitle_en = '';
+  isLandscape: boolean = true;
   videoPreviewUrl: SafeResourceUrl | null = null;
   videoList: Video[] = [];
   landscapeVideos: Video[] = [];
-portraitVideos: Video[] = [];
+  portraitVideos: Video[] = [];
 
   constructor(
     private http: HttpClient,
@@ -28,23 +31,12 @@ portraitVideos: Video[] = [];
     this.loadVideos();
   }
 
-  // Converts videoId to a SafeResourceUrl for embedding
   getSafeUrl(videoId: string): SafeResourceUrl {
     return this.sanitizer.bypassSecurityTrustResourceUrl(
       `https://www.youtube.com/embed/${videoId}`
     );
   }
 
-  // Preview the video in the iframe before submission
-  preview() {
-    if (!this.videoId) {
-      this.videoPreviewUrl = null;
-      return;
-    }
-    this.videoPreviewUrl = this.getSafeUrl(this.videoId);
-  }
-
-  // Handle form submission
   onSubmit() {
     if (!this.videoId) return;
 
@@ -52,21 +44,26 @@ portraitVideos: Video[] = [];
 
     this.http.get<{ title: string }>(oembedUrl).subscribe({
       next: (res) => {
-        this.videoTitle = res.title;
+        // If the user left the German title blank, use the YouTube-fetched title
+        const title = this.videoTitle.trim() || res.title;
 
         const video: Video = {
-          title: this.videoTitle,
+          title,
+          title_it: this.videoTitle_it.trim() || undefined,
+          title_fr: this.videoTitle_fr.trim() || undefined,
+          title_en: this.videoTitle_en.trim() || undefined,
           videoId: this.videoId,
-          orientation: this.videoIdOrientation
+          orientation: this.isLandscape ? 'landscape' : 'portrait'
         };
 
         this.adminvideo.addVideo(video).subscribe(() => {
           this.loadVideos();
-
-          // Reset form
           this.videoId = '';
           this.videoTitle = '';
-          this.videoIdOrientation = 'landscape';
+          this.videoTitle_it = '';
+          this.videoTitle_fr = '';
+          this.videoTitle_en = '';
+          this.isLandscape = true;
           this.videoPreviewUrl = null;
         });
       },
@@ -76,25 +73,19 @@ portraitVideos: Video[] = [];
     });
   }
 
-  // Load all videos from backend
-loadVideos() {
-  this.adminvideo.getVideos().subscribe((videos) => {
-    this.videoList = videos;
-    this.landscapeVideos = videos.filter(v => v.orientation === 'landscape');
-    this.portraitVideos = videos.filter(v => v.orientation === 'portrait');
-  });
-}
-
-  // Delete a video from backend and refresh list
-deleteVideo(id: string) {
-  if (confirm('Are you sure you want to delete this video?')) {
-    this.adminvideo.deleteVideo(id).subscribe(() => {
-      this.loadVideos(); // reloads and updates filtered arrays
+  loadVideos() {
+    this.adminvideo.getVideos().subscribe((videos) => {
+      this.videoList = videos;
+      this.landscapeVideos = videos.filter(v => v.orientation === 'landscape');
+      this.portraitVideos = videos.filter(v => v.orientation === 'portrait');
     });
   }
-}
 
- 
-
-
+  deleteVideo(id: string) {
+    if (confirm('Are you sure you want to delete this video?')) {
+      this.adminvideo.deleteVideo(id).subscribe(() => {
+        this.loadVideos();
+      });
+    }
+  }
 }

@@ -3,6 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { EventsService } from '../services/events.service';
 import { Event } from '../_models/event';
 import { User } from '../_models/user';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-special-member-page',
@@ -19,7 +20,8 @@ export class SpecialMemberPageComponent implements OnInit{
 
   constructor(
     private auth: AuthService,
-    private eventService: EventsService
+    private eventService: EventsService,
+    public langService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -50,12 +52,20 @@ truncateHtml(text: string | undefined, limit: number): string {
 
   loadEvents() {
     this.eventService.getEvents().subscribe((allEvents: Event[]) => {
-             allEvents.map(e => console.log(e))
+      this.events = allEvents.filter(e => {
+        // Event is visible if its visibilityLevel >= user's roleLevel
+        // (lower roleLevel = higher privilege, e.g. 0=Admin, 7=Public)
+        const level = e.visibilityLevel ?? 7;
+        const levelMatch = level >= this.userRole;
 
-      this.events = allEvents.filter(e => 
-        e.visibilityLevel === this.userRole &&
-        e.eventLocation === this.userLocation
-      );
+        // Only apply location filter when both event and user have a location
+        const locationMatch =
+          !e.eventLocation ||
+          !this.userLocation ||
+          e.eventLocation.toLowerCase() === this.userLocation.toLowerCase();
+
+        return levelMatch && locationMatch;
+      });
       this.loading = false;
     });
   }

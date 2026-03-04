@@ -6,7 +6,7 @@
   margin: 3rem auto;
   padding: 2rem;
   background-color: var(--card-bg);
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   box-shadow: 0 4px 12px var(--card-shadow);
   font-family: 'Segoe UI', sans-serif;
   transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -32,7 +32,7 @@
       max-width: 100%;
       max-height: 360px;
       object-fit: contain;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       background: var(--bg-secondary);
       transition: background-color 0.3s ease-in-out;
     }
@@ -86,7 +86,7 @@
         width: 36px;
         height: 36px;
         cursor: pointer;
-        border-radius: 6px;
+        border-radius: var(--radius-md);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -110,7 +110,7 @@
         border: 2px solid var(--input-border);
         background-color: var(--input-bg);
         color: var(--input-text);
-        border-radius: 6px;
+        border-radius: var(--radius-md);
         padding: 0.25rem;
         transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
       }
@@ -121,7 +121,7 @@
       padding: 0.75rem 1rem;
       font-size: 1rem;
       border: none;
-      border-radius: 6px;
+      border-radius: var(--radius-md);
       cursor: pointer;
       font-weight: 600;
       transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, transform 0.2s ease-in-out;

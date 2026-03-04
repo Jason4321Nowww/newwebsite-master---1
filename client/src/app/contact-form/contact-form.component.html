@@ -1,26 +1,26 @@
 <div  id="kontakt-anchor"></div>
 <br />
 <div class="contact">
-  <form class="contact-form" (ngSubmit)="onSubmit()">
-    <h3>Tritt mit uns in Kontakt</h3>
+  <form class="contact-form scroll-reveal-scale" (ngSubmit)="onSubmit()">
+    <h3>{{ langService.t('contact.title') }}</h3>
 
     <div class="form-ele">
-      <input type="text" id="name" placeholder="Name..." [(ngModel)]="name" name="name" required />
+      <input type="text" id="name" [placeholder]="langService.t('contact.namePlaceholder')" [(ngModel)]="name" name="name" required />
     </div>
 
     <div class="form-ele">
-      <input type="email" id="email" placeholder="Email Adresse..." [(ngModel)]="email" name="email" required />
+      <input type="email" id="email" [placeholder]="langService.t('contact.emailPlaceholder')" [(ngModel)]="email" name="email" required />
     </div>
 
     <div class="form-ele">
-      <label for="participation">Ich würde gerne teilnehmen als...</label>
+      <label for="participation">{{ langService.t('contact.participationLabel') }}</label>
       <select id="country" name="country" [(ngModel)]="participation" required>
-        <option value="member">Mitglied</option>
-        <option value="donor">Spender</option>
-        <option value="simp">Sympathisant</option>
+        <option value="member">{{ langService.t('contact.member') }}</option>
+        <option value="donor">{{ langService.t('contact.donor') }}</option>
+        <option value="simp">{{ langService.t('contact.sympathizer') }}</option>
       </select>
     </div>
 
-    <input type="submit" value="Senden" />
+    <input type="submit" [value]="langService.t('contact.send')" />
   </form>
 </div>

@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { Event } from '../_models/event';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-calendar',
@@ -10,12 +11,16 @@ export class CalendarComponent implements OnInit, OnChanges {
   @Input() events: Event[] = [];
 
   currentMonth = new Date();
-  calendarDates: { date: Date; inCurrentMonth: boolean; event?: Event }[] = [];
-  weekDays = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+  // Each cell: null = empty padding cell, otherwise has date + optional event
+  calendarDates: ({ date: Date; inCurrentMonth: boolean; event?: Event } | null)[] = [];
+  weekDayKeys = ['calendar.mo', 'calendar.tu', 'calendar.we', 'calendar.th', 'calendar.fr', 'calendar.sa', 'calendar.su'];
   isMobile = false;
+
+  constructor(public langService: LanguageService) {}
 
   ngOnInit() {
     this.isMobile = window.innerWidth <= 768;
+    this.generateCalendar(); // Build on first load (events may be empty initially)
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -39,6 +44,14 @@ export class CalendarComponent implements OnInit, OnChanges {
     this.generateCalendar();
   }
 
+  // Parse an ISO date string as a LOCAL date (avoids UTC timezone shift)
+  private parseLocalDate(dateStr: string): Date {
+    const s = (dateStr || '').toString();
+    const datePart = s.split('T')[0]; // "2025-07-26"
+    const [y, m, d] = datePart.split('-').map(Number);
+    return new Date(y, m - 1, d);
+  }
+
   generateCalendar() {
     const year = this.currentMonth.getFullYear();
     const month = this.currentMonth.getMonth();
@@ -46,49 +59,69 @@ export class CalendarComponent implements OnInit, OnChanges {
     const startDate = new Date(year, month, 1);
     const endDate = new Date(year, month, daysInMonth);
 
-    // Build calendar cells
-    const calendar: { date: Date; inCurrentMonth: boolean; event?: Event }[] = [];
+    // Day-of-week padding for Monday-first grid
+    // getDay(): 0=Sun,1=Mon,...,6=Sat → convert to Mon-first: (getDay()+6)%7
+    const firstDayOfWeek = (startDate.getDay() + 6) % 7; // 0=Mon … 6=Sun
+    const padding: null[] = Array(firstDayOfWeek).fill(null);
+
+    // Build day cells for current month
+    const dayCells: { date: Date; inCurrentMonth: boolean; event?: Event }[] = [];
     for (let day = 1; day <= daysInMonth; day++) {
-      calendar.push({ date: new Date(year, month, day), inCurrentMonth: true });
+      dayCells.push({ date: new Date(year, month, day), inCurrentMonth: true });
     }
 
-    // Map for events on dates
+    // Map events to dates (using local-date parsing to avoid UTC shift)
     const eventDatesMap = new Map<string, Event>();
 
     this.events.forEach(event => {
-      const eventDate = new Date(event.eventDate);
+      const eventDate = this.parseLocalDate(event.eventDate as any);
       let current = new Date(eventDate);
 
-      // Skip non-repeating events outside current month
-      if (event.repeat === 'none' && (eventDate < startDate || eventDate > endDate)) return;
+      // Skip one-time events outside this month
+      const repeatInterval = (event as any).repeatEveryWeeks;
+      const hasWeeklyRepeat = repeatInterval && repeatInterval > 0;
+      const hasOtherRepeat = event.repeat && event.repeat !== 'none';
 
-      // Loop to add repeated events
+      if (!hasWeeklyRepeat && !hasOtherRepeat && (eventDate < startDate || eventDate > endDate)) return;
+
       while (current <= endDate) {
         if (current >= startDate) {
           eventDatesMap.set(current.toDateString(), event);
         }
 
-        switch (event.repeat) {
-          case 'weekly': current.setDate(current.getDate() + 7); break;
-          case 'bi-weekly': current.setDate(current.getDate() + 14); break;
-          case 'monthly': current.setMonth(current.getMonth() + 1); break;
-          case 'annually': current.setFullYear(current.getFullYear() + 1); break;
-          default: break;
+        if (hasWeeklyRepeat) {
+          current = new Date(current);
+          current.setDate(current.getDate() + repeatInterval * 7);
+        } else {
+          switch (event.repeat) {
+            case 'weekly':   current = new Date(current); current.setDate(current.getDate() + 7); break;
+            case 'monthly':  current = new Date(current); current.setMonth(current.getMonth() + 1); break;
+            case 'annually':  current = new Date(current); current.setFullYear(current.getFullYear() + 1); break;
+            default: break;
+          }
+          if (!hasOtherRepeat) break;
         }
-
-        if (!event.repeat || event.repeat === 'none') break;
       }
     });
 
-    this.calendarDates = calendar.map(day => ({
+    const resolvedCells = dayCells.map(day => ({
       ...day,
       event: eventDatesMap.get(day.date.toDateString())
     }));
+
+    this.calendarDates = [...padding, ...resolvedCells];
   }
 
   getTooltipText(event: Event): string {
-    return `Title: ${event.title}
-Repeat: ${event.repeat || 'One-time'}
-Date: ${new Date(event.eventDate).toDateString()}`;
+    const repeatInterval = (event as any).repeatEveryWeeks;
+    const repeatLabel = repeatInterval > 0
+      ? `Every ${repeatInterval} week(s)`
+      : (event.repeat || 'One-time');
+    return `${event.title}\nRepeat: ${repeatLabel}\nDate: ${this.parseLocalDate(event.eventDate as any).toDateString()}`;
+  }
+
+  isRepeating(event: Event): boolean {
+    const repeatInterval = (event as any).repeatEveryWeeks;
+    return (repeatInterval > 0) || (!!event.repeat && event.repeat !== 'none');
   }
 }

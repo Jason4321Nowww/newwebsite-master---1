@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Article } from '../_models/article';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesService } from '../services/articles.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-article',
@@ -12,7 +13,7 @@ export class ArticleComponent {
 
   article?: Article;
 
-  constructor(private route: ActivatedRoute, private articleService: ArticlesService) {
+  constructor(private route: ActivatedRoute, private articleService: ArticlesService, public langService: LanguageService) {
     const id = this.route.snapshot.paramMap.get('id');
 
     if (id) {
@@ -24,6 +25,13 @@ export class ArticleComponent {
         }
       });
     }
+  }
+
+  getTranslatedBody(): string {
+    if (!this.article) return '';
+    const lang = this.langService.current;
+    if (lang === 'de') return '';
+    return (this.article as any)['body_' + lang] || '';
   }
 
   convertToParagraphs(text?: string): string {

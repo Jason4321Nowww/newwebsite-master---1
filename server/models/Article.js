@@ -9,7 +9,13 @@ const blockSchema = new mongoose.Schema({
 
 const articleSchema = new mongoose.Schema({
   title: { type: String, required: true, trim: true },
-  body: { type: [blockSchema], required: true }, // array of blocks
+  title_it: { type: String, trim: true },
+  title_fr: { type: String, trim: true },
+  title_en: { type: String, trim: true },
+  body: { type: [blockSchema], required: true }, // array of blocks (DE)
+  body_it: { type: String }, // HTML string for IT translation
+  body_fr: { type: String }, // HTML string for FR translation
+  body_en: { type: String }, // HTML string for EN translation
   author: { type: String, default: 'Redaktion der BKP' }
 }, {
   timestamps: true,

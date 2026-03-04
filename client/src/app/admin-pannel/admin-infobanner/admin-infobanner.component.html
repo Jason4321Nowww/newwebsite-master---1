@@ -1,20 +1,29 @@
 <h2>Admin - Manage Info Banners</h2>
 
 <form [formGroup]="bannerForm" (ngSubmit)="submitForm()" class="mb-4" novalidate>
-  <label>Statement
-    <textarea formControlName="statement"
-  placeholder="Enter banner statement"
-  rows="3"
-  (input)="autoGrow($event)">
-</textarea>
 
+  <!-- Language Picker -->
+  <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+
+  <label *ngIf="activeLang === 'de'">Statement (DE)
+    <textarea formControlName="statement" placeholder="Enter banner statement (DE)" rows="3" (input)="autoGrow($event)"></textarea>
     <div class="error" *ngIf="bannerForm.get('statement')?.invalid && bannerForm.get('statement')?.touched">
       Statement is required.
     </div>
   </label>
-<label>Learn More Link
-  <input formControlName="link" type="url" placeholder="https://example.com" />
-</label>
+  <label *ngIf="activeLang === 'it'">Statement (IT)
+    <textarea formControlName="statement_it" placeholder="Enter banner statement (IT)" rows="3" (input)="autoGrow($event)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'fr'">Statement (FR)
+    <textarea formControlName="statement_fr" placeholder="Enter banner statement (FR)" rows="3" (input)="autoGrow($event)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'en'">Statement (EN)
+    <textarea formControlName="statement_en" placeholder="Enter banner statement (EN)" rows="3" (input)="autoGrow($event)"></textarea>
+  </label>
+
+  <label *ngIf="activeLang === 'de'">Learn More Link
+    <input formControlName="link" type="url" placeholder="https://example.com" />
+  </label>
 
   <div class="btn-group">
     <button type="submit" [disabled]="bannerForm.invalid"

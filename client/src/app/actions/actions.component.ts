@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Action } from '../_models/action';
 import { ActionService } from '../services/action.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-actions',
@@ -12,7 +13,7 @@ export class ActionsComponent implements OnInit {
   previewAction: Action | null = null;
   selectedMedia: string | null = null;
 
-  constructor(private action: ActionService) {}
+  constructor(private action: ActionService, public langService: LanguageService) {}
 
   ngOnInit(): void {
     this.action.getAllActions().subscribe(actions => {

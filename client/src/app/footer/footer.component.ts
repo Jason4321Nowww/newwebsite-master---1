@@ -9,7 +9,7 @@ import { filter } from 'rxjs';
 })
 export class FooterComponent {
   webseitenTitel: string = 'Büezer und KMU Partei (BKP)';
-
+  currentYear: number = new Date().getFullYear();
   constructor(private router: Router) {
   }
   scrollTo(fragment: string) {

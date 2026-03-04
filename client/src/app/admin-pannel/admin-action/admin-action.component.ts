@@ -13,6 +13,7 @@ export class AdminActionComponent implements OnInit {
   actionForm!: FormGroup;
   isEditing = false;
   selectedId: string | null = null;
+  activeLang: string = 'de';
   selectedMedia: File[] = [];
   previewUrls: string[] = [];
   existingMedia: string[] = [];
@@ -27,7 +28,13 @@ export class AdminActionComponent implements OnInit {
   initForm() {
     this.actionForm = this.fb.group({
       title: ['', Validators.required],
+      title_it: [''],
+      title_fr: [''],
+      title_en: [''],
       description: ['', Validators.required],
+      description_it: [''],
+      description_fr: [''],
+      description_en: [''],
       media: [null]
     });
   }
@@ -53,7 +60,13 @@ export class AdminActionComponent implements OnInit {
 
     const formData = new FormData();
     formData.append('title', this.actionForm.value.title);
+    formData.append('title_it', this.actionForm.value.title_it || '');
+    formData.append('title_fr', this.actionForm.value.title_fr || '');
+    formData.append('title_en', this.actionForm.value.title_en || '');
     formData.append('description', this.actionForm.value.description);
+    formData.append('description_it', this.actionForm.value.description_it || '');
+    formData.append('description_fr', this.actionForm.value.description_fr || '');
+    formData.append('description_en', this.actionForm.value.description_en || '');
     this.selectedMedia.forEach(file =>{
       console.log('Uploading:', file.name, file.type)
       formData.append('media', file)}); // field name should match multer array name
@@ -75,7 +88,13 @@ export class AdminActionComponent implements OnInit {
 
     this.actionForm.patchValue({
       title: action.title,
-      description: action.description
+      title_it: action.title_it || '',
+      title_fr: action.title_fr || '',
+      title_en: action.title_en || '',
+      description: action.description,
+      description_it: action.description_it || '',
+      description_fr: action.description_fr || '',
+      description_en: action.description_en || '',
     });
 
     this.previewUrls = [...this.existingMedia.map(url => 'http://localhost:5000' + url)];

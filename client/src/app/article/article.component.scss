@@ -48,7 +48,7 @@
     img {
       width: 380px;
       height: auto;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       object-fit: cover;
       transition: all 0.3s ease;
     }
@@ -58,14 +58,14 @@
       width: 100%;
       background-color: var(--bg-secondary);
       padding: 1rem;
-      border-radius: 10px;
+      border-radius: var(--radius-lg);
       transition: background-color 0.3s ease-in-out;
 
       img {
         width: 100%;
         max-height: 200px;
         object-fit: cover;
-        border-radius: 8px;
+        border-radius: var(--radius-md);
       }
     }
 
@@ -74,12 +74,32 @@
 
       img {
         max-height: 180px;
-        border-radius: 6px;
+        border-radius: var(--radius-md);
       }
     }
   }
 }
 
+
+  .article-body-image {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
+    margin: 1rem 0;
+    border-radius: var(--radius-md);
+    display: block;
+
+    @media (max-width: 768px) {
+      max-height: 350px;
+    }
+
+    @media (max-width: 480px) {
+      max-height: 240px;
+      border-radius: var(--radius-md);
+    }
+  }
 
   .body {
     margin-top: 1rem;

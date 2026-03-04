@@ -1,8 +1,21 @@
 <h2>Admin - Manage Products</h2>
 
 <form [formGroup]="productForm" (ngSubmit)="submitForm()">
-  <label>Name
-    <input formControlName="name" placeholder="Enter product name">
+
+  <!-- Language Picker -->
+  <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+
+  <label *ngIf="activeLang === 'de'">Name (DE)
+    <input formControlName="name" placeholder="Enter product name (DE)">
+  </label>
+  <label *ngIf="activeLang === 'it'">Name (IT)
+    <input formControlName="name_it" placeholder="Enter product name (IT)">
+  </label>
+  <label *ngIf="activeLang === 'fr'">Name (FR)
+    <input formControlName="name_fr" placeholder="Enter product name (FR)">
+  </label>
+  <label *ngIf="activeLang === 'en'">Name (EN)
+    <input formControlName="name_en" placeholder="Enter product name (EN)">
   </label>
 
   <label>Category
@@ -40,8 +53,17 @@
     </select>
   </label>
 
-  <label>Description
-    <textarea formControlName="description" rows="3" placeholder="Enter product description"></textarea>
+  <label *ngIf="activeLang === 'de'">Description (DE)
+    <textarea formControlName="description" rows="3" placeholder="Enter product description (DE)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'it'">Description (IT)
+    <textarea formControlName="description_it" rows="3" placeholder="Enter product description (IT)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'fr'">Description (FR)
+    <textarea formControlName="description_fr" rows="3" placeholder="Enter product description (FR)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'en'">Description (EN)
+    <textarea formControlName="description_en" rows="3" placeholder="Enter product description (EN)"></textarea>
   </label>
 
  <label>Upload Image

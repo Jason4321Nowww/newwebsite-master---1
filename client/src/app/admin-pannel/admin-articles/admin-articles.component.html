@@ -3,17 +3,33 @@
   <h2>Manage Articles</h2>
 
   <form [formGroup]="articleForm" (ngSubmit)="submit()" class="article-form" novalidate>
-    <div class="row">
-      <label>Title</label>
+
+    <!-- Language Picker -->
+    <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+
+    <div class="row" *ngIf="activeLang === 'de'">
+      <label>Title (DE)</label>
       <input formControlName="title" required />
     </div>
+    <div class="row" *ngIf="activeLang === 'it'">
+      <label>Title (IT)</label>
+      <input formControlName="title_it" />
+    </div>
+    <div class="row" *ngIf="activeLang === 'fr'">
+      <label>Title (FR)</label>
+      <input formControlName="title_fr" />
+    </div>
+    <div class="row" *ngIf="activeLang === 'en'">
+      <label>Title (EN)</label>
+      <input formControlName="title_en" />
+    </div>
 
-    <div class="row">
+    <div class="row" *ngIf="activeLang === 'de'">
       <label>Author</label>
       <input formControlName="author" />
     </div>
 
-    <div class="blocks">
+    <div class="blocks" *ngIf="activeLang === 'de'">
       <div class="block-controls">
         <button type="button" (click)="addTextBlock()">+ Text</button>
         <button type="button" (click)="addImageBlock()">+ Image</button>
@@ -49,6 +65,20 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Translation body for IT/FR/EN -->
+    <div class="row" *ngIf="activeLang === 'it'">
+      <label>Body (IT)</label>
+      <textarea formControlName="body_it" rows="8" placeholder="Article body in Italian (plain text or HTML)" (input)="autoGrow($event)"></textarea>
+    </div>
+    <div class="row" *ngIf="activeLang === 'fr'">
+      <label>Body (FR)</label>
+      <textarea formControlName="body_fr" rows="8" placeholder="Article body in French (plain text or HTML)" (input)="autoGrow($event)"></textarea>
+    </div>
+    <div class="row" *ngIf="activeLang === 'en'">
+      <label>Body (EN)</label>
+      <textarea formControlName="body_en" rows="8" placeholder="Article body in English (plain text or HTML)" (input)="autoGrow($event)"></textarea>
     </div>
 
     <div class="form-actions">

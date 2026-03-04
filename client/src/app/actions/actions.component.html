@@ -1,7 +1,7 @@
 <div class="gallery-container">
-  <h2 class="gallery-heading">Action Gallery</h2>
+  <h2 class="gallery-heading scroll-reveal">{{ langService.t('actions.gallery') }}</h2>
 
-  <div class="gallery-grid">
+  <div class="gallery-grid stagger">
     <div
       class="gallery-card"
       *ngFor="let action of allActions"
@@ -20,8 +20,8 @@
       </ng-container>
 
       <div class="gallery-info">
-        <h3>{{ action.title }}</h3>
-        <p>{{ action.description | slice: 0:100 }}...</p>
+        <h3>{{ langService.getField(action, 'title') }}</h3>
+        <p>{{ (langService.getField(action, 'description') | slice: 0:100) }}...</p>
       </div>
     </div>
   </div>
@@ -29,7 +29,7 @@
   <!-- Modal Preview -->
   <div class="modal-overlay" *ngIf="previewAction" (click)="closePreview()">
     <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>{{ previewAction.title }}</h2>
+      <h2>{{ langService.getField(previewAction, 'title') }}</h2>
      
 
      <div class="modal-media-wrapper">
@@ -60,8 +60,8 @@
   </div>
 </div>
 
- <p>{{ previewAction.description }}</p>
-      <button class="close-btn" (click)="closePreview()">Close</button>
+ <p>{{ langService.getField(previewAction, 'description') }}</p>
+      <button class="close-btn" (click)="closePreview()">{{ langService.t('actions.close') }}</button>
     </div>
   </div>
 </div>

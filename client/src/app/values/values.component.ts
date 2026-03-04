@@ -4,6 +4,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Observer } from 'gsap/Observer';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { LanguageService } from '../services/language.service';
 
 gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
 
@@ -13,6 +14,8 @@ gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
   styleUrls: ['./values.component.scss'],
 })
 export class ValuesComponent {
+  constructor(public langService: LanguageService) {}
+
   ngOnInit() {
     this.setupGsap();
   }

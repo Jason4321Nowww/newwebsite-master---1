@@ -48,7 +48,7 @@
 
 mat-expansion-panel {
   border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   margin-bottom: 1rem;
   box-shadow: 0 2px 4px var(--card-shadow) !important;
   background-color: var(--card-bg);
