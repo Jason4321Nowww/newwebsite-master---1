@@ -46,8 +46,6 @@
 // the parent's perspective context.
 .carousel1-stage {
   position: relative;
-  perspective: 800px;
-  perspective-origin: 50% 50%;
   overflow: hidden;
   height: 590px;   // title(110px) + iframe(480px)
 
@@ -100,8 +98,6 @@
 
 .carousel2-stage {
   position: relative;
-  perspective: 800px;
-  perspective-origin: 50% 50%;
   overflow: hidden;
   height: 290px;   // title(70px) + iframe(220px)
 

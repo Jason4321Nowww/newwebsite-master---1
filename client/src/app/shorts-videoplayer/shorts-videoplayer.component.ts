@@ -40,6 +40,9 @@ export class ShortsVideoPlayer implements OnInit {
   portraitSliding  = false;
   landscapeSliding = false;
 
+  // Center slot index for 7-slot carousel (slots 0-6, center = 3)
+  private readonly CENTER = 3;
+
   constructor(private video: VideoService) {}
 
   ngOnInit(): void {
@@ -63,65 +66,66 @@ export class ShortsVideoPlayer implements OnInit {
     return 350;
   }
 
-  // Stage wide enough to show peeking side cards
-  get portraitStageWidth():  number { return Math.round(this.portraitCardWidth  * 2.4); }
-  get landscapeStageWidth(): number { return Math.round(this.landscapeCardWidth * 2.4); }
+  // Stage wide enough to show 5 cards (±2 visible, ±3 hidden buffers)
+  get portraitStageWidth():  number {
+    return Math.min(Math.round(this.portraitCardWidth  * 3.2), window.innerWidth - 40);
+  }
+  get landscapeStageWidth(): number {
+    return Math.min(Math.round(this.landscapeCardWidth * 3.2), window.innerWidth - 40);
+  }
 
-  // ── 3D Coverflow transform ────────────────────────────────────
-  // IMPORTANT: NO perspective() function here.
-  // Perspective comes from the CSS `perspective: 800px` property on
-  // the .carousel1-stage container — that gives all cards a SHARED
-  // vanishing point (true coverflow). Using perspective() per-element
-  // gives each card its own vanishing point → "opened book" artifact.
-  //
-  // top:50% + translateY(-50%) centres cards vertically in the stage.
-  // tx   : horizontal offset so cards overlap behind the center card
-  // ry   : gentle 22° tilt per step (NOT 50°!)
-  // s    : scale: center=1.0, ±1=0.88, ±2=0.72
+  // ── Flat carousel transform (no rotateY, no perspective) ────────
+  // Pure translateX + scale only — completely flat, no 3D distortion.
+  // tx spacing at 58% of card width gives visible overlapping between cards.
+  // Scales: center=1.0, ±1=0.85, ±2=0.72, ±3=0.62 (hidden buffer)
   private covTransform(offset: number, cardWidth: number): string {
-    const tx = Math.round(offset * cardWidth * 0.65);
-    const ry = Math.sign(offset) * Math.min(50, Math.abs(offset) * 22);
-    const s  = offset === 0 ? 1 : Math.abs(offset) === 1 ? 0.88 : 0.72;
-    return `translateX(calc(-50% + ${tx}px)) translateY(-50%) rotateY(${ry}deg) scale(${s})`;
+    const tx = Math.round(offset * cardWidth * 0.58);
+    const s  = offset === 0        ? 1.00
+             : Math.abs(offset) === 1 ? 0.85
+             : Math.abs(offset) === 2 ? 0.72
+             : 0.62;
+    return `translateX(calc(-50% + ${tx}px)) translateY(-50%) scale(${s})`;
   }
 
   getPortraitTransform(slotIndex: number): string {
-    return this.covTransform((slotIndex - 2) + this.portraitShift, this.portraitCardWidth);
+    return this.covTransform((slotIndex - this.CENTER) + this.portraitShift, this.portraitCardWidth);
   }
   getLandscapeTransform(slotIndex: number): string {
-    return this.covTransform((slotIndex - 2) + this.landscapeShift, this.landscapeCardWidth);
+    return this.covTransform((slotIndex - this.CENTER) + this.landscapeShift, this.landscapeCardWidth);
   }
 
-  // Opacity: ±2=hidden(buffer), ±1=dimmed, 0=full
+  // Opacity: ±3 (buffer) = 0, ±2 = 0.65, ±1 = 0.90, center = 1
   getPortraitOpacity(slotIndex: number): number {
-    const off = Math.abs((slotIndex - 2) + this.portraitShift);
-    return off >= 2 ? 0 : off === 1 ? 0.78 : 1;
+    const off = Math.abs((slotIndex - this.CENTER) + this.portraitShift);
+    return off >= 3 ? 0 : off === 2 ? 0.65 : off === 1 ? 0.90 : 1;
   }
   getLandscapeOpacity(slotIndex: number): number {
-    const off = Math.abs((slotIndex - 2) + this.landscapeShift);
-    return off >= 2 ? 0 : off === 1 ? 0.78 : 1;
+    const off = Math.abs((slotIndex - this.CENTER) + this.landscapeShift);
+    return off >= 3 ? 0 : off === 2 ? 0.65 : off === 1 ? 0.90 : 1;
   }
 
-  // z-index: center on top, ±2 behind everything
+  // z-index: center on top, side cards layer behind progressively
   getPortraitZIndex(slotIndex: number): number {
-    return Math.max(1, 10 - Math.abs((slotIndex - 2) + this.portraitShift) * 3);
+    return Math.max(1, 10 - Math.abs((slotIndex - this.CENTER) + this.portraitShift) * 2);
   }
   getLandscapeZIndex(slotIndex: number): number {
-    return Math.max(1, 10 - Math.abs((slotIndex - 2) + this.landscapeShift) * 3);
+    return Math.max(1, 10 - Math.abs((slotIndex - this.CENTER) + this.landscapeShift) * 2);
   }
 
-  // ── Slot builders ─────────────────────────────────────────────
+  // ── Slot builders (7 slots: center ±3) ────────────────────────
   private wrap(i: number, len: number): number { return ((i % len) + len) % len; }
 
   private updatePortraitSlots(): void {
     if (!this.portraitItems.length) { this.portraitSlots = []; return; }
     const items = this.portraitItems, i = this.portraitIndex;
     this.portraitSlots = [
+      { video: items[this.wrap(i - 3, items.length)], isCenter: false },
       { video: items[this.wrap(i - 2, items.length)], isCenter: false },
       { video: items[this.wrap(i - 1, items.length)], isCenter: false },
       { video: items[this.wrap(i,     items.length)], isCenter: true  },
       { video: items[this.wrap(i + 1, items.length)], isCenter: false },
       { video: items[this.wrap(i + 2, items.length)], isCenter: false },
+      { video: items[this.wrap(i + 3, items.length)], isCenter: false },
     ];
   }
 
@@ -129,11 +133,13 @@ export class ShortsVideoPlayer implements OnInit {
     if (!this.landscapeItems.length) { this.landscapeSlots = []; return; }
     const items = this.landscapeItems, i = this.landscapeIndex;
     this.landscapeSlots = [
+      { video: items[this.wrap(i - 3, items.length)], isCenter: false },
       { video: items[this.wrap(i - 2, items.length)], isCenter: false },
       { video: items[this.wrap(i - 1, items.length)], isCenter: false },
       { video: items[this.wrap(i,     items.length)], isCenter: true  },
       { video: items[this.wrap(i + 1, items.length)], isCenter: false },
       { video: items[this.wrap(i + 2, items.length)], isCenter: false },
+      { video: items[this.wrap(i + 3, items.length)], isCenter: false },
     ];
   }
 
@@ -182,8 +188,8 @@ export class ShortsVideoPlayer implements OnInit {
   nextLandscape(): void { if (!this.landscapeSliding && this.landscapeItems.length > 1) this.slide('landscape', 'next'); }
   prevLandscape(): void { if (!this.landscapeSliding && this.landscapeItems.length > 1) this.slide('landscape', 'prev'); }
 
-  clickPortraitSlot(index: number):  void { if (index < 2) this.prevPortrait();  else if (index > 2) this.nextPortrait();  }
-  clickLandscapeSlot(index: number): void { if (index < 2) this.prevLandscape(); else if (index > 2) this.nextLandscape(); }
+  clickPortraitSlot(index: number):  void { if (index < this.CENTER) this.prevPortrait();  else if (index > this.CENTER) this.nextPortrait();  }
+  clickLandscapeSlot(index: number): void { if (index < this.CENTER) this.prevLandscape(); else if (index > this.CENTER) this.nextLandscape(); }
 
   @HostListener('window:resize')
   onResize(): void {
