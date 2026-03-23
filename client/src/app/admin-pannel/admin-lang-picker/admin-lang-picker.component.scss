@@ -1,7 +1,7 @@
 .lang-picker-row {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 180px;
 }
 
 .lang-label-text {
@@ -12,7 +12,7 @@
 }
 
 .lang-custom-select {
-  width: 100%;
+  width: 180px;
   position: relative;
   cursor: pointer;
   user-select: none;

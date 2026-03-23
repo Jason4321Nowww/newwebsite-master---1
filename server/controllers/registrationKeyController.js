@@ -2,10 +2,11 @@ const argon2 = require('argon2');
 const RegistrationKey = require('../models/RegistrationKey');
 
 const createOrUpdateKey = async (req, res) => {
-  const { key } = req.body;
+  const { key: rawInput } = req.body;
+  const key = rawInput?.trim();
 
-  if (!key || key.length !== 4) {
-    return res.status(400).json({ message: 'Key must be exactly 4 characters' });
+  if (!key || key.length < 4 || key.length > 20) {
+    return res.status(400).json({ message: 'Key must be between 4 and 20 characters' });
   }
 
   try {

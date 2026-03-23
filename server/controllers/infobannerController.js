@@ -2,16 +2,15 @@ const Banner = require('../models/InfoBanner');
 
 // @desc    Create a new banner
 // @route   POST /api/banner
- const createBanner = async (req, res) => {
+const createBanner = async (req, res) => {
   try {
-    const { statement, link, isActive } = req.body;
+    const { statement, statement_it, statement_fr, statement_en, link, isActive } = req.body;
 
-    // Optional: Deactivate other banners if only one should be active
     if (isActive) {
       await Banner.updateMany({}, { isActive: false });
     }
 
-    const banner = await Banner.create({ statement, link, isActive });
+    const banner = await Banner.create({ statement, statement_it, statement_fr, statement_en, link, isActive });
     res.status(201).json(banner);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -33,18 +32,15 @@ const getBanners = async (req, res) => {
 // @route   PUT /api/banner/:id
 const updateBanner = async (req, res) => {
   try {
-    const { statement, link, isActive } = req.body;
+    const { statement, statement_it, statement_fr, statement_en, link, isActive } = req.body;
 
     if (isActive) {
-      if (isActive) {
-  await Banner.updateMany({ _id: { $ne: req.params.id } }, { isActive: false });
-}
-
+      await Banner.updateMany({ _id: { $ne: req.params.id } }, { isActive: false });
     }
 
     const updated = await Banner.findByIdAndUpdate(
       req.params.id,
-      { statement, link, isActive },
+      { statement, statement_it, statement_fr, statement_en, link, isActive },
       { new: true }
     );
 

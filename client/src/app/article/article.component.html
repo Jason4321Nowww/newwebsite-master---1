@@ -12,14 +12,14 @@
 
 <div class="body">
   <!-- DE: block-based body -->
-  <ng-container *ngIf="langService.current === 'de'">
+  <ng-container *ngIf="currentLang === 'de'">
     <ng-container *ngFor="let block of article.body">
       <img *ngIf="block.type === 'image'" [src]="'http://localhost:5000' + block.url" class="article-body-image" />
       <p *ngIf="block.type === 'text'" [innerHTML]="convertToParagraphs(block.value)"></p>
     </ng-container>
   </ng-container>
-  <!-- IT/FR/EN: show translated body string if available, else fall back to DE blocks -->
-  <ng-container *ngIf="langService.current !== 'de'">
+  <!-- IT/FR/EN: show translated body if available, else fall back to DE blocks -->
+  <ng-container *ngIf="currentLang !== 'de'">
     <div *ngIf="getTranslatedBody()" [innerHTML]="getTranslatedBody()"></div>
     <ng-container *ngIf="!getTranslatedBody()">
       <ng-container *ngFor="let block of article.body">

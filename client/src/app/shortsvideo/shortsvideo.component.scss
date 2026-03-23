@@ -39,6 +39,8 @@
   overflow: hidden;
   background: #000;
   border-radius: var(--radius-lg);
+      border-top-left-radius: 0;
+    border-top-right-radius: 0;
 
   &.landscape { width: 350px; height: 220px; }
 

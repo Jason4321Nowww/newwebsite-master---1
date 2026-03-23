@@ -50,9 +50,10 @@
         <video *ngIf="isVideo(url)" controls [src]="url" class="preview-media"></video>
       </ng-container>
     </div>
-
-    <button type="submit">{{ isEditing ? 'Update' : 'Create' }}</button>
-    <button type="button" (click)="resetForm()" *ngIf="isEditing">Cancel</button>
+    <div>
+    <button type="submit" class="btn btn-primary">{{ isEditing ? 'Update' : 'Create' }}</button>
+    <button type="button" (click)="resetForm()"  class="btn btn-secondary cancelEditBtn" *ngIf="isEditing">Cancel</button>
+    </div>
   </form>
 
   <hr />

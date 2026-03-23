@@ -55,7 +55,7 @@ export class LanguageService {
     if (!obj) return '';
     const lang = this.current;
     if (lang === 'de') return obj[field] ?? '';
-    return obj[`${field}_${lang}`] ?? '';
+    return obj[`${field}_${lang}`] || obj[field] || '';
   }
 
   /**

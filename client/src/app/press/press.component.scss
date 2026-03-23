@@ -40,7 +40,7 @@
     h1 {
       flex: 1;
       text-align: center;
-      color: var(--text-primary);
+      color: var(--text-primary) !important;
       font-size: 2rem;
       margin: 0;
       transition: color 0.3s ease-in-out;
@@ -59,6 +59,12 @@
     margin-bottom: 30px;
     color: var(--text-primary);
     transition: color 0.3s ease-in-out;
+  }
+
+  ::ng-deep .content {
+    p, span, div, li, strong, em, b, i, a {
+      color: var(--text-primary) !important;
+    }
   }
 
   .date-box {

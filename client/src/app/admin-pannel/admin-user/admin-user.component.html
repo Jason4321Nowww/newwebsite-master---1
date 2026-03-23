@@ -1,90 +1,129 @@
 <div class="admin-users">
   <h2>All Users</h2>
 
-  <!-- Registration Key Update Section -->
-  <div class="registration-key-box">
-    <h3>Set Registration Key</h3>
-    <form (ngSubmit)="submitKey()" #keyForm="ngForm">
+  <!-- Registration Key Section -->
+  <div class="reg-key-box">
+    <div class="reg-key-header">
+      <h3>Registration Key</h3>
+      <span class="key-preview" *ngIf="keyPreview">
+        <mat-icon class="lock-icon">lock</mat-icon>
+        Current: <strong>{{ keyPreview }}</strong>
+      </span>
+      <span class="key-preview no-key" *ngIf="!keyPreview">
+        <mat-icon class="lock-icon warn">lock_open</mat-icon>
+        No key set — users cannot register
+      </span>
+    </div>
+
+    <form (ngSubmit)="submitKey()" #keyForm="ngForm" class="key-form">
       <input
         type="text"
         [(ngModel)]="registrationKey"
         name="registrationKey"
-        maxlength="4"
+        minlength="4"
+        maxlength="20"
         required
-        pattern="[A-Za-z0-9]{4}"
-        placeholder="Enter 4-character key"
-        title="Only 4 letters or numbers allowed"
+        placeholder="Enter key (4–20 characters)"
       />
-      <button type="submit" [disabled]="keyForm.invalid">Update Key</button>
-
-      <span class="key-preview" *ngIf="keyPreview">
-        🔒 <strong>Current:</strong> {{ keyPreview }}
-      </span>
+      <button type="submit" [disabled]="keyForm.invalid || registrationKey.trim().length < 4">
+        {{ keyPreview ? 'Update Key' : 'Set Key' }}
+      </button>
     </form>
 
-    <p *ngIf="keyUpdateMessage" class="key-message">{{ keyUpdateMessage }}</p>
+    <p *ngIf="keyUpdateMessage" class="key-message" [class.error]="keyUpdateError">
+      {{ keyUpdateMessage }}
+    </p>
   </div>
 
   <!-- Users Table -->
+  <div *ngIf="loading" class="loading-text">Loading users...</div>
+
   <table *ngIf="!loading" class="user-table">
     <thead>
       <tr>
         <th>Username</th>
-        <th>Role Level</th>
+        <th>Role</th>
         <th>Location</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of users">
-        <td>{{ user.username }}</td>
+      <tr *ngFor="let user of users" [class.editing]="editingUserId === user.id">
+
+        <!-- Username -->
+        <td class="username-cell">{{ user.username }}</td>
+
+        <!-- Role -->
         <td>
-          <select
-            [(ngModel)]="user.roleLevel"
-            (ngModelChange)="onRoleChange($event, user)"
-            class="role-dropdown"
-          >
-            <option *ngFor="let role of roleOptions" [ngValue]="role.value">
-              {{ role.label }}
-            </option>
-          </select>
+          <ng-container *ngIf="editingUserId === user.id; else roleView">
+            <select [(ngModel)]="editRoleLevel" class="edit-select">
+              <option *ngFor="let role of roleOptions" [ngValue]="role.value">
+                {{ role.label }}
+              </option>
+            </select>
+          </ng-container>
+          <ng-template #roleView>
+            <span class="role-badge role-{{ user.roleLevel }}">
+              {{ getRoleLabel(user.roleLevel) }}
+            </span>
+          </ng-template>
         </td>
-       <td>
-  <select
-    [(ngModel)]="user.userLocation"
-    (ngModelChange)="onLocationChange($event, user)"
-    class="role-dropdown"
-  >
-    <option *ngFor="let loc of locationOptions" [value]="loc.value">
-      {{ loc.label }}
-    </option>
-  </select>
-</td>
 
-        <td>{{ user.isActive ? 'Active' : 'Inactive' }}</td>
-        <td class="action-buttons">
-          <!-- Activate / Deactivate -->
-          <mat-icon
-            (click)="toggleActivation(user)"
-            [class.active]="user.isActive"
-            matTooltip="{{ user.isActive ? 'Deactivate' : 'Activate' }}"
-          >
-            {{ user.isActive ? 'toggle_on' : 'toggle_off' }}
-          </mat-icon>
-
-          <!-- Delete -->
-          <mat-icon
-            (click)="deleteUser(user)"
-            class="delete-icon"
-            matTooltip="Delete User"
-          >
-            delete
-          </mat-icon>
+        <!-- Location -->
+        <td>
+          <ng-container *ngIf="editingUserId === user.id; else locationView">
+            <select [(ngModel)]="editUserLocation" class="edit-select">
+              <option *ngFor="let loc of locationOptions" [value]="loc.value">
+                {{ loc.label }}
+              </option>
+            </select>
+          </ng-container>
+          <ng-template #locationView>
+            <span class="location-text">{{ getLocationLabel(user.userLocation) }}</span>
+          </ng-template>
         </td>
+
+        <!-- Status -->
+        <td>
+          <span class="status-badge" [class.active]="user.isActive">
+            {{ user.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+
+        <!-- Actions -->
+        <td class="action-cell">
+          <!-- Edit mode: Save / Cancel -->
+          <ng-container *ngIf="editingUserId === user.id">
+            <button class="btn-save" (click)="saveEdit(user)">
+              <mat-icon>check</mat-icon> Save
+            </button>
+            <button class="btn-cancel" (click)="cancelEdit()">
+              <mat-icon>close</mat-icon> Cancel
+            </button>
+          </ng-container>
+
+          <!-- Normal mode: Edit / Activate / Delete -->
+          <ng-container *ngIf="editingUserId !== user.id">
+            <button class="btn-edit" (click)="startEdit(user)" matTooltip="Edit role & location">
+              <mat-icon>edit</mat-icon>
+            </button>
+
+            <button
+              class="btn-toggle"
+              [class.active]="user.isActive"
+              (click)="toggleActivation(user)"
+              [matTooltip]="user.isActive ? 'Deactivate' : 'Activate'">
+              <mat-icon>{{ user.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+            </button>
+
+            <button class="btn-delete" (click)="deleteUser(user)" matTooltip="Delete user">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </ng-container>
+        </td>
+
       </tr>
     </tbody>
   </table>
-
-  <div *ngIf="loading">Loading users...</div>
 </div>

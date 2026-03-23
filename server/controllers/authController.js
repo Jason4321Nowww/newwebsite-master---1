@@ -75,7 +75,7 @@ const signin = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 86400000,
+      maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
     });
 return  res.status(200).json({message: 'Login successful', 
   token, id: user._id,

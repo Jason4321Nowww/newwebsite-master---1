@@ -47,14 +47,23 @@ getCurrentUser(): Observable<User> {
 
 isLoggedIn(): boolean {
   const token = localStorage.getItem('token');
-  console.log('🧪 Checking token in localStorage:', token);
-  return !!token;
+  const expiry = localStorage.getItem('tokenExpiry');
+  if (!token || !expiry) return false;
+  if (Date.now() > Number(expiry)) {
+    this.clearSession();
+    return false;
+  }
+  return true;
+}
+
+private clearSession(): void {
+  ['token', 'tokenExpiry', 'username', 'id', 'roleLevel'].forEach(k => localStorage.removeItem(k));
 }
 
 
 
  logout() {
-  localStorage.removeItem('token');
+  this.clearSession();
   sessionStorage.clear();
   this.snackBar.open('Logged out successfully', 'Close', { duration: 3000 });
   this.router.navigate(['/signin']);

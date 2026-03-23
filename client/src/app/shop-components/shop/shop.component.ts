@@ -1,31 +1,37 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ShopService } from '../../services/shop.service';
 import { Product } from '../../_models/product';
 import { CartService } from '../../services/cart.service';
 import { LanguageService } from '../../services/language.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-shop',
   templateUrl: './shop.component.html',
   styleUrls: ['./shop.component.scss'],
 })
-export class ShopComponent implements OnInit {
+export class ShopComponent implements OnInit, OnDestroy {
   products: Product[] = [];
+  private langSub!: Subscription;
 
-  constructor(private productService: ShopService, private cart: CartService, public langService: LanguageService) {}
+  constructor(
+    private productService: ShopService,
+    private cart: CartService,
+    public langService: LanguageService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
+    this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
     this.productService.getAllProducts().subscribe({
       next: (data) => {
-        // Initialize stockWarning property for each product
-        this.products = data.map(p => ({
-          ...p,
-          stockWarning: false
-        }));
+        this.products = data.map(p => ({ ...p, stockWarning: false }));
       },
       error: (err) => console.error('Error fetching products:', err)
     });
   }
+
+  ngOnDestroy(): void { this.langSub?.unsubscribe(); }
 
   get featuredProducts() {
     return this.products.filter(p => p.isFeatured && p.isActive);
@@ -39,16 +45,13 @@ export class ShopComponent implements OnInit {
     const cartItem = this.cart.getCartItems().find(item => item.id === product.id);
     const currentQuantity = cartItem?.quantity || 0;
 
-    // Check if adding would exceed stock
     if (currentQuantity + 1 > (product.stock || 0)) {
-      product.stockWarning = true; // Show warning
+      product.stockWarning = true;
       return;
     }
 
-    // Reset warning if addition is allowed
     product.stockWarning = false;
 
-    // Add to cart or increase quantity
     if (cartItem) {
       this.cart.updateQuantity(product.id!, currentQuantity + 1);
     } else {

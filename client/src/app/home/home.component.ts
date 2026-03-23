@@ -1,4 +1,5 @@
-import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ChangeDetectorRef } from '@angular/core';
+import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 import { InfoBanner } from 'src/app/_models/infoBanner';
@@ -16,16 +17,19 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   activeBanner: InfoBanner | null = null;
   latestArticles: Article[] = [];
   private revealObserver?: IntersectionObserver;
+  private langSub!: Subscription;
 
   constructor(
     private infoBanner: InfoBannerService,
     public langService: LanguageService,
     private articleService: ArticlesService,
     private router: Router,
-    private elRef: ElementRef
+    private elRef: ElementRef,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
     this.infoBanner.getBanners().subscribe(banners => {
       this.activeBanner = banners.find(b => b.isActive) || null;
     });
@@ -64,6 +68,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.revealObserver?.disconnect();
+    this.langSub?.unsubscribe();
   }
 
   openArticle(id: string): void {
@@ -71,8 +76,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getFirstImage(article: Article): string | undefined {
-    if (article.imageUrls?.length) return article.imageUrls[0];
-    return article.body.find(b => b.type === 'image' && b.url)?.url;
+    const url = article.imageUrls?.length
+      ? article.imageUrls[0]
+      : article.body.find(b => b.type === 'image' && b.url)?.url;
+
+    if (!url) return undefined;
+    return url.startsWith('http') ? url : `http://localhost:5000${url}`;
   }
 
   getExcerpt(article: Article): string {

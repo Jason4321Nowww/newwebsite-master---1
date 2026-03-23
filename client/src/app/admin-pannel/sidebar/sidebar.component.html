@@ -1,14 +1,15 @@
 <!-- sidebar.component.html -->
 <div id="sidebar-wrapper" [ngClass]="{ 'collapsed': sidebarCollapsed }">
-  <div class="sidebar-heading text-center py-4 primary-text fs-5 fw-bold text-uppercase border-bottom d-flex justify-content-between align-items-center">
-    <span *ngIf="!sidebarCollapsed" class="d-inline"> 
-      <mat-icon class="me-2">home</mat-icon> Admin Panel
-    </span>
+  <div class="sidebar-heading d-flex justify-content-between align-items-center px-3 py-2">
+    <div class="sidebar-brand" *ngIf="!sidebarCollapsed">
+      <img src="assets/logo/starlinelessbigger.png" alt="BKP Logo" class="sidebar-logo" />
+      <span class="sidebar-brand-text">BKP</span>
+    </div>
+    <img *ngIf="sidebarCollapsed" src="assets/logo/starlinelessbigger.png" alt="BKP Logo" class="sidebar-logo-collapsed" />
 
-<button class="btn btn-sm d-inline d-lg-none" (click)="toggleSidebar()">
+    <button class="btn btn-sm d-inline d-lg-none" (click)="toggleSidebar()">
       <mat-icon>{{ sidebarCollapsed ? 'menu' : 'close' }}</mat-icon>
     </button>
-
   </div>
 
   <div class="list-group list-group-flush my-3">
@@ -16,11 +17,8 @@
       *ngFor="let item of menuItems"
       [routerLink]="['/admin', item.key]"
       routerLinkActive="active-item"
-      [ngClass]="{
-        'text-danger fw-bold': item.danger,
-        'second-text fw-bold': !item.danger
-      }"
-      class="list-group-item list-group-item-action bg-transparent d-flex align-items-center gap-3 justify-content-start"
+     
+      class="list-group-item list-group-item-action bg-transparent d-flex align-items-center gap-3 justify-content-start  fw-500"
       (click)="selectItem(item.key)">
       
       <mat-icon class="menu-icon">{{ item.icon }}</mat-icon>

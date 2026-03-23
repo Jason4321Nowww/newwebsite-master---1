@@ -9,7 +9,9 @@
         <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
       </div>
       <div class="title-section">
-        <label *ngIf="activeLang === 'de'">Title (DE): <input formControlName="title" type="text" required /></label>
+        <!-- DE title always visible — it's the required primary field -->
+        <label>Title (DE) *: <input formControlName="title" type="text" placeholder="German title (required)" /></label>
+        <!-- Translation title shown when on a non-DE tab -->
         <label *ngIf="activeLang === 'it'">Title (IT): <input formControlName="title_it" type="text" /></label>
         <label *ngIf="activeLang === 'fr'">Title (FR): <input formControlName="title_fr" type="text" /></label>
         <label *ngIf="activeLang === 'en'">Title (EN): <input formControlName="title_en" type="text" /></label>

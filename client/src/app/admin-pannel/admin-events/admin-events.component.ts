@@ -1,6 +1,5 @@
 import {
   AfterViewInit,
-  AfterViewChecked,
   Component,
   ElementRef,
   OnInit,
@@ -15,7 +14,7 @@ import { Event } from 'src/app/_models/event';
   templateUrl: './admin-events.component.html',
   styleUrls: ['./admin-events.component.scss'],
 })
-export class AdminEventsComponent implements OnInit, AfterViewInit, AfterViewChecked {
+export class AdminEventsComponent implements OnInit, AfterViewInit {
   @ViewChild('descriptionTextarea') descriptionTextareaRef!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
@@ -104,10 +103,6 @@ export class AdminEventsComponent implements OnInit, AfterViewInit, AfterViewChe
     setTimeout(() => this.autoGrowTextarea(), 100);
   }
 
-  ngAfterViewChecked(): void {
-    this.autoGrowTextarea();
-  }
-
   getEvents() {
     this.loading = true;
     this.adminevent.getAllEventsForAdmin().subscribe({
@@ -172,12 +167,17 @@ export class AdminEventsComponent implements OnInit, AfterViewInit, AfterViewChe
     formData.append('date', formValues.eventDate);
     formData.append('image', this.selectedFile);
 
-    this.adminevent.createEvent(formData).subscribe(() => {
-      this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
-      this.selectedFile = null;
-      if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
-      this.formError = '';
-      this.getEvents();
+    this.adminevent.createEvent(formData).subscribe({
+      next: () => {
+        this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
+        this.selectedFile = null;
+        if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
+        this.formError = '';
+        this.getEvents();
+      },
+      error: (err) => {
+        this.formError = err?.error?.message || 'Failed to create event. Please try again.';
+      }
     });
   }
 
@@ -228,11 +228,17 @@ export class AdminEventsComponent implements OnInit, AfterViewInit, AfterViewChe
       formData.append('image', this.selectedFile);
     }
 
-    this.adminevent.updatEvent(this.editingEventId, formData).subscribe(() => {
-      this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
-      this.selectedFile = null;
-      this.editingEventId = null;
-      this.getEvents();
+    this.adminevent.updatEvent(this.editingEventId, formData).subscribe({
+      next: () => {
+        this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
+        this.selectedFile = null;
+        this.editingEventId = null;
+        this.formError = '';
+        this.getEvents();
+      },
+      error: (err) => {
+        this.formError = err?.error?.message || 'Failed to update event. Please try again.';
+      }
     });
   }
 

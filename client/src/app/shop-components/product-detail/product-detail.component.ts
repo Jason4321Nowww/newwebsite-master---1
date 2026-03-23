@@ -1,25 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../_models/product';
 import { CartService } from '../../services/cart.service';
 import { ShopService } from '../../services/shop.service';
+import { LanguageService } from '../../services/language.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.scss']
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
   product!: Product;
   quantity = 0;
+  private langSub!: Subscription;
 
   constructor(
     private cart: CartService,
     private route: ActivatedRoute,
-    private productService: ShopService
+    private productService: ShopService,
+    public langService: LanguageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
  ngOnInit(): void {
+  this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
   const productId = this.route.snapshot.paramMap.get('id');
   if (productId) {
     this.productService.getProductById(productId).subscribe({
@@ -41,6 +47,8 @@ export class ProductDetailComponent implements OnInit {
   }
 }
 
+
+ ngOnDestroy(): void { this.langSub?.unsubscribe(); }
 
  increaseQty() {
   if (this.quantity < (this.product.stock || 0)) {

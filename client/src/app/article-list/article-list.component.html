@@ -23,13 +23,9 @@
 
     <h2>{{ langService.getField(article, 'title') }}</h2>
 
-    <!-- TEXT PREVIEW -->
+    <!-- TEXT PREVIEW — translated if available, else DE fallback -->
     <div class="body">
-      <ng-container *ngFor="let block of article.body">
-        <div *ngIf="block.type === 'text'"
-             [innerHTML]="convertToParagraphs(block.value)">
-        </div>
-      </ng-container>
+      <p>{{ getBodyPreview(article) }}</p>
     </div>
 
     <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>

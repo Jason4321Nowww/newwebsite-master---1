@@ -1,15 +1,89 @@
 /* admin-articles.component.scss */
+.articleFormWrapper .articleContent{
+  padding:10px;
+}
+
 .admin-page { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
-.article-form { background: #fff; padding: 1rem; border-radius: var(--radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-.row { margin-bottom: .75rem; display:flex; flex-direction:column; }
+.article-form { background: #fff; padding: 1.25rem; border: 1px solid #edecec; border-radius: var(--radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  .form-section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #333;
+  }
+}
+
+.list-heading {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.75rem;
+  color: #333;
+}
+
+.required { color: #e53935; margin-left: 2px; }
+
+.lang-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.lang-chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #e5e7eb;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.active {
+    background: #3b82f6;
+    color: #fff;
+  }
+
+  &:hover:not(.active) {
+    background: #d1d5db;
+  }
+}
+
+.row {
+  margin-bottom: .85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
 input, textarea { padding: .5rem; border: 1px solid #ddd; border-radius: var(--radius-sm); }
 .blocks { margin-top: 1rem; }
+.block-controls { display: flex; gap: 0.6rem; margin-bottom: 0.75rem; }
 .block { border: 1px dashed #e3e3e3; padding: .75rem; margin-bottom: .5rem; border-radius: var(--radius-md); background: #fafafa; }
 .image-input { display:flex; gap: .75rem; align-items:center; }
 .preview img { width: 160px; height: auto; border-radius: var(--radius-md); object-fit:cover; }
 .form-actions { margin-top: 1rem; display:flex; gap: .5rem; }
 .article-list { margin-top: 1.5rem; }
-.article-card { padding: .75rem; background:#fff; border-radius:var(--radius-lg); margin-bottom:.8rem; box-shadow:0 1px 6px rgba(0,0,0,0.03); }
+.article-card { padding: .75rem; background:#fff; border-radius:var(--radius-lg); margin-bottom:.8rem;    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border: 1px solid #edecec; }
 .preview-body p { margin: .5rem 0; }
 .preview-body img { max-width: 200px; display:block; margin: .5rem 0; }
 /* General Button Style */

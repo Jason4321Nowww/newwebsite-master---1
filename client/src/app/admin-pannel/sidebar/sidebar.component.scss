@@ -31,10 +31,58 @@
 .list-group-item {
   transition: all 0.2s ease;
   padding: 10px 20px;
+  font-weight: 500;
+  border-left: 3px solid transparent;
+
+  &:hover {
+    background-color: rgba(0, 157, 99, 0.08) !important;
+  }
+
+  &.active-item {
+    background-color: rgba(0, 157, 99, 0.15) !important;
+    border-left: 3px solid #009d63;
+    color: #009d63 !important;
+
+    .menu-icon {
+      color: #009d63;
+    }
+  }
 }
 
 .sidebar-heading {
-  background-color: #f8f9fa;
+  background-color: white;
   border-bottom: 1px solid #e0e0e0;
   color: #009d63;
+  min-height: 64px;
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.sidebar-logo {
+    width: 63px;
+    height: 63px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.sidebar-logo-collapsed {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+.sidebar-brand-text {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: rgb(33 37 41 / 75%);
+  letter-spacing: 2px;
+  flex: 1;
 }

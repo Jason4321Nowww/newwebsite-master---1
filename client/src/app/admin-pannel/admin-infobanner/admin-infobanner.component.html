@@ -1,93 +1,91 @@
-<h2>Admin - Manage Info Banners</h2>
+<!-- admin-infobanner.component.html -->
+<div class="admin-page">
+  <h2>Manage Info Banners</h2>
 
-<form [formGroup]="bannerForm" (ngSubmit)="submitForm()" class="mb-4" novalidate>
+  <form [formGroup]="bannerForm" (ngSubmit)="submitForm()" class="banner-form" novalidate>
 
-  <!-- Language Picker -->
-  <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
-
-  <label *ngIf="activeLang === 'de'">Statement (DE)
-    <textarea formControlName="statement" placeholder="Enter banner statement (DE)" rows="3" (input)="autoGrow($event)"></textarea>
-    <div class="error" *ngIf="bannerForm.get('statement')?.invalid && bannerForm.get('statement')?.touched">
-      Statement is required.
+    <!-- Form header -->
+    <div class="form-header">
+      <span class="form-section-title">{{ selectedBanner ? 'Edit Banner' : 'New Banner' }}</span>
+      <app-admin-lang-picker [activeLang]="activeLang" (langChange)="onLangChange($event)"></app-admin-lang-picker>
     </div>
-  </label>
-  <label *ngIf="activeLang === 'it'">Statement (IT)
-    <textarea formControlName="statement_it" placeholder="Enter banner statement (IT)" rows="3" (input)="autoGrow($event)"></textarea>
-  </label>
-  <label *ngIf="activeLang === 'fr'">Statement (FR)
-    <textarea formControlName="statement_fr" placeholder="Enter banner statement (FR)" rows="3" (input)="autoGrow($event)"></textarea>
-  </label>
-  <label *ngIf="activeLang === 'en'">Statement (EN)
-    <textarea formControlName="statement_en" placeholder="Enter banner statement (EN)" rows="3" (input)="autoGrow($event)"></textarea>
-  </label>
 
-  <label *ngIf="activeLang === 'de'">Learn More Link
-    <input formControlName="link" type="url" placeholder="https://example.com" />
-  </label>
+    <!-- Language chips -->
+    <div class="lang-chips" *ngIf="selectedLangs.length > 1">
+      <span *ngFor="let l of selectedLangs"
+            class="lang-chip"
+            [class.active]="activeLang === l"
+            (click)="onLangChange(l)">
+        {{ l.toUpperCase() }}
+      </span>
+    </div>
 
-  <div class="btn-group">
-    <button type="submit" [disabled]="bannerForm.invalid"
-      [class.invalid]="bannerForm.invalid">
-      {{ selectedBanner ? 'Update Banner' : 'Create Banner' }}
-    </button>
+    <!-- Statement — language specific -->
+     <div class="actionContent">
+    <div class="row" *ngIf="activeLang === 'de'">
+      <label>Statement (DE) <span class="required">*</span></label>
+      <textarea formControlName="statement" placeholder="Enter banner statement (DE)" (input)="autoGrow($event)"></textarea>
+      <div class="error" *ngIf="bannerForm.get('statement')?.invalid && bannerForm.get('statement')?.touched">
+        Statement is required.
+      </div>
+    </div>
+    <div class="row" *ngIf="activeLang === 'it'">
+      <label>Statement (IT)</label>
+      <textarea formControlName="statement_it" placeholder="Enter banner statement (IT)" (input)="autoGrow($event)"></textarea>
+    </div>
+    <div class="row" *ngIf="activeLang === 'fr'">
+      <label>Statement (FR)</label>
+      <textarea formControlName="statement_fr" placeholder="Enter banner statement (FR)" (input)="autoGrow($event)"></textarea>
+    </div>
+    <div class="row" *ngIf="activeLang === 'en'">
+      <label>Statement (EN)</label>
+      <textarea formControlName="statement_en" placeholder="Enter banner statement (EN)" (input)="autoGrow($event)"></textarea>
+    </div>
 
-    <button type="button" *ngIf="selectedBanner" (click)="cancelEdit()">
-      Cancel
-    </button>
+    <!-- Link — always visible -->
+    <div class="row">
+      <label>Learn More Link</label>
+      <input formControlName="link" type="url" placeholder="https://example.com" />
+    </div>
+
+    <!-- Active toggle — always visible -->
+    <div class="row toggle-row">
+      <label class="toggle-label">
+        <input type="checkbox" formControlName="isActive" />
+        Set as Active Banner
+      </label>
+    </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="bannerForm.invalid">
+        {{ selectedBanner ? 'Update Banner' : 'Create Banner' }}
+      </button>
+      <button type="button" class="btn-secondary" *ngIf="selectedBanner" (click)="cancelEdit()">
+        Cancel
+      </button>
+    </div>
+  </form>
+
+  <hr />
+  <h3 class="list-heading">Banners List</h3>
+  <div class="banner-list">
+    <div *ngFor="let b of banners" class="banner-card">
+      <div class="banner-card-content d-flex flex-row align-items-center justify-content-between">
+        <div>
+        <p class="banner-statement">{{ b.statement }}</p>
+        <span class="status-badge" [class.active]="b.isActive">
+          {{ b.isActive ? 'Active' : 'Inactive' }}
+        </span>
+        </div>
+        <div class="card-actions">
+        <button class="btn-edit" (click)="editBanner(b)">Edit</button>
+        <button class="btn-toggle" (click)="toggleActive(b.id!)">
+          {{ b.isActive ? 'Deactivate' : 'Activate' }}
+        </button>
+        <button class="btn-danger" (click)="deleteBanner(b.id!)">Delete</button>
+      </div>
+      </div>
+      
+    </div>
   </div>
-</form>
-
-<hr />
-
-
-<table>
-  <thead>
-    <tr>
-      <th class="col-statement">Statement</th>
-      <th class="col-status">Status</th>
-      <th class="col-actions">Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let b of banners" class="banner-row">
-      <!-- 80% -->
-      <td class="col-statement" [matTooltip]="b.statement">{{ b.statement }}</td>
-
-      <!-- 10% -->
-      <td class="col-status">
-        <mat-icon
-          (click)="toggleActive(b.id!)"
-          [ngStyle]="{ color: b.isActive ? '#4caf50' : '#f44336' }"
-          [matTooltip]="b.isActive ? 'Deactivate' : 'Activate'"
-          class="icon-action"
-        >
-          {{ b.isActive ? 'toggle_on' : 'toggle_off' }}
-        </mat-icon>
-      </td>
-
-      <!-- 10% -->
-   <td class="col-actions">
-  <div class="d-flex justify-content-center align-items-center gap-2">
-    <mat-icon
-      (click)="editBanner(b)"
-      matTooltip="Edit"
-      class="icon-action icon-edit"
-    >
-      edit
-    </mat-icon>
-
-    <mat-icon
-      (click)="deleteBanner(b.id!)"
-      matTooltip="Delete"
-      class="icon-action icon-delete text-danger"
-    >
-      delete
-    </mat-icon>
-  </div>
-</td>
- <hr>
-    </tr>
-   
-  </tbody>
-</table>
-
+</div>

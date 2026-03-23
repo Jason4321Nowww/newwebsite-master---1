@@ -1,36 +1,46 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { Event } from '../_models/event';
 import { AuthService } from '../services/auth.service';
 import { EventsService } from '../services/events.service';
 import { LanguageService } from '../services/language.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.scss']
 })
-export class EventsComponent implements OnInit {
+export class EventsComponent implements OnInit, OnDestroy {
   events: Event[] = [];
   loading = false;
   isLoggedIn = false;
-  roleLevel: number = 7; // default to Oeffentlich; read from localStorage after signin
+  roleLevel: number = 7;
   expandedEventIds = new Set<string>();
-
+  private langSub!: Subscription;
 
   constructor(
     private auth: AuthService,
     private eventService: EventsService,
-    public langService: LanguageService
+    public langService: LanguageService,
+    private cdr: ChangeDetectorRef
   ) {}
 
 ngOnInit(): void {
+  this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
   this.loading = true;
   this.isLoggedIn = this.auth.isLoggedIn();
   this.roleLevel = Number(localStorage.getItem('roleLevel') ?? 7);
   // Server filters events by role+location; client just renders what it receives
   this.eventService.getEvents().subscribe({
     next: (events: any[]) => {
-      this.events = events;
+      const userId = localStorage.getItem('id');
+      this.events = events.map(e => ({
+        ...e,
+        attendeesCount: e.attendees?.length ?? 0,
+        isAttending: userId
+          ? e.attendees?.some((a: any) => a.user === userId)
+          : false
+      }));
       this.loading = false;
     },
     error: (err) => {
@@ -41,6 +51,8 @@ ngOnInit(): void {
 }
 
 
+
+  ngOnDestroy(): void { this.langSub?.unsubscribe(); }
 
   toggleReadMore(eventId: string): void {
     this.expandedEventIds.has(eventId)

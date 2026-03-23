@@ -1,80 +1,76 @@
 <div class="events-page">
-  <p class="calendar-heading scroll-reveal"><mat-icon  class="fs-5 me-1 align-middle text-secondary">calendar_today</mat-icon> {{ langService.t('events.upcoming') }}</p>
+  <p class="calendar-heading scroll-reveal">
+    <mat-icon class="fs-5 me-1 align-middle text-secondary">calendar_today</mat-icon>
+    {{ langService.t('events.upcoming') }}
+  </p>
 
   <div *ngIf="loading">{{ langService.t('events.loading') }}</div>
   <div *ngIf="!loading && events.length === 0" class="no-events">{{ langService.t('events.noEvents') }}</div>
-<app-calendar [events]="events"></app-calendar>
 
+  <app-calendar [events]="events"></app-calendar>
 
   <div *ngFor="let event of events" class="event-card scroll-reveal" [class.expanded]="isExpanded(event.id)">
 
-  <!-- Date Box -->
-  <div class="date-box">
-    {{ event.eventDate | date: 'd. MMMM yyyy' }}
-  </div>
-
-  <!-- Event Details Block -->
-  <div class="event-details">
-
-    <div class="event-title">
-      {{ langService.getField(event, 'title') }}
-      <span *ngIf="event.isMandatory" class="mandatory-blink">{{ langService.t('events.mandatory') }}</span>
-      <mat-icon *ngIf="event.repeatEveryWeeks && event.repeatEveryWeeks > 0" class="repeat-icon" title="Repeats every {{ event.repeatEveryWeeks }} week(s)">autorenew</mat-icon>
-      <mat-icon *ngIf="(!event.repeatEveryWeeks || event.repeatEveryWeeks === 0) && event.repeat && event.repeat !== 'none'" class="repeat-icon" title="Repeating event">autorenew</mat-icon>
+    <!-- Date Badge -->
+    <div class="date-badge">
+      {{ event.eventDate | date: 'd. MMMM yyyy' }}
     </div>
 
-    <!-- Image after title -->
-    <img *ngIf="event.image"
-         class="event-image"
-         [class.expanded-img]="isExpanded(event.id)"
-         [src]="'http://localhost:5000' + event.image"
-         [alt]="event.title" />
+    <!-- Card Body -->
+    <div class="card-body">
 
-    <div class="event-description-wrapper">
-      <div class="event-description body" [class.clamped]="!isExpanded(event.id)"  [innerHTML]="convertToParagraphs(langService.getField(event, 'description'))">
+      <!-- Image -->
+      <img *ngIf="event.image"
+           class="event-image"
+           [src]="'http://localhost:5000' + event.image"
+           [alt]="langService.getField(event, 'title')" />
+
+      <!-- Content -->
+      <div class="event-content">
+
+        <!-- Title Row -->
+        <div class="title-row">
+          <h3 class="event-title">{{ langService.getField(event, 'title') }}</h3>
+          <span *ngIf="event.isMandatory" class="badge-mandatory">{{ langService.t('events.mandatory') }}</span>
+          <mat-icon *ngIf="event.repeatEveryWeeks && event.repeatEveryWeeks > 0"
+                    class="repeat-icon"
+                    [title]="'Repeats every ' + event.repeatEveryWeeks + ' week(s)'">autorenew</mat-icon>
+          <mat-icon *ngIf="(!event.repeatEveryWeeks || event.repeatEveryWeeks === 0) && event.repeat && event.repeat !== 'none'"
+                    class="repeat-icon"
+                    title="Repeating event">autorenew</mat-icon>
+        </div>
+
+        <!-- Description -->
+        <div class="event-description-wrapper">
+          <div class="event-description"
+               [class.clamped]="!isExpanded(event.id)"
+               [innerHTML]="convertToParagraphs(langService.getField(event, 'description'))">
+          </div>
+          <a *ngIf="hasLongDescription(event.description)"
+             (click)="toggleReadMore(event.id)"
+             class="read-more-link">
+            {{ isExpanded(event.id) ? langService.t('events.readLess') : langService.t('events.readMore') }}
+          </a>
+        </div>
+
+        <!-- Attendance Row -->
+        <div class="attendance-row">
+          <button class="attend-btn"
+                  (click)="toggleAttendance(event)"
+                  [class.attending]="event.isAttending"
+                  [title]="event.isAttending ? 'You are attending' : 'Click to attend'">
+            <mat-icon>{{ event.isAttending ? 'how_to_reg' : 'person_add' }}</mat-icon>
+            <span>{{ event.isAttending ? langService.t('events.youreIn') : langService.t('events.attending') }}</span>
+          </button>
+
+          <div class="attendee-count" *ngIf="roleLevel === 0">
+            <mat-icon>group</mat-icon>
+            <span>{{ event.attendeesCount ?? 0 }}</span>
+          </div>
+        </div>
 
       </div>
-
-      <div class="description-spacer" *ngIf="!isExpanded(event.id)"></div>
-
-      <a *ngIf="hasLongDescription(event.description)"
-         (click)="toggleReadMore(event.id)"
-         class="read-more-link">
-        {{ isExpanded(event.id) ? langService.t('events.readLess') : langService.t('events.readMore') }}
-      </a>
     </div>
-
- <div class="attendance-row">
-  <mat-icon
-    (click)="toggleAttendance(event)"
-    [title]="event.isAttending ? 'You are attending this event' : 'Click to attend anonymously'"
-    [ngClass]="{ 'attending': event.isAttending }">
-    {{ event.isAttending ? 'how_to_reg' : 'person_add' }}
-  </mat-icon>
-
-  <!-- Group icon and count, without 'attending' for admins -->
-  <span class="attendance-text" *ngIf="roleLevel == 0">
-    <mat-icon class="group-icon">group</mat-icon>
-    {{ event.attendeesCount || 0 }}
-  </span>
-
-  <!-- Group icon and count + "attending" for normal users -->
-  <span class="attendance-text" *ngIf="roleLevel != 0">
-    {{ langService.t('events.attending') }}
-  </span>
-
-  <!-- Show "You're in" for ALL users if attending -->
-  <span class="attendance-text" *ngIf="event.isAttending">
-    <small class="status">{{ langService.t('events.youreIn') }}</small>
-  </span>
-</div>
-
-
-
-
   </div>
-</div>
-
-
 
 </div>

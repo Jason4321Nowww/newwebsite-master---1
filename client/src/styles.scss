@@ -59,9 +59,9 @@
   --calendar-heading: #2a5b9e;
 
   /* Border Radius Scale */
-  --radius-sm: 4px;   /* tiny elements: badges, flags, calendar cells */
-  --radius-md: 6px;   /* buttons, inputs, tags, small interactive elements */
-  --radius-lg: 12px;  /* cards, modals, containers, panels */
+  --radius-sm: 4px;    /* tiny elements: badges, flags, calendar cells */
+  --radius-md: 8px;    /* buttons, inputs, tags, small interactive elements */
+  --radius-lg: 12px;   /* cards, modals, containers, panels */
 }
 
 /* Dark Mode */
@@ -228,13 +228,13 @@ button, .mat-button, .mat-icon-button {
   transition: color 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
-/* Inputs should use theme */
+/* Inputs should use theme — admin overrides --input-bg/text so this is safe globally */
 input, textarea, select {
   background-color: var(--input-bg);
   color: var(--input-text);
   border-color: var(--input-border);
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, border-color 0.3s ease-in-out;
-  
+
   &:focus {
     border-color: var(--input-focus-border);
     outline-color: var(--input-focus-border);
@@ -243,7 +243,6 @@ input, textarea, select {
 
 /* Admin Panel - Force Light Mode (Exclude from theme) */
 app-admin-layout,
-app-admin-layout *,
 [class*="admin-"]:not([class*="admin-pannel"]) {
   --bg-primary: #ffffff !important;
   --bg-secondary: #f5f5f5 !important;
@@ -253,8 +252,14 @@ app-admin-layout *,
   --card-bg: #ffffff !important;
   --input-bg: #ffffff !important;
   --input-text: #000000 !important;
-  background-color: #ffffff !important;
-  color: #000000 !important;
+  --input-border: #e0e0e0 !important;
+  --input-focus-border: #1976d2 !important;
+  --border-color: #e0e0e0 !important;
+  --btn-primary-bg: #3a4f8a !important;
+  --btn-primary-text: #ffffff !important;
+  --hover-bg: #f0f0f0 !important;
+  background-color: #ffffff;
+  color: #000000;
 }
 
 /* Ensure admin routes don't get theme classes */
@@ -262,8 +267,8 @@ router-outlet + app-admin-layout,
 router-outlet + [class*="admin-"] {
   .dark-mode,
   .light-mode {
-    background-color: #ffffff !important;
-    color: #000000 !important;
+    --bg-primary: #ffffff !important;
+    --text-primary: #000000 !important;
   }
 }
 

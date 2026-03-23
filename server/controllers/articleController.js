@@ -31,10 +31,9 @@ function mapUploadedFilesToBlocks(bodyBlocks, files) {
 
 const createArticle = async (req, res) => {
   try {
-    let { title, body, author } = req.body;
+    let { title, title_it, title_fr, title_en, body, body_it, body_fr, body_en, author } = req.body;
     if (!title) return res.status(400).json({ message: 'Title is required' });
 
-    // body expected as JSON string or already parsed
     if (typeof body === 'string') {
       try { body = JSON.parse(body); } catch (e) { return res.status(400).json({ message: 'Invalid body JSON' }); }
     }
@@ -43,7 +42,6 @@ const createArticle = async (req, res) => {
       return res.status(400).json({ message: 'Body must be a non-empty array of blocks' });
     }
 
-    // validate blocks basic
     for (const b of body) {
       if (b.type !== 'text' && b.type !== 'image') {
         return res.status(400).json({ message: 'Block type must be "text" or "image"' });
@@ -53,12 +51,18 @@ const createArticle = async (req, res) => {
       }
     }
 
-    const files = req.files || [];
+    const files = req.files?.images || [];
     const mapped = mapUploadedFilesToBlocks(body, files);
 
     const article = new Article({
       title: title.trim(),
+      title_it: title_it || '',
+      title_fr: title_fr || '',
+      title_en: title_en || '',
       body: mapped,
+      body_it: body_it || '',
+      body_fr: body_fr || '',
+      body_en: body_en || '',
       author: author ? author.trim() : undefined
     });
 
@@ -135,46 +139,45 @@ const getArticleById = async (req, res) => {
 
 
 
-const   updateArticle = async (req, res) => {
+const updateArticle = async (req, res) => {
   try {
     const articleId = req.params.id;
     const article = await Article.findById(articleId);
 
     if (!article) return res.status(404).json({ message: "Not found" });
 
-    const { title, author, body } = req.body;
+    const { title, title_it, title_fr, title_en, author, body, body_it, body_fr, body_en } = req.body;
     const parsedBody = JSON.parse(body);
 
+    const deFiles = req.files?.images || [];
     let imageIndex = 0;
 
-    const updatedBody = parsedBody.map((block, blockIndex) => {
+    const updatedBody = parsedBody.map((block) => {
       if (block.type === "image") {
-        const uploadedFile = req.files[imageIndex];
-
-        // If user selected new file → replace old one
+        const uploadedFile = deFiles[imageIndex];
         if (uploadedFile) {
           const newURL = "/uploads/articles/" + uploadedFile.filename;
-
-          // remove old image if exists
           if (block.url) {
             const oldPath = path.join(__dirname, "..", block.url);
             if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
           }
-
           imageIndex++;
           return { type: "image", url: newURL };
         }
-
-        // If no new file selected → keep old URL
         return { type: "image", url: block.url || "" };
       }
-
       return block;
     });
 
     article.title = title;
+    article.title_it = title_it || '';
+    article.title_fr = title_fr || '';
+    article.title_en = title_en || '';
     article.author = author;
     article.body = updatedBody;
+    article.body_it = body_it || '';
+    article.body_fr = body_fr || '';
+    article.body_en = body_en || '';
 
     await article.save();
 

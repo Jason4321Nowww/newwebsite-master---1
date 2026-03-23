@@ -25,13 +25,13 @@ constructor(private fb: FormBuilder, private auth: AuthService, private router: 
     this.auth.signin(this.signinForm.value).subscribe({
       next: (res) => {
         alert('Login successful!');
-      localStorage.setItem('username', res.username); // ✅ Save username
-       localStorage.setItem('token', res.token); // 👈 Store token
-       localStorage.setItem('id', res.id); // ✅ Save user ID
+      localStorage.setItem('username', res.username);
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('id', res.id);
+      localStorage.setItem('roleLevel', String(res.roleLevel));
+      localStorage.setItem('tokenExpiry', String(Date.now() + 15 * 24 * 60 * 60 * 1000)); // 15 days
 
-       localStorage.setItem('roleLevel', String(res.roleLevel)); // ✅ Store roleLevel
-
-      console.log('🟢 User roleLevel:', res.roleLevel); // ✅ use it as needed
+      console.log('🟢 User roleLevel:', res.roleLevel);
 
 
      

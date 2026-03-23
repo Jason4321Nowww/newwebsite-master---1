@@ -8,8 +8,8 @@
       <p *ngIf="product.stockWarning" class="stock-warning">
                No more items left in stock!
       </p>
-    <h2>{{ product.name }}</h2>
-    <p class="description">{{ product.description }}</p>
+    <h2>{{ langService.getField(product, 'name') }}</h2>
+    <p class="description">{{ langService.getField(product, 'description') }}</p>
 
     <!-- ✅ Show only for NON-external products -->
     <ng-container *ngIf="!product.isExternal; else externalBlock">

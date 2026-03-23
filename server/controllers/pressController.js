@@ -7,7 +7,7 @@ require('dotenv').config();
 
   const postRelease = async (req, res) => {
 try {
-    const { title, content } = req.body;
+    const { title, title_it, title_fr, title_en, content, content_it, content_fr, content_en } = req.body;
 
    if (!req.file) {
       return res.status(400).json({ message: 'Image is required' });
@@ -15,16 +15,17 @@ try {
 
      const imageUrl = `/uploads/press/${req.file.filename}`;
 
-const press = new PressRelease({ 
-  title, 
-  content , 
-  image:imageUrl})
+const press = new PressRelease({
+  title, title_it, title_fr, title_en,
+  content, content_it, content_fr, content_en,
+  image: imageUrl
+});
 
   await press.save();
   res.send({ message: 'Press created successfully.', id: press._id });
 } catch (error) {
-   console.error('Create Event Error:', err);
-    res.status(500).json({ message: 'Failed to create event' });
+   console.error('Create Press Error:', error);
+    res.status(500).json({ message: 'Failed to create press release' });
 }
 
 };

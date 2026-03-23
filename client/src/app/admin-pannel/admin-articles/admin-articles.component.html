@@ -3,50 +3,61 @@
   <h2>Manage Articles</h2>
 
   <form [formGroup]="articleForm" (ngSubmit)="submit()" class="article-form" novalidate>
+    <div class="articleFormWrapper">
+    <!-- Form header -->
+    <div class="form-header">
+      <span class="form-section-title">{{ editingArticleId ? 'Edit Article' : 'New Article' }}</span>
+      <app-admin-lang-picker [activeLang]="activeLang" (langChange)="onLangChange($event)"></app-admin-lang-picker>
+    </div>
 
-    <!-- Language Picker -->
-    <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
-
+    <!-- Language chips -->
+    <div class="lang-chips" *ngIf="selectedLangs.length > 1">
+      <span *ngFor="let l of selectedLangs"
+            class="lang-chip"
+            [class.active]="activeLang === l"
+            (click)="onLangChange(l)">
+        {{ l.toUpperCase() }}
+      </span>
+    </div>
+    <div class="articleContent">
+    <!-- Title — language specific -->
     <div class="row" *ngIf="activeLang === 'de'">
-      <label>Title (DE)</label>
-      <input formControlName="title" required />
+      <label>Title (DE) <span class="required">*</span></label>
+      <input formControlName="title" placeholder="German title (required)" />
     </div>
     <div class="row" *ngIf="activeLang === 'it'">
       <label>Title (IT)</label>
-      <input formControlName="title_it" />
+      <input formControlName="title_it" placeholder="Italian title (optional)" />
     </div>
     <div class="row" *ngIf="activeLang === 'fr'">
       <label>Title (FR)</label>
-      <input formControlName="title_fr" />
+      <input formControlName="title_fr" placeholder="French title (optional)" />
     </div>
     <div class="row" *ngIf="activeLang === 'en'">
       <label>Title (EN)</label>
-      <input formControlName="title_en" />
+      <input formControlName="title_en" placeholder="English title (optional)" />
     </div>
 
-    <div class="row" *ngIf="activeLang === 'de'">
+    <!-- Author — always visible -->
+    <div class="row">
       <label>Author</label>
-      <input formControlName="author" />
+      <input formControlName="author" placeholder="Author name" />
     </div>
-
+    </div>
+    <!-- DE tab: FormArray blocks -->
     <div class="blocks" *ngIf="activeLang === 'de'">
       <div class="block-controls">
         <button type="button" (click)="addTextBlock()">+ Text</button>
         <button type="button" (click)="addImageBlock()">+ Image</button>
         <button type="button" (click)="addSample()">Sample</button>
       </div>
-
       <div formArrayName="blocks" class="block-list">
         <div *ngFor="let block of blocks.controls; let i = index" [formGroupName]="i" class="block">
           <div *ngIf="block.get('type')?.value === 'text'">
             <label>Text</label>
-            <textarea formControlName="value" 
-            placeholder="Paragraph text"
-            (input)="autoGrow($event)"
-            #descriptionTextarea
-            ></textarea>
+            <textarea formControlName="value" placeholder="Paragraph text"
+              (input)="autoGrow($event)" #descriptionTextarea></textarea>
           </div>
-
           <div *ngIf="block.get('type')?.value === 'image'">
             <label>Image</label>
             <div class="image-input">
@@ -59,7 +70,6 @@
               </div>
             </div>
           </div>
-
           <div class="block-actions">
             <button type="button" (click)="removeBlock(i)">Remove</button>
           </div>
@@ -67,28 +77,48 @@
       </div>
     </div>
 
-    <!-- Translation body for IT/FR/EN -->
-    <div class="row" *ngIf="activeLang === 'it'">
-      <label>Body (IT)</label>
-      <textarea formControlName="body_it" rows="8" placeholder="Article body in Italian (plain text or HTML)" (input)="autoGrow($event)"></textarea>
-    </div>
-    <div class="row" *ngIf="activeLang === 'fr'">
-      <label>Body (FR)</label>
-      <textarea formControlName="body_fr" rows="8" placeholder="Article body in French (plain text or HTML)" (input)="autoGrow($event)"></textarea>
-    </div>
-    <div class="row" *ngIf="activeLang === 'en'">
-      <label>Body (EN)</label>
-      <textarea formControlName="body_en" rows="8" placeholder="Article body in English (plain text or HTML)" (input)="autoGrow($event)"></textarea>
+    <!-- IT/FR/EN tabs: same block UI using plain arrays -->
+    <div class="blocks" *ngIf="activeLang !== 'de'">
+      <div class="block-controls">
+        <button type="button" (click)="addLangTextBlock(activeLang)">+ Text</button>
+        <button type="button" (click)="addLangImageBlock(activeLang)">+ Image</button>
+        <button type="button" (click)="addLangSample(activeLang)">Sample</button>
+      </div>
+      <div class="block-list">
+        <div *ngFor="let block of langBlocks[activeLang]; let i = index" class="block">
+          <div *ngIf="block.type === 'text'">
+            <label>Text</label>
+            <textarea [(ngModel)]="block.value" [ngModelOptions]="{standalone: true}"
+              placeholder="Paragraph text" (input)="autoGrow($event)"></textarea>
+          </div>
+          <div *ngIf="block.type === 'image'">
+            <label>Image</label>
+            <div class="image-input">
+              <input type="file" accept="image/*" (change)="onLangFileSelected($event, activeLang, i)" />
+              <div class="preview" *ngIf="langFilePreviews[activeLang].get(i)">
+                <img [src]="langFilePreviews[activeLang].get(i)" alt="preview" />
+              </div>
+              <div class="preview" *ngIf="!langFilePreviews[activeLang].get(i) && block.url">
+                <img [src]="'http://localhost:5000' + block.url" alt="current" />
+              </div>
+            </div>
+          </div>
+          <div class="block-actions">
+            <button type="button" (click)="removeLangBlock(activeLang, i)">Remove</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="form-actions">
-      <button type="submit"  class="btn-primary"  >{{ editingArticleId ? 'Update' : 'Create' }} Article</button>
-      <button type="button" class="btn-secondary"  (click)="cancelEdit()" *ngIf="editingArticleId">Cancel</button>
+      <button type="submit" class="btn-primary">{{ editingArticleId ? 'Update' : 'Create' }} Article</button>
+      <button type="button" class="btn-secondary" (click)="cancelEdit()" *ngIf="editingArticleId">Cancel</button>
     </div>
+  </div>
   </form>
 
-  <hr/>
-<h1>Articles List </h1>
+  <hr />
+  <h3 class="list-heading">Articles List</h3>
   <div class="article-list">
     <div *ngFor="let a of articles" class="article-card">
       <h3>{{ a.title }}</h3>
@@ -97,16 +127,12 @@
         <ng-container *ngFor="let b of a.body">
           <img *ngIf="b.type === 'image' && b.url" [src]="'http://localhost:5000' + b.url" />
           <p *ngIf="b.type === 'text'">{{ b.value | slice: 0:215 }}...</p>
-
         </ng-container>
       </div>
-
-    <div class="card-actions">
-  <button class="btn-edit" (click)="editArticle(a)">Edit</button>
-
-  <button class="btn-danger" (click)="deleteArticle(a.id)">Delete</button>
-</div>
-
+      <div class="card-actions">
+        <button class="btn-edit" (click)="editArticle(a)">Edit</button>
+        <button class="btn-danger" (click)="deleteArticle(a.id)">Delete</button>
+      </div>
     </div>
   </div>
 </div>
