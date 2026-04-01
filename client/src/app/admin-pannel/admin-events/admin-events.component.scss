@@ -1,26 +1,15 @@
 :host {
   display: block;
-  background-color: #f5f7fa;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #2c3e50;
 }
 
 .event-container {
-  background: #fff;
-  padding: 2rem;
-  max-width: 1100px;
-  margin: 1rem auto;
-  border-radius: var(--radius-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e0e0e0;
   overflow-x: hidden;
   box-sizing: border-box;
 }
 
 .event-container h2 {
-  font-size: 1.8rem;
-  margin-bottom: 2rem;
-  font-weight: 600;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -28,41 +17,29 @@
 }
 
 
-.title-lang-row {
+
+.form-header {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  align-items: flex-end;
-
-  .title-section {
-    flex: 8;
-    display: flex;
-    flex-direction: column;
-
-    label {
-      display: flex;
-      flex-direction: column;
-      font-weight: 500;
-      font-size: 0.95rem;
-      color: #333;
-      width: 100%;
-
-      input {
-        padding: 10px;
-        font-size: 1rem;
-        border-radius: var(--radius-md);
-        border: 1px solid #ccc;
-        margin-top: 0.3rem;
-        width: 100%;
-        outline: none;
-        box-sizing: border-box;
-      }
-    }
-  }
-
-  .lang-section {
-    flex: 2;
-  }
 }
+
+.form-section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.lang-tabs {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.required { color: #e53935; margin-left: 2px; }
 
 .form-error {
   color: #e74c3c;
@@ -119,13 +96,13 @@
   grid-column: span 2;
 }
 
-.event-form button {
+.event-form button:not(.lang-add-btn) {
   grid-column: span 2;
   justify-self: start;
-  background-color: #1976d2;
+  background-color: #009d63;
   color: white;
   padding: 10px 16px;
-  font-weight: 600;
+  font-weight: 500;
   border: none;
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -135,8 +112,8 @@
   transition: background-color 0.3s;
 }
 
-.event-form button:hover {
-  background-color: #1565c0;
+.event-form button:not(.lang-add-btn):hover {
+  background-color: #007a4d;
 }
 
 .event-form .cancel-button {
@@ -157,11 +134,6 @@
 /* TABLE STYLES */
 .events-table {
   margin-top: 2rem;
-  background: #fff;
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e0e0e0;
 }
 .filter-controls {
   display: flex;
@@ -243,7 +215,7 @@ mat-icon.text-danger:hover {
     padding: 8px;
   }
 
-  .event-form button {
+  .event-form button:not(.lang-add-btn) {
     font-size: 0.85rem;
     padding: 8px 12px;
   }

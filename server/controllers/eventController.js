@@ -102,7 +102,7 @@ const createEvent = async (req, res) => {
       isMandatory,
       eventDate,
       repeat,
-      repeatEveryWeeks,
+      repeatEndDate,
       eventType,
       eventLocation
     } = req.body;
@@ -119,7 +119,7 @@ const createEvent = async (req, res) => {
       isMandatory,
       eventDate,
       repeat,
-      repeatEveryWeeks: Number(repeatEveryWeeks) || 0,
+      repeatEndDate: repeatEndDate || null,
       eventType: eventType || 'oeffentlich',
       eventLocation,
       image: imageUrl,
@@ -144,7 +144,7 @@ const updateEvent = async (req, res) => {
       isMandatory,
       eventDate,
       repeat,
-      repeatEveryWeeks,
+      repeatEndDate,
       eventType,
       eventLocation,
     } = req.body;
@@ -155,7 +155,7 @@ const updateEvent = async (req, res) => {
       isMandatory,
       eventDate,
       repeat,
-      repeatEveryWeeks: Number(repeatEveryWeeks) || 0,
+      repeatEndDate: repeatEndDate || null,
       eventType: eventType || 'oeffentlich',
       eventLocation,
       date: eventDate,

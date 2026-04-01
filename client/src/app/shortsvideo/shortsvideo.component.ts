@@ -17,7 +17,6 @@ export class ShortsVideo implements OnChanges {
   constructor(private sanitizer: DomSanitizer, public langService: LanguageService) {}
 
   ngOnChanges(): void {
-    // When the card is no longer the active center, reset back to thumbnail
     if (!this.isActive) {
       this.playing = false;
     }
@@ -25,7 +24,6 @@ export class ShortsVideo implements OnChanges {
 
   get thumbnailUrl(): string {
     if (!this.videoInfo?.videoId) return '';
-    // hqdefault always exists; maxresdefault may not for older videos
     return `https://img.youtube.com/vi/${this.videoInfo.videoId}/hqdefault.jpg`;
   }
 
@@ -40,11 +38,11 @@ export class ShortsVideo implements OnChanges {
     this.playing = true;
   }
 
-  getTitle(): string {
+  getTitle(lang: string | null): string {
     if (!this.videoInfo) return '';
-    const lang = this.langService.current;
-    if (lang !== 'de') {
-      const langTitle = this.videoInfo[`title_${lang}`];
+    const l = lang || 'de';
+    if (l !== 'de') {
+      const langTitle = this.videoInfo[`title_${l}`];
       if (langTitle) return langTitle;
     }
     return this.videoInfo.title;

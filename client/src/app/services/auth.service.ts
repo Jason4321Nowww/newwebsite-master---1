@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { User } from '../_models/user';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,7 +24,21 @@ export class AuthService {
 
   private baseUrl = 'http://localhost:5000/api/auth';
 
+  private _userName = new BehaviorSubject<string | null>(localStorage.getItem('username'));
+  userName$ = this._userName.asObservable();
+
   constructor(private router:Router, private snackBar: MatSnackBar ,private http:HttpClient) { }
+
+  setSession(res: { token: string; username: string; id: string; roleLevel: number; userLocation?: string }): void {
+    const expiry = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
+    localStorage.setItem('token', res.token);
+    localStorage.setItem('tokenExpiry', String(expiry));
+    localStorage.setItem('username', res.username);
+    localStorage.setItem('id', res.id);
+    localStorage.setItem('roleLevel', String(res.roleLevel));
+    if (res.userLocation) localStorage.setItem('userLocation', res.userLocation);
+    this._userName.next(res.username);
+  }
 
   signup(data: { username: string; password: string; registrationKey: string; userLocation?: string }): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/signup`, data);
@@ -57,7 +71,8 @@ isLoggedIn(): boolean {
 }
 
 private clearSession(): void {
-  ['token', 'tokenExpiry', 'username', 'id', 'roleLevel'].forEach(k => localStorage.removeItem(k));
+  ['token', 'tokenExpiry', 'username', 'id', 'roleLevel', 'userLocation'].forEach(k => localStorage.removeItem(k));
+  this._userName.next(null);
 }
 
 

@@ -1,275 +1,103 @@
-.latest-release {
-  max-width: 900px;
+.press-page {
+  max-width: 1100px;
   margin: 2rem auto;
-  padding: 40px;
-  font-family: 'Georgia', serif;
+  padding: 0 1.5rem 3rem;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.press-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.press-card {
   background: var(--card-bg);
   border-radius: var(--radius-lg);
-  box-shadow: 0 4px 16px var(--card-shadow);
-  line-height: 1.8;
-  color: var(--text-primary);
-  text-align: justify;
-  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  box-shadow: 0 2px 8px var(--card-shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 
-  @media (max-width: 768px) {
-    padding: 25px 20px;
-    margin: 1.5rem auto;
-    line-height: 1.6;
-  }
-
-  @media (max-width: 480px) {
-    padding: 20px 15px;
-    margin: 1rem auto;
-    border-radius: var(--radius-md);
-    line-height: 1.5;
-  }
-
-  .header-line {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-    gap: 10px;
-
-    img {
-      height: 70px;
-      transform: translateY(-10px); // lift the image slightly above title
-    }
-
-    h1 {
-      flex: 1;
-      text-align: center;
-      color: var(--text-primary) !important;
-      font-size: 2rem;
-      margin: 0;
-      transition: color 0.3s ease-in-out;
-    }
-  }
-
-  hr {
-    border: none;
-    border-top: 2px solid var(--border-color);
-    margin: 20px 0;
-    transition: border-color 0.3s ease-in-out;
-  }
-
-  .content {
-    font-size: 1rem;
-    margin-bottom: 30px;
-    color: var(--text-primary);
-    transition: color 0.3s ease-in-out;
-  }
-
-  ::ng-deep .content {
-    p, span, div, li, strong, em, b, i, a {
-      color: var(--text-primary) !important;
-    }
-  }
-
-  .date-box {
-    display: flex;
-    align-items: center;
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    font-style: italic;
-    border-left: 4px solid var(--border-color);
-    padding-left: 8px;
-    max-width: 300px;
-    transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
-
-    svg {
-      margin-right: 6px;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .header-line {
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 15px;
-
-      img {
-        height: 50px;
-        transform: translateY(-6px);
-      }
-
-      h1 {
-        font-size: 1.5rem;
-        margin-top: 0.5rem;
-      }
-    }
-
-    .content {
-      font-size: 0.95rem;
-      margin-bottom: 20px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .header-line {
-      img {
-        height: 40px;
-        transform: translateY(-4px);
-      }
-
-      h1 {
-        font-size: 1.25rem;
-      }
-    }
-
-    .content {
-      font-size: 0.9rem;
-    }
-
-    .date-box {
-      font-size: 0.85rem;
-      max-width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .date-box {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 4px;
-    }
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px var(--card-shadow);
   }
 }
 
-.press-image {
+.press-card-image {
   width: 100%;
-  margin: 25px 0;
-  display: flex;
-  justify-content: center;
+  aspect-ratio: 16/9;
+  overflow: hidden;
 
   img {
-    max-width: 100%;
-    max-height: 420px;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 14px var(--card-shadow);
-    transition: box-shadow 0.3s ease-in-out;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
+.press-card-body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  flex: 1;
+}
 
+.press-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.4;
+}
 
+.press-card-excerpt {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  flex: 1;
+}
 
+.press-card-footer {
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border-color);
+}
 
+.press-date {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--text-secondary);
 
+  mat-icon {
+    font-size: 0.95rem;
+    width: 0.95rem;
+    height: 0.95rem;
+  }
+}
 
+.no-releases {
+  text-align: center;
+  color: var(--text-secondary);
+  margin-top: 3rem;
+  font-size: 1rem;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// .latest-release {
-//   max-width: 900px;
-//   margin: 2rem auto;
-//   padding: 40px;
-//   font-family: 'Georgia', serif;
-//   background: #ffffff;
-//   border-radius: 12px;
-//   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-//   line-height: 1.8;
-//   color: #222;
-//   text-align: justify;
-
-//   .header-line {
-//     display: flex;
-//     align-items: flex-end;
-//     justify-content: space-between;
-//     margin-bottom: 20px;
-//     flex-wrap: wrap;
-//     gap: 10px;
-
-//     img {
-//       height: 70px;
-//       transform: translateY(-10px); // lift the image slightly above title
-//     }
-
-//     h1 {
-//       flex: 1;
-//       text-align: center;
-//       color: #2c3e50;
-//       font-size: 2rem;
-//       margin: 0;
-//     }
-//   }
-
-//   hr {
-//     border: none;
-//     border-top: 2px solid #aaa;
-//     margin: 20px 0;
-//   }
-
-//   .content {
-//     font-size: 1rem;
-//     margin-bottom: 30px;
-//   }
-
-//   .date-box {
-//     display: flex;
-//     align-items: center;
-//     font-size: 0.95rem;
-//     color: #555;
-//     font-style: italic;
-//     border-left: 4px solid #ccc;
-//     padding-left: 8px;
-//     max-width: 300px;
-
-//     svg {
-//       margin-right: 6px;
-//     }
-//   }
-
-//   @media (max-width: 768px) {
-//     padding: 20px;
-
-//     .header-line {
-//       flex-direction: column;
-//       align-items: center;
-
-//       img {
-//         height: 50px;
-//         transform: translateY(-6px);
-//       }
-
-//       h1 {
-//         font-size: 1.5rem;
-//       }
-//     }
-
-//     .content {
-//       font-size: 0.95rem;
-//     }
-//   }
-
-//   @media (max-width: 480px) {
-//     .date-box {
-//       flex-direction: column;
-//       align-items: flex-start;
-//       gap: 4px;
-//     }
-//   }
-// }
+@media (max-width: 600px) {
+  .press-grid {
+    grid-template-columns: 1fr;
+  }
+}

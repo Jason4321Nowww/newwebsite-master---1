@@ -5,7 +5,7 @@
 }
 
 .lang-label-text {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.95rem;
   color: #333;
   margin-bottom: 0.3rem;
@@ -37,7 +37,7 @@
 }
 
 .lang-custom-select.open .lang-selected {
-  border-color: #1976d2;
+  border-color: #009d63;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.15);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
 
@@ -52,7 +52,7 @@
   left: 0;
   right: 0;
   background: #fff;
-  border: 1px solid #1976d2;
+  border: 1px solid #009d63;
   border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
   z-index: 200;
@@ -73,7 +73,7 @@
 
   &.active {
     background: #e3f0fb;
-    font-weight: 600;
+    font-weight: 500;
   }
 }
 

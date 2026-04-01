@@ -33,6 +33,7 @@ import { EventsComponent } from './events/events.component';
 import { AboutComponent } from './about/about.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { PressComponent } from './press/press.component';
+import { PressDetailComponent } from './press-detail/press-detail.component';
 import { ShopComponent } from './shop-components/shop/shop.component';
 import { OrderPageComponent } from './shop-components/order-page/order-page.component';
 import { ProductDetailComponent } from './shop-components/product-detail/product-detail.component';
@@ -62,6 +63,7 @@ import { SpecialMemberPageComponent } from './special-member-page/special-member
     AboutComponent,
     CalendarComponent,
     PressComponent,
+    PressDetailComponent,
     OrderPageComponent,
     ProductDetailComponent,
     CartDetailsComponent,

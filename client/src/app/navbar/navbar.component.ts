@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CartService } from '../services/cart.service';
@@ -11,7 +11,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent implements OnDestroy {
+export class NavbarComponent implements OnInit, OnDestroy {
   webseitenTitel: string = 'Büezer und KMU Partei (BKP)';
   isMenuOpen = false;
   isMobileView = false;
@@ -22,6 +22,7 @@ export class NavbarComponent implements OnDestroy {
   isDarkMode = false;
   isProfileOpen = false;
   private themeSubscription?: Subscription;
+  private userNameSub?: Subscription;
 
   constructor(
     private router: Router,
@@ -70,23 +71,11 @@ export class NavbarComponent implements OnDestroy {
       window.addEventListener('scroll', this.scrollHandler, { passive: true });
     });
 
-    // ✅ Prefer loading username directly from localStorage if available
-    this.userName = localStorage.getItem('username');
-
-    // ✅ Optional: fetch from server if token exists and user not yet set
-    if (!this.userName && this.auth.isLoggedIn()) {
-      this.auth.getCurrentUser().subscribe({
-        next: (res: any) => {
-          // Update userName
-          this.userName = res.user?.username;
-          // Optionally store in localStorage for later reuse
-          localStorage.setItem('username', this.userName || '');
-        },
-        error: () => {
-          this.userName = null;
-        }
-      });
-    }
+    // ✅ Subscribe reactively — updates instantly on login/logout without needing a page refresh
+    this.userNameSub = this.auth.userName$.subscribe(name => {
+      this.userName = name;
+      this.cdr.detectChanges();
+    });
   
   
    // ✅ Subscribe to cart item count
@@ -102,9 +91,6 @@ export class NavbarComponent implements OnDestroy {
   logout() {
     this.isProfileOpen = false;
     this.auth.logout();
-    this.userName = null;
-    localStorage.removeItem('username');
-    this.router.navigate(['/signin']);
   }
 
   toggleMenu() {
@@ -119,8 +105,7 @@ export class NavbarComponent implements OnDestroy {
 
   ngOnDestroy() {
     window.removeEventListener('scroll', this.scrollHandler);
-    if (this.themeSubscription) {
-      this.themeSubscription.unsubscribe();
-    }
+    this.themeSubscription?.unsubscribe();
+    this.userNameSub?.unsubscribe();
   }
 }

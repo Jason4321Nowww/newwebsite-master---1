@@ -51,27 +51,38 @@ export class SweetAlertService {
     });
   }
 
-  // 🔄 Order Tracking Alert after 20 seconds
-startOrderTracking(orderId: string, orderService: any) {
-  const interval = setInterval(() => {
-    orderService.getOrderStatus(orderId).subscribe((res: { status: string }) => {
+  // 🔄 Order Tracking — polls every 10s, stops after 2 min or on terminal status
+  startOrderTracking(orderId: string, orderService: any) {
+    const MAX_POLLS = 12; // 12 × 10s = 2 minutes
+    let pollCount = 0;
 
-      if (res.status === 'pending') {
-        this.toast('🕒 Order under process...');
-      }
+    const interval = setInterval(() => {
+      pollCount++;
 
-      if (res.status === 'paid') {
-        this.toast('💰 Order paid. Preparing for shipment...');
-      }
+      orderService.getOrderStatus(orderId).subscribe({
+        next: (res: { status: string }) => {
+          if (res.status === 'pending') {
+            this.toast('🕒 Order under process...');
+          } else if (res.status === 'paid') {
+            this.toast('💰 Order paid. Preparing for shipment...');
+          } else if (res.status === 'shipped') {
+            clearInterval(interval);
+            this.success('📦 Your order has been shipped!');
+          } else {
+            // Unknown terminal status — stop polling
+            clearInterval(interval);
+          }
 
-      if (res.status === 'shipped') {
-        this.success('📦 Your order has been shipped!');
-        clearInterval(interval); // stop tracking
-      }
-
-    });
-  }, 5000); // checks every 5 seconds
-}
+          if (pollCount >= MAX_POLLS) {
+            clearInterval(interval);
+          }
+        },
+        error: () => {
+          clearInterval(interval);
+        }
+      });
+    }, 10000); // check every 10 seconds
+  }
 
 
 }

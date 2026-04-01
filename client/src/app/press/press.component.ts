@@ -1,105 +1,34 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { PressService } from '../services/press.service';
 import { PressRelease } from '../_models/press';
 import { LanguageService } from '../services/language.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-press',
   templateUrl: './press.component.html',
   styleUrls: ['./press.component.scss']
 })
-export class PressComponent implements OnInit, OnDestroy {
-  latestRelease: PressRelease | null = null;
-  private langSub!: Subscription;
+export class PressComponent implements OnInit {
+  releases: PressRelease[] = [];
 
-  constructor(private pressService: PressService, public langService: LanguageService, private cdr: ChangeDetectorRef) {}
+  constructor(private pressService: PressService, public langService: LanguageService, private router: Router) {}
 
   ngOnInit(): void {
-    this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
     this.pressService.getAllReleases().subscribe(releases => {
-      if (releases && releases.length > 0) {
-        this.latestRelease = releases.sort((a, b) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime()
-        )[0];
-      }
+      this.releases = (releases || []).sort((a, b) =>
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
     });
   }
 
-  ngOnDestroy(): void { this.langSub?.unsubscribe(); }
+  openRelease(id: string): void {
+    this.router.navigate(['/press', id]);
+  }
+
+  getExcerpt(release: PressRelease): string {
+    const content = this.langService.getField(release, 'content');
+    const stripped = content.replace(/<[^>]*>/g, '');
+    return stripped.length > 150 ? stripped.slice(0, 150) + '…' : stripped;
+  }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { Component, OnInit } from '@angular/core';
-// import { PressService } from '../services/press.service';
-// import { PressRelease } from '../_models/press';
-
-// @Component({
-//   selector: 'app-press',
-//   templateUrl: './press.component.html',
-//   styleUrls: ['./press.component.scss']
-// })
-// export class PressComponent implements OnInit {
-//   latestRelease: PressRelease | null = null;
-
-//   constructor(private pressService: PressService) {}
-
-//   ngOnInit(): void {
-//     this.pressService.getAllReleases().subscribe(releases => {
-//       if (releases && releases.length > 0) {
-//         this.latestRelease = releases.sort((a, b) =>
-//           new Date(b.date).getTime() - new Date(a.date).getTime()
-//         )[0];
-//       }
-//     });
-//   }
-// }

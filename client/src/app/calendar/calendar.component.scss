@@ -62,7 +62,7 @@
 
   .calendar-day { 
     text-align: center; 
-    font-weight: 600; 
+    font-weight: 500; 
     color: var(--calendar-text); 
     font-size: 0.9rem; 
     padding: 0.25rem 0;
@@ -86,7 +86,7 @@
 
     .date-label { 
       font-size: 12px; 
-      font-weight: 600; 
+      font-weight: 500; 
       color: var(--text-primary);
       transition: color 0.3s ease-in-out;
     }

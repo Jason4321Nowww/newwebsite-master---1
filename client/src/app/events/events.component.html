@@ -32,12 +32,9 @@
         <div class="title-row">
           <h3 class="event-title">{{ langService.getField(event, 'title') }}</h3>
           <span *ngIf="event.isMandatory" class="badge-mandatory">{{ langService.t('events.mandatory') }}</span>
-          <mat-icon *ngIf="event.repeatEveryWeeks && event.repeatEveryWeeks > 0"
+          <mat-icon *ngIf="event.repeat && event.repeat !== 'none'"
                     class="repeat-icon"
-                    [title]="'Repeats every ' + event.repeatEveryWeeks + ' week(s)'">autorenew</mat-icon>
-          <mat-icon *ngIf="(!event.repeatEveryWeeks || event.repeatEveryWeeks === 0) && event.repeat && event.repeat !== 'none'"
-                    class="repeat-icon"
-                    title="Repeating event">autorenew</mat-icon>
+                    [title]="event.repeatEndDate ? 'Repeats until ' + (event.repeatEndDate | date: 'dd-MM-yyyy') : 'Repeating event'">autorenew</mat-icon>
         </div>
 
         <!-- Description -->

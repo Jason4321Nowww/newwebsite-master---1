@@ -30,17 +30,17 @@ const routes: Routes = [
         pathMatch: 'full',
         redirectTo: 'admin-articles'
       },
-      { path: 'admin-articles', component: AdminArticlesComponent },
-      { path: 'admin-infobanner', component: AdminInfobannerComponent },
-      { path: 'admin-events', component: AdminEventsComponent },
-      { path: 'admin-press', component: AdminPressComponent },
-      { path: 'admin-shop', component: AdminShopComponent },
-      { path: 'admin-videos', component: AdminVideosComponent },
-      { path: 'admin-user', component: AdminUserComponent },
-      { path: 'admin-action', component: AdminActionComponent },
-      { path: 'admin-orders', component: AdminOrdersComponent },
-      { path: 'admin-contacts', component: AdminContactsComponent },
-      {path:'admin-emails', component:AdminEmailComponent}
+      { path: 'admin-articles',   component: AdminArticlesComponent,  data: { title: 'Articles',    icon: 'article' } },
+      { path: 'admin-infobanner', component: AdminInfobannerComponent, data: { title: 'Info Banner',  icon: 'campaign' } },
+      { path: 'admin-events',     component: AdminEventsComponent,     data: { title: 'Events',       icon: 'event' } },
+      { path: 'admin-press',      component: AdminPressComponent,      data: { title: 'Press',        icon: 'description' } },
+      { path: 'admin-shop',       component: AdminShopComponent,       data: { title: 'Shop',         icon: 'storefront' } },
+      { path: 'admin-videos',     component: AdminVideosComponent,     data: { title: 'Videos',       icon: 'video_library' } },
+      { path: 'admin-user',       component: AdminUserComponent,       data: { title: 'Users',        icon: 'manage_accounts' } },
+      { path: 'admin-action',     component: AdminActionComponent,     data: { title: 'Actions',      icon: 'flag' } },
+      { path: 'admin-orders',     component: AdminOrdersComponent,     data: { title: 'Orders',       icon: 'list_alt' } },
+      { path: 'admin-contacts',   component: AdminContactsComponent,   data: { title: 'Contacts',     icon: 'manage_contacts' } },
+      { path: 'admin-emails',     component: AdminEmailComponent,      data: { title: 'Emails',       icon: 'email' } }
     ]
   }
 ];

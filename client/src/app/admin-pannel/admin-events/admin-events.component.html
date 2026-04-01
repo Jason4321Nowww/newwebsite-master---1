@@ -1,22 +1,48 @@
 <div class="event-container">
-  <h2>📅 Admin Event Panel</h2>
 
-  <form [formGroup]="eventForm" (ngSubmit)="editingEventId ? updateEventSubmit() : createEvent()" class="event-form">
+  <form [formGroup]="eventForm" (ngSubmit)="editingEventId ? updateEventSubmit() : createEvent()" class="event-form admin-card">
 
-    <!-- Language + Title on the same row (2:8) -->
-    <div class="full-width title-lang-row">
-      <div class="lang-section">
-        <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+    <!-- Language picker + chips -->
+    <div class="full-width form-header">
+      <span class="form-section-title">{{ editingEventId ? 'Edit Event' : 'New Event' }}</span>
+    </div>
+
+    <div class="lang-tabs full-width">
+      <div *ngFor="let l of selectedLangs"
+           class="lang-tab"
+           [class.active]="activeLang === l"
+           (click)="onLangChange(l)">
+        <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
+        <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
       </div>
-      <div class="title-section">
-        <!-- DE title always visible — it's the required primary field -->
-        <label>Title (DE) *: <input formControlName="title" type="text" placeholder="German title (required)" /></label>
-        <!-- Translation title shown when on a non-DE tab -->
-        <label *ngIf="activeLang === 'it'">Title (IT): <input formControlName="title_it" type="text" /></label>
-        <label *ngIf="activeLang === 'fr'">Title (FR): <input formControlName="title_fr" type="text" /></label>
-        <label *ngIf="activeLang === 'en'">Title (EN): <input formControlName="title_en" type="text" /></label>
+      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+            <span>{{ langMeta[l].label }}</span>
+          </div>
+        </div>
       </div>
     </div>
+
+    <!-- Title — language specific -->
+    <label *ngIf="activeLang === 'de'" class="full-width">
+     <span class="d-flex"><span>Title (DE)</span> <span class="required">*</span></span>
+      <input formControlName="title" type="text" placeholder="German title (required)" />
+    </label>
+    <label *ngIf="activeLang === 'it'" class="full-width">
+      Title (IT)
+      <input formControlName="title_it" type="text" placeholder="Italian title (optional)" />
+    </label>
+    <label *ngIf="activeLang === 'fr'" class="full-width">
+      Title (FR)
+      <input formControlName="title_fr" type="text" placeholder="French title (optional)" />
+    </label>
+    <label *ngIf="activeLang === 'en'" class="full-width">
+      Title (EN)
+      <input formControlName="title_en" type="text" placeholder="English title (optional)" />
+    </label>
 
     <label *ngIf="activeLang === 'de'" class="full-width">
       Description (DE):
@@ -50,8 +76,8 @@
     </label>
 
     <label>
-      Repeat every N weeks:
-      <input formControlName="repeatEveryWeeks" type="number" min="0" placeholder="0 = no repeat" />
+      Expiration Date:
+      <input formControlName="repeatEndDate" type="date" />
     </label>
 
     <label>
@@ -86,7 +112,7 @@
   </form>
 
 
-  <div class="events-table" *ngIf="events.length > 0">
+  <div class="events-table admin-card" *ngIf="events.length > 0">
     <h3><mat-icon>folder</mat-icon> Existing Events ({{ filteredEvents.length }})</h3>
 
     <div class="filter-controls">
@@ -121,7 +147,7 @@
         <tbody>
           <tr *ngFor="let event of filteredEvents">
             <td>{{ event.title }}</td>
-            <td>{{ event.eventDate | date: 'longDate' }}</td>
+            <td>{{ event.eventDate | date: 'dd-MM-yyyy' }}</td>
             <td>{{ event.attendees.length || 0 }}</td>
             <td>{{ getEventTypeLabel(event.eventType || '') }}</td>
             <td>{{ event.eventLocation || '—' }}</td>

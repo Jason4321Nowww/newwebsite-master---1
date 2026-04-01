@@ -177,8 +177,11 @@ async function seedActions() {
 }
 
 async function seedVideos() {
-  // Clear existing and re-seed so we always have enough test videos for the carousel
-  await Video.deleteMany({});
+  const count = await Video.estimatedDocumentCount();
+  if (count > 0) {
+    console.log('Videos already exist, skipping');
+    return;
+  }
 
   await Video.insertMany([
     // ── Portrait / Shorts (need ≥3 for left/center/right carousel) ──

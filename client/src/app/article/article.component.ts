@@ -54,6 +54,22 @@ export class ArticleComponent implements OnInit, OnDestroy {
     return (this.article as any)[`body_${this.currentLang}`] || '';
   }
 
+  getHeroImage(): string | null {
+    if (!this.article) return null;
+    const imgBlock = this.article.body?.find(b => b.type === 'image' && b.url);
+    if (imgBlock?.url) return imgBlock.url;
+    return this.article.imageUrls?.[0] ?? null;
+  }
+
+  getReadTime(): number {
+    if (!this.article) return 1;
+    const words = this.article.body
+      ?.filter(b => b.type === 'text' && b.value)
+      .map(b => b.value!.trim().split(/\s+/).length)
+      .reduce((sum, n) => sum + n, 0) ?? 0;
+    return Math.max(1, Math.ceil(words / 200));
+  }
+
   convertToParagraphs(text?: string): string {
     if (!text) return '';
 

@@ -3,11 +3,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  background: #f8f9fa;
-  padding: 15px;
-  border-radius: var(--radius-lg);
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
 }
 
 /* Inputs */
@@ -21,13 +16,13 @@
 }
 
 .controls input:focus {
-  border-color: #007bff;
+  border-color: #009d63;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
 }
 
 /* Buttons */
 .controls button {
-  background: #007bff;
+  background: #009d63;
   border: none;
   color: white;
   padding: 8px 14px;
@@ -38,7 +33,7 @@
 }
 
 .controls button:hover {
-  background: #0056b3;
+  background: #007a4d;
 }
 
 .controls button:disabled {
@@ -75,18 +70,19 @@ table tr {
 }
 
 table tr:hover {
-  background: #eef6ff;
+  background: #e6f5ef;
 }
 
 /* Active row highlight */
 table tr.active-row {
-  background: #cfe2ff !important;
-  border-left: 4px solid #0056b3;
+  background: #b3e5d2 !important;
+  border-left: 4px solid #007a4d;
 }
 
 /* Heading */
 h3 {
-  margin-top: 20px;
+  margin-top: 0;
+  margin-bottom: 1rem;
   color: #333;
-  font-weight: 600;
+  font-weight: 500;
 }

@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit, HostListener } from '@angular/core';
 import { AdminpressService } from '../admin-services/adminpress.service';
 import { PressRelease } from '../../_models/press';
 import { AdminemailService } from '../admin-services/adminemail.service';
@@ -21,6 +21,25 @@ export class AdminPressComponent implements OnInit {
   content_en = '';
   image: File | null = null;
   activeLang: string = 'de';
+  readonly langMeta: Record<string, { label: string; flag: string }> = {
+    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
+    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
+    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
+    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+  };
+  selectedLangs: string[] = ['de'];
+
+  showLangDropdown = false;
+
+  get availableLangs(): string[] {
+    return ['de', 'it', 'fr', 'en'].filter(l => !this.selectedLangs.includes(l));
+  }
+
+  @HostListener('document:click')
+  closeLangDropdown(): void {
+    this.showLangDropdown = false;
+  }
+
   email = '';
   pressReleases: PressRelease[] = [];
   selectedRelease: PressRelease | null = null;
@@ -42,6 +61,21 @@ export class AdminPressComponent implements OnInit {
 
   get contentWithBreaks(): string {
     return this.content.replace(/\n/g, '<br>');
+  }
+
+  onLangChange(lang: string): void {
+    this.activeLang = lang;
+    if (!this.selectedLangs.includes(lang)) {
+      this.selectedLangs.push(lang);
+    }
+  }
+
+  removeLang(lang: string): void {
+    if (lang === 'de') return;
+    this.selectedLangs = this.selectedLangs.filter(l => l !== lang);
+    (this as any)[`title_${lang}`] = '';
+    (this as any)[`content_${lang}`] = '';
+    if (this.activeLang === lang) this.activeLang = 'de';
   }
 
  submit() {
@@ -73,6 +107,8 @@ export class AdminPressComponent implements OnInit {
     this.content_fr = '';
     this.content_en = '';
     this.image = null;
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
   });
 }
 

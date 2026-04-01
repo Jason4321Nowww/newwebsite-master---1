@@ -18,8 +18,12 @@ export const de: Record<string, string> = {
   'home.learnMore':      'Mehr erfahren',
 
   // ── Article List ─────────────────────────────────────────────
-  'articles.title':  'Alle Beiträge',
-  'articles.search': 'Suchen...',
+  'articles.title':   'Alle Beiträge',
+  'articles.search':  'Suchen...',
+  'articles.searchBtn': 'Suchen',
+  'articles.popular': 'Beliebte Beiträge',
+  'articles.latest':  'Neueste Beiträge',
+  'articles.empty':   'Keine Beiträge gefunden.',
 
   // ── Events ───────────────────────────────────────────────────
   'events.upcoming':  'Bevorstehende Veranstaltungen',

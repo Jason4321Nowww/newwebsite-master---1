@@ -18,7 +18,9 @@ import { Subscription } from 'rxjs';
 export class ArticleListComponent implements OnInit, OnDestroy {
   searchTerm = '';
   articles: Article[] = [];
-  currentLang: string = 'de';
+  currentLang = 'de';
+  currentPage = 1;
+  readonly pageSize = 6;
   private langSub!: Subscription;
 
   constructor(
@@ -40,70 +42,57 @@ export class ArticleListComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    this.langSub?.unsubscribe();
-  }
+  ngOnDestroy(): void { this.langSub?.unsubscribe(); }
 
-  get filteredArticles(): Article[] {
+  get filtered(): Article[] {
     const term = this.searchTerm.toLowerCase();
-    return this.articles.filter(article => {
-      const title = this.langService.getField(article, 'title')?.toLowerCase() ?? '';
-      const deBody = article.body.some(b => b.type === 'text' && b.value?.toLowerCase().includes(term));
-      const transBody = ((article as any)[`body_${this.currentLang}`] ?? '').toLowerCase().includes(term);
+    if (!term) return this.articles;
+    return this.articles.filter(a => {
+      const title = this.langService.getField(a, 'title')?.toLowerCase() ?? '';
+      const deBody = a.body.some(b => b.type === 'text' && b.value?.toLowerCase().includes(term));
+      const transBody = ((a as any)[`body_${this.currentLang}`] ?? '').toLowerCase().includes(term);
       return title.includes(term) || deBody || transBody;
     });
   }
 
-  getBodyPreview(article: Article): string {
+  get popularArticles(): Article[] { return this.filtered.slice(0, 4); }
+  get featuredArticle(): Article | null { return this.popularArticles[0] ?? null; }
+  get sideArticles(): Article[] { return this.popularArticles.slice(1); }
+
+  get latestArticles(): Article[] { return this.filtered.slice(4); }
+  get totalPages(): number { return Math.ceil(this.latestArticles.length / this.pageSize); }
+  get pageNumbers(): number[] { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
+
+  get paginatedArticles(): Article[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.latestArticles.slice(start, start + this.pageSize);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  openArticle(id: string): void {
+    this.router.navigate(['/article', id]);
+  }
+
+  getFirstImage(article: Article): string | undefined {
+    return article.body.find(b => b.type === 'image' && b.url)?.url;
+  }
+
+  getBodyPreview(article: Article, length = 120): string {
     if (this.currentLang !== 'de') {
       const translated: string = (article as any)[`body_${this.currentLang}`] ?? '';
       if (translated.trim()) {
         const div = document.createElement('div');
         div.innerHTML = translated;
-        return (div.textContent ?? '').slice(0, 215) + '...';
+        const text = div.textContent ?? '';
+        return text.length > length ? text.slice(0, length) + '…' : text;
       }
     }
-    // Fallback: DE blocks plain text
-    const deText = article.body
-      .filter(b => b.type === 'text' && b.value)
-      .map(b => b.value!)
-      .join(' ')
-      .slice(0, 215);
-    return deText + '...';
-  }
-
-  openArticle(id: string) {
-    if (typeof id === 'string') {
-      this.router.navigate(['/article', id]);
-    } else {
-      console.error('Invalid article ID in openArticle()', id);
-    }
-  }
-
-
-  getFirstImage(article: Article): string | undefined {
-  const imageBlock = article.body.find(block => block.type === 'image' && block.url);
-  return imageBlock?.url;
-}
-
-
-
-  convertToParagraphs(text?: string): string {
-    if (!text) return '';
-    const escaped = text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;');
-
-    const urlRegex = /((https?:\/\/|www\.)[^\s<]+)/g;
-    const linkedText = escaped.replace(urlRegex, match => {
-      const href = match.startsWith('http') ? match : `https://${match}`;
-      return `<a href="${href}" target="_blank" rel="noopener noreferrer">${match}</a>`;
-    });
-
-    return linkedText
-      .split(/\n{2,}/g)
-      .map(p => `<p>${p.trim().replace(/\n/g, '<br>')}</p>`)
-      .join('');
+    const text = article.body.filter(b => b.type === 'text' && b.value).map(b => b.value!).join(' ');
+    return text.length > length ? text.slice(0, length) + '…' : text;
   }
 }

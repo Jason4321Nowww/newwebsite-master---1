@@ -16,5 +16,9 @@ export class PressService {
     return this.http.get<PressRelease[]>(this.baseUrl);
   }
 
+  getReleaseById(id: string): Observable<PressRelease> {
+    return this.http.get<PressRelease>(`${this.baseUrl}/${id}`);
+  }
+
 
 }

@@ -1,6 +1,6 @@
 <div class="short-container" [class.landscape]="isLandscape">
 
-  <div class="videotitle" [class.landscape]="isLandscape">{{ getTitle() }}</div>
+  <div class="videotitle" [class.landscape]="isLandscape">{{ getTitle(langService.lang$ | async) }}</div>
 
   <!-- Thumbnail + play button (shown until user clicks play) -->
   <div *ngIf="!playing"

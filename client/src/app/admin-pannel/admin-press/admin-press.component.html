@@ -1,48 +1,64 @@
-<form (ngSubmit)="submit()" #pressForm="ngForm" class="press-form">
+<form (ngSubmit)="submit()" #pressForm="ngForm" class="press-form admin-card">
 
-  <!-- Language Picker -->
-  <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+  <!-- Language Picker + Chips -->
+  <div class="form-header">
+    <span class="form-section-title">New Press Release</span>
+    </div>
+  <div class="lang-tabs">
+    <div *ngFor="let l of selectedLangs"
+         class="lang-tab"
+         [class.active]="activeLang === l"
+         (click)="onLangChange(l)">
+      <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
+      <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
+    </div>
+  
+      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+            <span>{{ langMeta[l].label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <div class="field-icon" *ngIf="activeLang === 'de'">
-    <i class="fas fa-heading"></i>
-    <input type="text" [(ngModel)]="title" name="title" placeholder="Title (DE)" required />
-  </div>
-  <div class="field-icon" *ngIf="activeLang === 'it'">
-    <i class="fas fa-heading"></i>
-    <input type="text" [(ngModel)]="title_it" name="title_it" placeholder="Title (IT)" />
-  </div>
-  <div class="field-icon" *ngIf="activeLang === 'fr'">
-    <i class="fas fa-heading"></i>
-    <input type="text" [(ngModel)]="title_fr" name="title_fr" placeholder="Title (FR)" />
-  </div>
-  <div class="field-icon" *ngIf="activeLang === 'en'">
-    <i class="fas fa-heading"></i>
-    <input type="text" [(ngModel)]="title_en" name="title_en" placeholder="Title (EN)" />
-  </div>
+    <label *ngIf="activeLang === 'de'">Title (DE)
+    <input type="text" [(ngModel)]="title" name="title" placeholder="Enter title (DE)" required />
+  </label>
+  <label *ngIf="activeLang === 'it'">Title (IT)
+    <input type="text" [(ngModel)]="title_it" name="title_it" placeholder="Enter title (IT)" />
+  </label>
+  <label *ngIf="activeLang === 'fr'">Title (FR)
+    <input type="text" [(ngModel)]="title_fr" name="title_fr" placeholder="Enter title (FR)" />
+  </label>
+  <label *ngIf="activeLang === 'en'">Title (EN)
+    <input type="text" [(ngModel)]="title_en" name="title_en" placeholder="Enter title (EN)" />
+  </label>
 
-  <div class="field-icon" *ngIf="activeLang === 'de'">
-    <i class="fas fa-pen-nib"></i>
-    <textarea [(ngModel)]="content" name="content" rows="1" placeholder="Write your press release (DE)..." required #textArea (input)="autoGrowTextArea(textArea)"></textarea>
-    <input type="file" name="" (change)="onImageSelected($event)" accept="image/*">
-  </div>
-  <div class="field-icon" *ngIf="activeLang === 'it'">
-    <i class="fas fa-pen-nib"></i>
-    <textarea [(ngModel)]="content_it" name="content_it" rows="1" placeholder="Write your press release (IT)..." #textAreaIt (input)="autoGrowTextArea(textAreaIt)"></textarea>
-  </div>
-  <div class="field-icon" *ngIf="activeLang === 'fr'">
-    <i class="fas fa-pen-nib"></i>
-    <textarea [(ngModel)]="content_fr" name="content_fr" rows="1" placeholder="Write your press release (FR)..." #textAreaFr (input)="autoGrowTextArea(textAreaFr)"></textarea>
-  </div>
-  <div class="field-icon" *ngIf="activeLang === 'en'">
-    <i class="fas fa-pen-nib"></i>
-    <textarea [(ngModel)]="content_en" name="content_en" rows="1" placeholder="Write your press release (EN)..." #textAreaEn (input)="autoGrowTextArea(textAreaEn)"></textarea>
-  </div>
+  <label *ngIf="activeLang === 'de'">Content (DE)
+    <textarea [(ngModel)]="content" name="content" rows="4" placeholder="Write your press release (DE)..." required #textArea (input)="autoGrowTextArea(textArea)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'it'">Content (IT)
+    <textarea [(ngModel)]="content_it" name="content_it" rows="4" placeholder="Write your press release (IT)..." #textAreaIt (input)="autoGrowTextArea(textAreaIt)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'fr'">Content (FR)
+    <textarea [(ngModel)]="content_fr" name="content_fr" rows="4" placeholder="Write your press release (FR)..." #textAreaFr (input)="autoGrowTextArea(textAreaFr)"></textarea>
+  </label>
+  <label *ngIf="activeLang === 'en'">Content (EN)
+    <textarea [(ngModel)]="content_en" name="content_en" rows="4" placeholder="Write your press release (EN)..." #textAreaEn (input)="autoGrowTextArea(textAreaEn)"></textarea>
+  </label>
 
-  <!-- <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="" srcset=""> -->
+  <label>Image
+    <input type="file" name="image" (change)="onImageSelected($event)" accept="image/*">
+  </label>
 
-  <button type="submit" [disabled]="pressForm.invalid">
-    <i class="fas fa-save"></i> Save
-  </button>
+  <div>
+    <button type="submit" class="btn btn-primary" [disabled]="pressForm.invalid">
+       Save
+    </button>
+  </div>
 </form>
 
 <hr />

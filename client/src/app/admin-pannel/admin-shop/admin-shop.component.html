@@ -1,10 +1,33 @@
-<h2>Admin - Manage Products</h2>
 
-<form [formGroup]="productForm" (ngSubmit)="submitForm()">
 
-  <!-- Language Picker -->
-  <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+<form [formGroup]="productForm" (ngSubmit)="submitForm()" class="admin-card">
 
+  <!-- Language Picker + Chips -->
+  <div class="lang-header-block">
+    <div class="form-header">
+      <span class="form-section-title">{{ selectedProduct ? 'Edit Product' : 'New Product' }}</span>
+    </div>
+    <div class="lang-tabs">
+      <div *ngFor="let l of selectedLangs"
+           class="lang-tab"
+           [class.active]="activeLang === l"
+           (click)="onLangChange(l)">
+        <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
+        <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
+      </div>
+      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+            <span>{{ langMeta[l].label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Row 1: Name, Category, Price -->
   <label *ngIf="activeLang === 'de'">Name (DE)
     <input formControlName="name" placeholder="Enter product name (DE)">
   </label>
@@ -33,16 +56,10 @@
     <input type="number" formControlName="price" placeholder="Enter price">
   </label>
 
+  <!-- Row 2: Stock, Size, Upload Image -->
   <label>Stock
     <input type="number" formControlName="stock" placeholder="Enter stock quantity">
   </label>
-
-  <!-- <label>Media Type
-    <select formControlName="mediaType">
-      <option value="image">Image</option>
-      <option value="video">Video</option>
-    </select>
-  </label> -->
 
   <label>Size
     <select formControlName="size">
@@ -53,43 +70,43 @@
     </select>
   </label>
 
-  <label *ngIf="activeLang === 'de'">Description (DE)
-    <textarea formControlName="description" rows="3" placeholder="Enter product description (DE)"></textarea>
-  </label>
-  <label *ngIf="activeLang === 'it'">Description (IT)
-    <textarea formControlName="description_it" rows="3" placeholder="Enter product description (IT)"></textarea>
-  </label>
-  <label *ngIf="activeLang === 'fr'">Description (FR)
-    <textarea formControlName="description_fr" rows="3" placeholder="Enter product description (FR)"></textarea>
-  </label>
-  <label *ngIf="activeLang === 'en'">Description (EN)
-    <textarea formControlName="description_en" rows="3" placeholder="Enter product description (EN)"></textarea>
-  </label>
-
- <label>Upload Image
+  <label>Upload Image
     <input type="file" (change)="onFileSelected($event)">
   </label>
 
-<label>
-  <input type="checkbox" formControlName="featured"> Featured Product
-</label>
+  <!-- Description — full width -->
+  <label class="full-width" *ngIf="activeLang === 'de'">Description (DE)
+    <textarea formControlName="description" rows="3" placeholder="Enter product description (DE)"></textarea>
+  </label>
+  <label class="full-width" *ngIf="activeLang === 'it'">Description (IT)
+    <textarea formControlName="description_it" rows="3" placeholder="Enter product description (IT)"></textarea>
+  </label>
+  <label class="full-width" *ngIf="activeLang === 'fr'">Description (FR)
+    <textarea formControlName="description_fr" rows="3" placeholder="Enter product description (FR)"></textarea>
+  </label>
+  <label class="full-width" *ngIf="activeLang === 'en'">Description (EN)
+    <textarea formControlName="description_en" rows="3" placeholder="Enter product description (EN)"></textarea>
+  </label>
 
-<label>
-  <input type="checkbox" formControlName="isExternal"> External Link
-</label>
+  <!-- Checkboxes row -->
+  <div class="checkbox-row full-width">
+    <label class="checkbox-label">
+      <input type="checkbox" formControlName="isFeatured"> Featured Product
+    </label>
+    <label class="checkbox-label">
+      <input type="checkbox" formControlName="isExternal"> External Link
+    </label>
+  </div>
 
-<!-- Only show when checkbox is checked -->
-<div *ngIf="productForm.get('isExternal')?.value">
-  <label>External URL
+  <!-- External URL — conditional full width -->
+  <label class="full-width" *ngIf="productForm.get('isExternal')?.value">External URL
     <input formControlName="externalUrl" placeholder="https://example.com">
   </label>
-</div>
 
-
-
- 
-
-  <button type="submit">{{ selectedProduct ? 'Update Product' : 'Create Product' }}</button>
+  <!-- Submit -->
+   <div>
+    <button type="submit" class="btn btn-primary">{{ selectedProduct ? 'Update Product' : 'Create Product' }}</button>
+  </div>
 </form>
 
 <hr />
@@ -102,7 +119,7 @@
       <th>Category</th>
       <th>Price</th>
       <th>Stock</th>
-       <th>Featured</th>
+      <th>Featured</th>
       <th>Status</th>
       <th>Actions</th>
     </tr>
@@ -110,31 +127,25 @@
   <tbody>
     <tr *ngFor="let p of products">
       <td>
-        <img [src]="'http://localhost:5000' + p.mediaUrl" alt="Product Image" class="product-thumb" >
+        <img [src]="'http://localhost:5000' + p.mediaUrl" alt="Product Image" class="product-thumb">
       </td>
       <td>{{ p.name }}</td>
       <td>{{ p.category }}</td>
       <td>{{ p.price }}</td>
       <td>{{ p.stock }}</td>
-<td>
-   <mat-icon [ngStyle]="{ color: p.isFeatured ? '#4caf50' : '#f44336' }" (click)="toggleFeatured(p.id!)" [matTooltip]="p.isFeatured ? 'Deactivate' : 'Activate'">
-            {{ p.isFeatured ? 'toggle_on' : 'toggle_off' }}
-          </mat-icon>
-</td>
-
       <td>
-              
-          <mat-icon [ngStyle]="{ color: p.isActive ? '#4caf50' : '#f44336' }" (click)="toggleActive(p.id!)" [matTooltip]="p.isActive ? 'Deactivate' : 'Activate'">
-            {{ p.isActive ? 'toggle_on' : 'toggle_off' }}
-          </mat-icon>
-      
+        <mat-icon [ngStyle]="{ color: p.isFeatured ? '#4caf50' : '#f44336' }" (click)="toggleFeatured(p.id!)" [matTooltip]="p.isFeatured ? 'Deactivate' : 'Activate'">
+          {{ p.isFeatured ? 'toggle_on' : 'toggle_off' }}
+        </mat-icon>
       </td>
       <td>
-      
-          <mat-icon color="primary" (click)="editProduct(p)" matTooltip="Edit">edit</mat-icon>
-      
-          <mat-icon  color="warn" (click)="deleteProduct(p.id!)" matTooltip="Delete">delete</mat-icon>
-        
+        <mat-icon [ngStyle]="{ color: p.isActive ? '#4caf50' : '#f44336' }" (click)="toggleActive(p.id!)" [matTooltip]="p.isActive ? 'Deactivate' : 'Activate'">
+          {{ p.isActive ? 'toggle_on' : 'toggle_off' }}
+        </mat-icon>
+      </td>
+      <td>
+        <mat-icon color="primary" (click)="editProduct(p)" matTooltip="Edit">edit</mat-icon>
+        <mat-icon color="warn" (click)="deleteProduct(p.id!)" matTooltip="Delete">delete</mat-icon>
       </td>
     </tr>
   </tbody>

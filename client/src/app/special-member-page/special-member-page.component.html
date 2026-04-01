@@ -12,7 +12,7 @@
 
   <div *ngFor="let event of events" class="event-card scroll-reveal">
     <h3>{{ langService.getField(event, 'title') }}</h3>
-    <p><strong>{{ langService.t('member.date') }}</strong> {{ event.eventDate | date:'longDate' }}</p>
+    <p><strong>{{ langService.t('member.date') }}</strong> {{ event.eventDate | date:'dd-MM-yyyy' }}</p>
     <p><strong>{{ langService.t('member.location') }}</strong> {{ event.eventLocation }}</p>
     <div [innerHTML]="truncateHtml(langService.getField(event, 'description'), 125)"></div>
   </div>

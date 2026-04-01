@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { InfoBanner } from 'src/app/_models/infoBanner';
 import { InfoBannerService } from '../admin-services/info-banner.service';
@@ -13,7 +13,25 @@ export class AdminInfobannerComponent implements OnInit {
   banners: InfoBanner[] = [];
   selectedBanner: InfoBanner | null = null;
   activeLang: string = 'de';
+  readonly langMeta: Record<string, { label: string; flag: string }> = {
+    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
+    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
+    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
+    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+  };
   selectedLangs: string[] = ['de'];
+
+  showLangDropdown = false;
+
+  get availableLangs(): string[] {
+    return ['de', 'it', 'fr', 'en'].filter(l => !this.selectedLangs.includes(l));
+  }
+
+  @HostListener('document:click')
+  closeLangDropdown(): void {
+    this.showLangDropdown = false;
+  }
+
 
   constructor(private fb: FormBuilder, private infoBanner: InfoBannerService) {}
 
@@ -34,6 +52,15 @@ export class AdminInfobannerComponent implements OnInit {
     if (!this.selectedLangs.includes(lang)) {
       this.selectedLangs.push(lang);
     }
+  }
+
+  removeLang(lang: string): void {
+    if (lang === 'de') return;
+    this.selectedLangs = this.selectedLangs.filter(l => l !== lang);
+    const patch: any = {};
+    patch[`statement_${lang}`] = '';
+    this.bannerForm.patchValue(patch);
+    if (this.activeLang === lang) this.activeLang = 'de';
   }
 
   loadBanners(): void {

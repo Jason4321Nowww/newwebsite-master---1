@@ -3,8 +3,7 @@ import {
   Component,
   ElementRef,
   OnInit,
-  ViewChild,
-} from '@angular/core';
+  ViewChild, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdmineventService } from '../admin-services/adminevent.service';
 import { Event } from 'src/app/_models/event';
@@ -28,6 +27,25 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   selectedEventTypeFilter: string = 'all';
   selectedLocationFilter: string = '';
   activeLang: string = 'de';
+  readonly langMeta: Record<string, { label: string; flag: string }> = {
+    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
+    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
+    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
+    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+  };
+  selectedLangs: string[] = ['de'];
+
+  showLangDropdown = false;
+
+  get availableLangs(): string[] {
+    return ['de', 'it', 'fr', 'en'].filter(l => !this.selectedLangs.includes(l));
+  }
+
+  @HostListener('document:click')
+  closeLangDropdown(): void {
+    this.showLangDropdown = false;
+  }
+
 
   eventTypeOptions = [
     { label: 'Öffentlich', value: 'oeffentlich' },
@@ -91,7 +109,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
       isMandatory: [false],
       eventDate: ['', Validators.required],
       repeat: ['none'],
-      repeatEveryWeeks: [0],
+      repeatEndDate: [''],
       eventType: ['oeffentlich', Validators.required],
       eventLocation: [''],
     });
@@ -136,6 +154,23 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onLangChange(lang: string): void {
+    this.activeLang = lang;
+    if (!this.selectedLangs.includes(lang)) {
+      this.selectedLangs.push(lang);
+    }
+  }
+
+  removeLang(lang: string): void {
+    if (lang === 'de') return;
+    this.selectedLangs = this.selectedLangs.filter(l => l !== lang);
+    const patch: any = {};
+    patch[`title_${lang}`] = '';
+    patch[`description_${lang}`] = '';
+    this.eventForm.patchValue(patch);
+    if (this.activeLang === lang) this.activeLang = 'de';
+  }
+
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
   }
@@ -161,7 +196,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     formData.append('isMandatory', formValues.isMandatory.toString());
     formData.append('eventDate', formValues.eventDate);
     formData.append('repeat', formValues.repeat);
-    formData.append('repeatEveryWeeks', (formValues.repeatEveryWeeks || 0).toString());
+    if (formValues.repeatEndDate) formData.append('repeatEndDate', formValues.repeatEndDate);
     formData.append('eventType', formValues.eventType);
     formData.append('eventLocation', formValues.eventLocation || '');
     formData.append('date', formValues.eventDate);
@@ -169,10 +204,12 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
 
     this.adminevent.createEvent(formData).subscribe({
       next: () => {
-        this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
+        this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
         this.selectedFile = null;
         if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
         this.formError = '';
+        this.activeLang = 'de';
+        this.selectedLangs = ['de'];
         this.getEvents();
       },
       error: (err) => {
@@ -195,9 +232,17 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
       isMandatory: event.isMandatory,
       eventDate: event.eventDate ? new Date(event.eventDate).toISOString().split('T')[0] : '',
       repeat: event.repeat,
-      repeatEveryWeeks: event.repeatEveryWeeks || 0,
+      repeatEndDate: event.repeatEndDate ? new Date(event.repeatEndDate).toISOString().split('T')[0] : '',
       eventType: event.eventType || 'oeffentlich',
       eventLocation: event.eventLocation || '',
+    });
+
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
+    ['it', 'fr', 'en'].forEach(lang => {
+      if (event[`title_${lang}` as keyof Event] || event[`description_${lang}` as keyof Event]) {
+        this.selectedLangs.push(lang);
+      }
     });
 
     setTimeout(() => this.autoGrowTextarea(), 50);
@@ -220,7 +265,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     formData.append('isMandatory', formValues.isMandatory.toString());
     formData.append('eventDate', formValues.eventDate);
     formData.append('repeat', formValues.repeat);
-    formData.append('repeatEveryWeeks', (formValues.repeatEveryWeeks || 0).toString());
+    if (formValues.repeatEndDate) formData.append('repeatEndDate', formValues.repeatEndDate);
     formData.append('eventType', formValues.eventType);
     formData.append('eventLocation', formValues.eventLocation || '');
     formData.append('date', formValues.eventDate);
@@ -230,10 +275,12 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
 
     this.adminevent.updatEvent(this.editingEventId, formData).subscribe({
       next: () => {
-        this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
+        this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
         this.selectedFile = null;
         this.editingEventId = null;
         this.formError = '';
+        this.activeLang = 'de';
+        this.selectedLangs = ['de'];
         this.getEvents();
       },
       error: (err) => {
@@ -243,11 +290,13 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   }
 
   cancelEdit() {
-    this.eventForm.reset({ repeat: 'none', repeatEveryWeeks: 0, eventType: 'oeffentlich', isMandatory: false });
+    this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
     this.selectedFile = null;
     if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
     this.editingEventId = null;
     this.formError = '';
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
   }
 
   deleteEvent(id: string) {

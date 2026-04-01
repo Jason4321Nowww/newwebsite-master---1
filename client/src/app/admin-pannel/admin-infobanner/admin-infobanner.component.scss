@@ -1,5 +1,4 @@
-.admin-page { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
-.banner-form { background: #fff; padding: 1.25rem; border: 1px solid #edecec; border-radius: var(--radius-lg); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.admin-page { display: contents; }
 
 .form-header {
   display: flex;
@@ -11,45 +10,26 @@
 
   .form-section-title {
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 500;
     color: #333;
   }
 }
 
 .list-heading {
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 500;
   margin: 1.25rem 0 0.75rem;
   color: #333;
 }
 
 .required { color: #e53935; margin-left: 2px; }
 
-.lang-chips {
+.lang-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
+  align-items: center;
+  gap: 0;
   margin-bottom: 1rem;
-}
-
-.lang-chip {
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  background: #e5e7eb;
-  color: #374151;
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &.active {
-    background: #3b82f6;
-    color: #fff;
-  }
-
-  &:hover:not(.active) {
-    background: #d1d5db;
-  }
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .row {
@@ -60,7 +40,7 @@
 
   label {
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 500;
     color: #555;
   }
 
@@ -149,7 +129,7 @@ textarea {
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 500;
   background: #e5e7eb;
   color: #6b7280;
 
@@ -160,11 +140,11 @@ textarea {
 }
 
 /* General Button Style */
-button {
+button:not(.lang-add-btn) {
   padding: 0.55rem 1.1rem;
   border-radius: var(--radius-md);
   font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 500;
   border: none;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -172,10 +152,10 @@ button {
 }
 
 .btn-primary {
-  background: #3b82f6;
+  background: #009d63;
   color: white;
-  &:hover { background: #2563eb; box-shadow: 0 0 8px rgba(59,130,246,0.4); }
-  &:disabled { background: #93c5fd; cursor: not-allowed; }
+  &:hover { background: #007a4d; }
+  &:disabled { background: #aaa; cursor: not-allowed; }
 }
 
 .btn-secondary {

@@ -84,23 +84,32 @@ export class CalendarComponent implements OnInit, OnChanges {
 
       if (!hasWeeklyRepeat && !hasOtherRepeat && (eventDate < startDate || eventDate > endDate)) return;
 
+      const repeatEnd = (event as any).repeatEndDate
+        ? this.parseLocalDate((event as any).repeatEndDate)
+        : null;
+
       while (current <= endDate) {
+        if (repeatEnd && current > repeatEnd) break;
+
         if (current >= startDate) {
           eventDatesMap.set(current.toDateString(), event);
         }
 
+        if (!hasWeeklyRepeat && !hasOtherRepeat) break;
+
+        const next = new Date(current);
         if (hasWeeklyRepeat) {
-          current = new Date(current);
-          current.setDate(current.getDate() + repeatInterval * 7);
+          next.setDate(next.getDate() + repeatInterval * 7);
         } else {
           switch (event.repeat) {
-            case 'weekly':   current = new Date(current); current.setDate(current.getDate() + 7); break;
-            case 'monthly':  current = new Date(current); current.setMonth(current.getMonth() + 1); break;
-            case 'annually':  current = new Date(current); current.setFullYear(current.getFullYear() + 1); break;
-            default: break;
+            case 'weekly':    next.setDate(next.getDate() + 7); break;
+            case 'biweekly':  next.setDate(next.getDate() + 14); break;
+            case 'monthly':   next.setMonth(next.getMonth() + 1); break;
+            case 'annually':  next.setFullYear(next.getFullYear() + 1); break;
+            default: current = new Date(endDate.getTime() + 1); break; // force exit
           }
-          if (!hasOtherRepeat) break;
         }
+        current = next;
       }
     });
 

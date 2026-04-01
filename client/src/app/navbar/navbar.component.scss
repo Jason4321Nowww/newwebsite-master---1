@@ -283,7 +283,7 @@
 
 .user-name {
   color: var(--user-name-color);
-  font-weight: 600;
+  font-weight: 500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   transition: color 0.3s ease-in-out;
 }
@@ -370,7 +370,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--btn-primary-bg, #3a4f8a);
+  background: var(--btn-primary-bg, #009d63);
   border: none;
   border-radius: 50%;
   width: 38px;
@@ -387,7 +387,7 @@
 .profile-avatar {
   color: #fff;
   font-size: 1rem;
-  font-weight: 700;
+  font-weight: 500;
   line-height: 1;
   pointer-events: none;
 }
@@ -425,15 +425,15 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: var(--btn-primary-bg, #3a4f8a);
+  background: var(--btn-primary-bg, #009d63);
   color: #fff;
   font-size: 1.15rem;
-  font-weight: 700;
+  font-weight: 500;
   flex-shrink: 0;
 }
 
 .profile-name {
-  font-weight: 600;
+  font-weight: 500;
   font-size: 0.95rem;
   color: var(--text-primary);
   overflow: hidden;
@@ -504,7 +504,7 @@
   flex-shrink: 0;
 
   &.on {
-    background: var(--btn-primary-bg, #3a4f8a);
+    background: var(--btn-primary-bg, #009d63);
   }
 }
 

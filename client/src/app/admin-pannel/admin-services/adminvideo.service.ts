@@ -16,7 +16,11 @@ export class AdminvideoService {
     return this.http.get<Video[]>(this.baseUrl);
   }
 
-    deleteVideo(videoId: string) {
+    updateVideo(videoId: string, video: Partial<Video>) {
+    return this.http.put(`${this.baseUrl}/${videoId}`, video);
+  }
+
+  deleteVideo(videoId: string) {
     return this.http.delete(`${this.baseUrl}/${videoId}`);
   }
 }

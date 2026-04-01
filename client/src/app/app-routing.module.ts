@@ -13,6 +13,7 @@ import { SigninComponent } from './auth-components/signin/signin.component';
 import { AdminGuard } from './guards/admin.guard';
 import { authGuard } from './guards/auth.guard';
 import { PressComponent } from './press/press.component';
+import { PressDetailComponent } from './press-detail/press-detail.component';
 import { ShopComponent } from './shop-components/shop/shop.component';
 import { ProductDetailComponent } from './shop-components/product-detail/product-detail.component';
 import { OrderPageComponent } from './shop-components/order-page/order-page.component';
@@ -37,6 +38,7 @@ const routes: Routes = [
   { path: 'actions', component: ActionsComponent },
   { path: 'events', component: EventsComponent },
   { path: 'press', component: PressComponent },
+  { path: 'press/:id', component: PressDetailComponent },
   { path: 'about', component: AboutComponent },
   { path: 'article-list', component: ArticleListComponent },
   { path: 'article/:id', component: ArticleComponent },

@@ -18,7 +18,7 @@ export interface Event {
   eventDate: string;              // ISO format from backend
   date: string;                   // Legacy or optional use
   repeat: 'none' | 'weekly' | 'biweekly' | 'monthly' | 'annually';
-  repeatEveryWeeks?: number;
+  repeatEndDate?: string;
   eventType?: 'oeffentlich' | 'nationalversammlung' | 'lokalversammlung' | 'regionalversammlung' | 'rv_zusammenkunft' | 'lv_zusammenkunft' | 'vorstand' | 'vorsitzende' | 'admin';
   visibilityLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   eventLocation: string;

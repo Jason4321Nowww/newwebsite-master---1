@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Product } from '../../_models/product';
 import { AdminshopService } from '../admin-services/adminshop.service';
@@ -14,6 +14,25 @@ export class AdminShopComponent implements OnInit {
   selectedProduct: Product | null = null;
   selectedFile: File | null = null;
   activeLang: string = 'de';
+  readonly langMeta: Record<string, { label: string; flag: string }> = {
+    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
+    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
+    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
+    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+  };
+  selectedLangs: string[] = ['de'];
+
+  showLangDropdown = false;
+
+  get availableLangs(): string[] {
+    return ['de', 'it', 'fr', 'en'].filter(l => !this.selectedLangs.includes(l));
+  }
+
+  @HostListener('document:click')
+  closeLangDropdown(): void {
+    this.showLangDropdown = false;
+  }
+
 
   constructor(
     private fb: FormBuilder,
@@ -49,6 +68,23 @@ export class AdminShopComponent implements OnInit {
       console.log('📦 Loaded products from backend:', data);
       this.products = data;
     });
+  }
+
+  onLangChange(lang: string): void {
+    this.activeLang = lang;
+    if (!this.selectedLangs.includes(lang)) {
+      this.selectedLangs.push(lang);
+    }
+  }
+
+  removeLang(lang: string): void {
+    if (lang === 'de') return;
+    this.selectedLangs = this.selectedLangs.filter(l => l !== lang);
+    const patch: any = {};
+    patch[`name_${lang}`] = '';
+    patch[`description_${lang}`] = '';
+    this.productForm.patchValue(patch);
+    if (this.activeLang === lang) this.activeLang = 'de';
   }
 
   onFileSelected(event: any) {
@@ -102,6 +138,13 @@ export class AdminShopComponent implements OnInit {
   editProduct(product: Product) {
     this.selectedProduct = product;
     this.productForm.patchValue(product);
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
+    ['it', 'fr', 'en'].forEach(lang => {
+      if (product[`name_${lang}` as keyof Product] || product[`description_${lang}` as keyof Product]) {
+        this.selectedLangs.push(lang);
+      }
+    });
   }
 
   deleteProduct(id: string) {
@@ -119,6 +162,8 @@ export class AdminShopComponent implements OnInit {
     this.productForm.reset();
     this.selectedProduct = null;
     this.selectedFile = null;
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
     this.loadProducts();
   }
 }

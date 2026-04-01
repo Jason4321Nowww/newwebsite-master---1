@@ -1,40 +1,50 @@
-<div class="article-detail-container" *ngIf="article">
-  <div class="header-inline">
-    <div class="text-info">
-      <h1>{{ langService.getField(article, 'title') }}</h1>
+<div class="article-detail-wrapper" *ngIf="article">
+  <div class="article-card">
 
-      <!-- Date moved above author -->
-      <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>
-      <p class="author"><mat-icon>person</mat-icon> {{ article.author }}</p>
+    <h1 class="article-title">{{ langService.getField(article, 'title') }}</h1>
 
-      <!-- First 3 visible lines -->
-     
+    <!-- Show first image from body as hero image -->
+    <img *ngIf="getHeroImage()"
+         [src]="'http://localhost:5000' + getHeroImage()"
+         class="article-image" />
 
-<div class="body">
-  <!-- DE: block-based body -->
-  <ng-container *ngIf="currentLang === 'de'">
-    <ng-container *ngFor="let block of article.body">
-      <img *ngIf="block.type === 'image'" [src]="'http://localhost:5000' + block.url" class="article-body-image" />
-      <p *ngIf="block.type === 'text'" [innerHTML]="convertToParagraphs(block.value)"></p>
-    </ng-container>
-  </ng-container>
-  <!-- IT/FR/EN: show translated body if available, else fall back to DE blocks -->
-  <ng-container *ngIf="currentLang !== 'de'">
-    <div *ngIf="getTranslatedBody()" [innerHTML]="getTranslatedBody()"></div>
-    <ng-container *ngIf="!getTranslatedBody()">
-      <ng-container *ngFor="let block of article.body">
-        <img *ngIf="block.type === 'image'" [src]="'http://localhost:5000' + block.url" class="article-body-image" />
-        <p *ngIf="block.type === 'text'" [innerHTML]="convertToParagraphs(block.value)"></p>
+    <div class="article-body">
+
+      <!-- DE: block-based body -->
+      <ng-container *ngIf="currentLang === 'de'">
+        <ng-container *ngFor="let block of article.body">
+          <img *ngIf="block.type === 'image' && block.url !== getHeroImage()"
+               [src]="'http://localhost:5000' + block.url"
+               class="body-image" />
+          <div *ngIf="block.type === 'text'"
+               [innerHTML]="convertToParagraphs(block.value)"
+               class="body-text"></div>
+        </ng-container>
       </ng-container>
-    </ng-container>
-  </ng-container>
-</div>
+
+      <!-- IT / FR / EN -->
+      <ng-container *ngIf="currentLang !== 'de'">
+        <div *ngIf="getTranslatedBody()"
+             [innerHTML]="getTranslatedBody()"
+             class="body-text"></div>
+        <ng-container *ngIf="!getTranslatedBody()">
+          <ng-container *ngFor="let block of article.body">
+            <img *ngIf="block.type === 'image' && block.url !== getHeroImage()"
+                 [src]="'http://localhost:5000' + block.url"
+                 class="body-image" />
+            <div *ngIf="block.type === 'text'"
+                 [innerHTML]="convertToParagraphs(block.value)"
+                 class="body-text"></div>
+          </ng-container>
+        </ng-container>
+      </ng-container>
 
     </div>
 
-    <!-- <div class="image-container">
-      <img *ngFor="let img of article.imageUrls" class="mt-2"
-      [src]="'http://localhost:5000' + img" alt="Article image" />
-    </div> -->
+    <div class="article-meta">
+      <span class="meta-item"><mat-icon>person</mat-icon> {{ article.author }}</span>
+      <span class="meta-item"><mat-icon>calendar_today</mat-icon> {{ article.createdAt | date: 'dd-MM-yyyy' }}</span>
+    </div>
+
   </div>
 </div>

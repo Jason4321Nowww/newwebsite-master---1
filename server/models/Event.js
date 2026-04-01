@@ -21,7 +21,7 @@ const eventSchema = new mongoose.Schema(
       default: 'none',
     },
 
-    repeatEveryWeeks: { type: Number, default: 0 }, // 0 = no repeat, N = every N weeks
+    repeatEndDate: { type: Date, default: null }, // optional end date for repeating events
 
     eventType: {
       type: String,

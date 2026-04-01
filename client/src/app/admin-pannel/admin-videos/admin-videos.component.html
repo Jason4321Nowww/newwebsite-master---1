@@ -1,35 +1,57 @@
-<h2><mat-icon class="icon">movie</mat-icon> Add YouTube Video</h2>
+
 
 <div class="video-input-preview-container">
-  <form (ngSubmit)="onSubmit()" class="video-form">
+  <form (ngSubmit)="onSubmit()" class="video-form admin-card">
+    <span class="form-section-title">{{ editingVideoId ? 'Edit Video' : 'New Video' }}</span>
     <label for="videoId">YouTube Video ID:</label>
     <input type="text" [(ngModel)]="videoId" name="videoId" id="videoId" placeholder="e.g. RlcQwaI6Lwc" required />
 
-    <p class="lang-hint">Optional titles in multiple languages</p>
+    <!-- Language tabs -->
+    <div class="lang-tabs">
+      <div *ngFor="let l of selectedLangs"
+           class="lang-tab"
+           [class.active]="activeLang === l"
+           (click)="onLangChange(l)">
+        <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+        <span class="lang-tab-label">{{ langMeta[l].label }}</span>
+        <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
+      </div>
+      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+            <span>{{ langMeta[l].label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <label for="videoTitle">German:</label>
-    <input type="text" [(ngModel)]="videoTitle" name="videoTitle" id="videoTitle" placeholder="Title here" />
+    <label *ngIf="activeLang === 'de'" for="videoTitle">Title (DE):</label>
+    <input *ngIf="activeLang === 'de'" type="text" [(ngModel)]="videoTitle" name="videoTitle" id="videoTitle" placeholder="German title" />
 
-    <label for="videoTitle_en">English:</label>
-    <input type="text" [(ngModel)]="videoTitle_en" name="videoTitle_en" id="videoTitle_en" placeholder="Title here" />
+    <label *ngIf="activeLang === 'it'" for="videoTitle_it">Title (IT):</label>
+    <input *ngIf="activeLang === 'it'" type="text" [(ngModel)]="videoTitle_it" name="videoTitle_it" id="videoTitle_it" placeholder="Italian title" />
 
-    <label for="videoTitle_fr">French:</label>
-    <input type="text" [(ngModel)]="videoTitle_fr" name="videoTitle_fr" id="videoTitle_fr" placeholder="Title here" />
+    <label *ngIf="activeLang === 'fr'" for="videoTitle_fr">Title (FR):</label>
+    <input *ngIf="activeLang === 'fr'" type="text" [(ngModel)]="videoTitle_fr" name="videoTitle_fr" id="videoTitle_fr" placeholder="French title" />
 
-    <label for="videoTitle_it">Italian:</label>
-    <input type="text" [(ngModel)]="videoTitle_it" name="videoTitle_it" id="videoTitle_it" placeholder="Title here" />
+    <label *ngIf="activeLang === 'en'" for="videoTitle_en">Title (EN):</label>
+    <input *ngIf="activeLang === 'en'" type="text" [(ngModel)]="videoTitle_en" name="videoTitle_en" id="videoTitle_en" placeholder="English title" />
 
     <label class="checkbox-label">
       <input type="checkbox" [(ngModel)]="isLandscape" name="isLandscape" />
       Is Landscape? (unchecked = Vertical/Portrait)
     </label>
-
-    <button type="submit">Submit</button>
+    <div style="display:flex;gap:0.5rem;">
+      <button type="submit">{{ editingVideoId ? 'Update' : 'Submit' }}</button>
+      <button type="button" *ngIf="editingVideoId" (click)="cancelEdit()" style="background:#e5e7eb;color:#374151;">Cancel</button>
+    </div>
   </form>
 
   <div class="video-preview" *ngIf="videoId">
     <h3>Preview <span>({{ isLandscape ? 'Landscape' : 'Portrait' }})</span></h3>
-    <div class="video-wrapper">
+    <div class="video-wrapper" [class.landscape]="isLandscape" [class.portrait]="!isLandscape">
       <iframe
         [src]="('https://www.youtube.com/embed/' + videoId) | safe"
         frameborder="0"
@@ -53,6 +75,9 @@
       ></iframe>
     </div>
     <div class="delete-wrapper">
+      <button mat-icon-button color="primary" (click)="editVideo(video)">
+        <mat-icon>edit</mat-icon>
+      </button>
       <button mat-icon-button color="warn" (click)="deleteVideo(video._id!)">
         <mat-icon>delete_forever</mat-icon>
       </button>
@@ -74,6 +99,9 @@
       ></iframe>
     </div>
     <div class="delete-wrapper">
+      <button mat-icon-button color="primary" (click)="editVideo(video)">
+        <mat-icon>edit</mat-icon>
+      </button>
       <button mat-icon-button color="warn" (click)="deleteVideo(video._id!)">
         <mat-icon>delete_forever</mat-icon>
       </button>

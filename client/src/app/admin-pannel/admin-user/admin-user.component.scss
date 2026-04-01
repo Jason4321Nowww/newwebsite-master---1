@@ -1,18 +1,12 @@
 .admin-users {
   padding: 20px;
 
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1.5rem;
-    color: var(--text-primary, #333);
-  }
 }
 
 // ── Registration Key Box ──────────────────────────────────────
 .reg-key-box {
-  background: #e3f2fd;
-  border: 1px solid #bbdefb;
+  background: #e6f5ef;
+  border: 1px solid #80ccaf;
   border-radius: var(--radius-lg);
   padding: 1.25rem 1.5rem;
   margin-bottom: 2rem;
@@ -28,7 +22,7 @@
   h3 {
     margin: 0;
     font-size: 1.05rem;
-    font-weight: 700;
+    font-weight: 500;
     color: #1565c0;
   }
 
@@ -73,17 +67,17 @@
     outline: none;
     transition: border-color 0.2s;
 
-    &:focus { border-color: #1976d2; }
+    &:focus { border-color: #009d63; }
   }
 
   button {
     padding: 0.5rem 1.2rem;
-    background: #1976d2;
+    background: #009d63;
     color: #fff;
     border: none;
     border-radius: var(--radius-md);
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
     transition: background 0.2s;
     white-space: nowrap;
@@ -125,7 +119,7 @@
 
   th {
     background: #f4f6f9;
-    font-weight: 700;
+    font-weight: 500;
     color: #555;
     font-size: 0.82rem;
     text-transform: uppercase;
@@ -144,7 +138,7 @@
   }
 
   .username-cell {
-    font-weight: 600;
+    font-weight: 500;
     color: #333;
   }
 }
@@ -155,11 +149,11 @@
   padding: 0.2rem 0.6rem;
   border-radius: var(--radius-sm);
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 500;
 
   &.role-0 { background: #fce4ec; color: #880e4f; }
   &.role-1 { background: #ede7f6; color: #4527a0; }
-  &.role-2 { background: #e3f2fd; color: #0d47a1; }
+  &.role-2 { background: #e6f5ef; color: #007a4d; }
   &.role-3 { background: #e8f5e9; color: #1b5e20; }
   &.role-4 { background: #e0f7fa; color: #006064; }
   &.role-5 { background: #fff8e1; color: #f57f17; }
@@ -178,7 +172,7 @@
   padding: 0.2rem 0.6rem;
   border-radius: var(--radius-sm);
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 500;
   background: #ffebee;
   color: #c62828;
 
@@ -191,7 +185,7 @@
 // ── Edit Selects ──────────────────────────────────────────────
 .edit-select {
   padding: 0.35rem 0.5rem;
-  border: 1.5px solid #1976d2;
+  border: 1.5px solid #009d63;
   border-radius: var(--radius-md);
   font-size: 0.88rem;
   background: #fff;
@@ -216,7 +210,7 @@
   border-radius: var(--radius-md);
   padding: 0.3rem 0.6rem;
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: opacity 0.15s, transform 0.15s;
 
@@ -232,7 +226,7 @@
 
 .btn-edit {
   @extend %action-btn;
-  background: #e3f2fd;
+  background: #e6f5ef;
   color: #1565c0;
 }
 
@@ -257,7 +251,7 @@
 
 .btn-save {
   @extend %action-btn;
-  background: #1976d2;
+  background: #009d63;
   color: #fff;
   padding: 0.35rem 0.8rem;
 }

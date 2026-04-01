@@ -18,8 +18,12 @@ export const en: Record<string, string> = {
   'home.learnMore':      'Learn More',
 
   // ── Article List ─────────────────────────────────────────────
-  'articles.title':  'All Articles',
-  'articles.search': 'Search...',
+  'articles.title':   'All Articles',
+  'articles.search':  'Search...',
+  'articles.searchBtn': 'Search',
+  'articles.popular': 'Popular Articles',
+  'articles.latest':  'Latest Articles',
+  'articles.empty':   'No articles found.',
 
   // ── Events ───────────────────────────────────────────────────
   'events.upcoming':  'Upcoming Events',

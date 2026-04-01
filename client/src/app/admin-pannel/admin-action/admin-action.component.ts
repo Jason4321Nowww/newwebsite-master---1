@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Action } from 'src/app/_models/action';
 import { AdminactionService } from '../admin-services/adminaction.service';
@@ -14,6 +14,25 @@ export class AdminActionComponent implements OnInit {
   isEditing = false;
   selectedId: string | null = null;
   activeLang: string = 'de';
+  readonly langMeta: Record<string, { label: string; flag: string }> = {
+    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
+    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
+    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
+    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+  };
+  selectedLangs: string[] = ['de'];
+
+  showLangDropdown = false;
+
+  get availableLangs(): string[] {
+    return ['de', 'it', 'fr', 'en'].filter(l => !this.selectedLangs.includes(l));
+  }
+
+  @HostListener('document:click')
+  closeLangDropdown(): void {
+    this.showLangDropdown = false;
+  }
+
   selectedMedia: File[] = [];
   previewUrls: string[] = [];
   existingMedia: string[] = [];
@@ -41,6 +60,23 @@ export class AdminActionComponent implements OnInit {
 
   loadActions() {
     this.adminAction.getAllActions().subscribe(res => this.actions = res);
+  }
+
+  onLangChange(lang: string): void {
+    this.activeLang = lang;
+    if (!this.selectedLangs.includes(lang)) {
+      this.selectedLangs.push(lang);
+    }
+  }
+
+  removeLang(lang: string): void {
+    if (lang === 'de') return;
+    this.selectedLangs = this.selectedLangs.filter(l => l !== lang);
+    const patch: any = {};
+    patch[`title_${lang}`] = '';
+    patch[`description_${lang}`] = '';
+    this.actionForm.patchValue(patch);
+    if (this.activeLang === lang) this.activeLang = 'de';
   }
 
   onMediaSelected(event: any) {
@@ -99,6 +135,14 @@ export class AdminActionComponent implements OnInit {
 
     this.previewUrls = [...this.existingMedia.map(url => 'http://localhost:5000' + url)];
     this.selectedMedia = [];
+
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
+    ['it', 'fr', 'en'].forEach(lang => {
+      if (action[`title_${lang}` as keyof Action] || action[`description_${lang}` as keyof Action]) {
+        this.selectedLangs.push(lang);
+      }
+    });
   }
 
   deleteAction(id: string) {
@@ -114,6 +158,8 @@ export class AdminActionComponent implements OnInit {
     this.previewUrls = [];
     this.selectedMedia = [];
     this.existingMedia = [];
+    this.activeLang = 'de';
+    this.selectedLangs = ['de'];
   }
 
   isImage(fileUrl: string): boolean {

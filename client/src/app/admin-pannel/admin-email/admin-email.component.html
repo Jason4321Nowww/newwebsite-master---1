@@ -1,4 +1,4 @@
-<div class="controls">
+<div class="controls admin-card">
   <input [(ngModel)]="name" placeholder="Name" />
   <input [(ngModel)]="email" placeholder="Email" />
 
@@ -12,19 +12,19 @@
   <button (click)="selectedId && removeFromList(selectedId)">Remove from:</button>
 </div>
 
-<hr>
-
-<h3>Emails</h3>
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>List Name</th>
-  </tr>
-  <tr  *ngFor="let e of emails"   (click)="selectedId = e._id"
-  [class.active-row]="selectedId === e._id">
-    <td>{{ e.name }}</td>
-    <td>{{ e.email }}</td>
-    <td>{{ e.lists.join(', ') }}</td>
-  </tr>
-</table>
+<div class="email-list admin-card">
+  <h3>Emails</h3>
+  <table>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>List Name</th>
+    </tr>
+    <tr *ngFor="let e of emails" (click)="selectedId = e._id"
+        [class.active-row]="selectedId === e._id">
+      <td>{{ e.name }}</td>
+      <td>{{ e.email }}</td>
+      <td>{{ e.lists.join(', ') }}</td>
+    </tr>
+  </table>
+</div>

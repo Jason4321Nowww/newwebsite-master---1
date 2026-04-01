@@ -1,23 +1,32 @@
 <!-- admin-infobanner.component.html -->
 <div class="admin-page">
-  <h2>Manage Info Banners</h2>
 
-  <form [formGroup]="bannerForm" (ngSubmit)="submitForm()" class="banner-form" novalidate>
+
+  <form [formGroup]="bannerForm" (ngSubmit)="submitForm()" class="banner-form admin-card" novalidate>
 
     <!-- Form header -->
     <div class="form-header">
       <span class="form-section-title">{{ selectedBanner ? 'Edit Banner' : 'New Banner' }}</span>
-      <app-admin-lang-picker [activeLang]="activeLang" (langChange)="onLangChange($event)"></app-admin-lang-picker>
     </div>
 
-    <!-- Language chips -->
-    <div class="lang-chips" *ngIf="selectedLangs.length > 1">
-      <span *ngFor="let l of selectedLangs"
-            class="lang-chip"
-            [class.active]="activeLang === l"
-            (click)="onLangChange(l)">
-        {{ l.toUpperCase() }}
-      </span>
+    <!-- Language tabs -->
+    <div class="lang-tabs" *ngIf="selectedLangs.length >= 1">
+      <div *ngFor="let l of selectedLangs"
+           class="lang-tab"
+           [class.active]="activeLang === l"
+           (click)="onLangChange(l)">
+        <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
+        <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
+      </div>
+      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+            <span>{{ langMeta[l].label }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Statement — language specific -->
@@ -29,6 +38,7 @@
         Statement is required.
       </div>
     </div>
+
     <div class="row" *ngIf="activeLang === 'it'">
       <label>Statement (IT)</label>
       <textarea formControlName="statement_it" placeholder="Enter banner statement (IT)" (input)="autoGrow($event)"></textarea>

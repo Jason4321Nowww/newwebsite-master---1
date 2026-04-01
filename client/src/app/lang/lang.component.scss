@@ -17,12 +17,12 @@
   align-items: center;
   gap: 5px;
   background: transparent;
-  border: 1px solid var(--btn-primary-bg, #3a4f8a);
-  color: var(--btn-primary-bg, #3a4f8a);
+  border: 1px solid var(--btn-primary-bg, #009d63);
+  color: var(--btn-primary-bg, #009d63);
   border-radius: var(--radius-md);
   padding: 4px 10px;
   font-size: 0.82rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
   white-space: nowrap;
@@ -33,13 +33,13 @@
   }
 
   &:hover {
-    background: var(--btn-primary-bg, #3a4f8a);
+    background: var(--btn-primary-bg, #009d63);
     color: #fff;
   }
 }
 
 .lang-dropdown.open .lang-trigger {
-  background: var(--btn-primary-bg, #3a4f8a);
+  background: var(--btn-primary-bg, #009d63);
   color: #fff;
 
   .lang-arrow {
@@ -85,8 +85,8 @@
   }
 
   &.active {
-    font-weight: 700;
-    color: var(--btn-primary-bg, #3a4f8a);
+    font-weight: 500;
+    color: var(--btn-primary-bg, #009d63);
     background: var(--hover-bg, #f0f4ff);
   }
 }

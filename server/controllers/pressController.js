@@ -65,6 +65,16 @@ const getRelease = async (_req, res) => {
   res.send(releases);
 };
 
+const getReleaseById = async (req, res) => {
+  try {
+    const release = await PressRelease.findById(req.params.id);
+    if (!release) return res.status(404).json({ message: 'Press release not found.' });
+    res.send(release);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch press release.' });
+  }
+};
+
 
 
 
@@ -157,7 +167,7 @@ attachments: [
 
 
 
-module.exports = { postRelease, deleteRelease, getRelease, sendReleaseEmail };
+module.exports = { postRelease, deleteRelease, getRelease, getReleaseById, sendReleaseEmail };
 
 
 

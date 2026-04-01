@@ -1,76 +1,28 @@
-<div class="latest-release scroll-reveal" *ngIf="latestRelease">
-  <div class="header-line">
-    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
-    <h1>{{ langService.getField(latestRelease, 'title') }}</h1>
-    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
+<div class="press-page">
+  <h1 class="page-title scroll-reveal">{{ langService.t('nav.press') }}</h1>
+
+  <div class="press-grid stagger" *ngIf="releases.length > 0; else empty">
+    <div class="press-card scroll-reveal" *ngFor="let release of releases" (click)="openRelease(release._id!)">
+
+      <div class="press-card-image" *ngIf="release.image">
+        <img [src]="'http://localhost:5000' + release.image" alt="Press image" />
+      </div>
+
+      <div class="press-card-body">
+        <h2 class="press-card-title">{{ langService.getField(release, 'title') }}</h2>
+        <p class="press-card-excerpt">{{ getExcerpt(release) }}</p>
+        <div class="press-card-footer">
+          <span class="press-date">
+            <mat-icon inline>calendar_today</mat-icon>
+            {{ release.date | date: 'dd-MM-yyyy' }}
+          </span>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <hr />
-
-  <div class="press-image" *ngIf="latestRelease.image">
-    <img [src]="'http://localhost:5000' + latestRelease.image" alt="Press Image" />
-  </div>
-
-  <div class="content" [innerHTML]="langService.getField(latestRelease, 'content')"></div>
-
-  <div class="date-box">
-    <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#666">
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M19 4h-1V2h-2v2H8V2H6v2H5
-               c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14
-               a2 2 0 002-2V6c0-1.1-.9-2-2-2zm0
-               16H5V9h14v11zm0-13H5V6h14v1z"/>
-    </svg>
-    <span>{{ latestRelease.date | date: 'fullDate' }}</span>
-  </div>
+  <ng-template #empty>
+    <p class="no-releases">No press releases available.</p>
+  </ng-template>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <div class="latest-release" *ngIf="latestRelease">
-  <div class="header-line">
-    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
-    <h1>{{ langService.getField(latestRelease, 'title') }}</h1>
-    <img src="../../../assets/logo/starlinelessbiggertransparent.png" alt="Flag" />
-  </div>
-
-  <hr />
-
-  <div class="content" [innerHTML]="langService.getField(latestRelease, 'content')"></div>
-
-  <div class="date-box">
-    <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#666">
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M19 4h-1V2h-2v2H8V2H6v2H5
-               c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14
-               a2 2 0 002-2V6c0-1.1-.9-2-2-2zm0
-               16H5V9h14v11zm0-13H5V6h14v1z"/>
-    </svg>
-    <span>{{ latestRelease.date | date: 'fullDate' }}</span>
-  </div>
-</div> -->

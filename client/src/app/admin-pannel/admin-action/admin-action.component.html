@@ -1,10 +1,30 @@
-<div class="action-wrapper">
-  <h2>{{ isEditing ? 'Edit' : 'Create' }} Action</h2>
+<div class="action-wrapper admin-card">
+
 
   <form [formGroup]="actionForm" (ngSubmit)="submitForm()">
 
-    <!-- Language Picker -->
-    <app-admin-lang-picker [activeLang]="activeLang" (langChange)="activeLang = $event"></app-admin-lang-picker>
+    <!-- Language Picker + Chips -->
+    <div class="form-header">
+      <span class="form-section-title">{{ isEditing ? 'Edit Action' : 'New Action' }}</span>
+    </div>
+    <div class="lang-tabs">
+      <div *ngFor="let l of selectedLangs"
+           class="lang-tab"
+           [class.active]="activeLang === l"
+           (click)="onLangChange(l)">
+        <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
+        <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
+      </div>
+      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+            <span>{{ langMeta[l].label }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <label *ngIf="activeLang === 'de'">Title (DE)
       <input formControlName="title" type="text" required />

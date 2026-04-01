@@ -13,17 +13,22 @@ const createOrder = async (req, res) => {
   } = req.body;
 
   try {
+    if (!items || items.length === 0) {
+      return res.status(400).json({ error: 'Cart is empty' });
+    }
+
     let total = 0;
     for (let item of items) {
-      const product = await Product.findById(item.product);
-      if (!product || product.stock < item.quantity) {
-        return res.status(400).json({ error: `Invalid or out-of-stock item` });
+      // Atomic decrement — only succeeds if stock >= quantity (prevents negative stock)
+      const product = await Product.findOneAndUpdate(
+        { _id: item.product, stock: { $gte: item.quantity } },
+        { $inc: { stock: -item.quantity, orderCount: item.quantity } },
+        { new: true }
+      );
+      if (!product) {
+        return res.status(400).json({ error: `Item is out of stock or unavailable` });
       }
-
       total += product.price * item.quantity;
-      product.stock -= item.quantity
-      product.orderCount += item.quantity;
-      await product.save();
     }
 
     const order = new Order({

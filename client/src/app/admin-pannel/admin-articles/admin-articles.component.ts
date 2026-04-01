@@ -1,5 +1,5 @@
 // src/app/admin-articles/admin-articles.component.ts
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild, HostListener } from '@angular/core';
 import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ArticlesService } from '../admin-services/articles.service';
 
@@ -30,7 +30,25 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
   articles: any[] = [];
   editingArticleId: string | null = null;
   activeLang: string = 'de';
+  readonly langMeta: Record<string, { label: string; flag: string }> = {
+    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
+    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
+    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
+    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+  };
   selectedLangs: string[] = ['de'];
+
+  showLangDropdown = false;
+
+  get availableLangs(): string[] {
+    return ['de', 'it', 'fr', 'en'].filter(l => !this.selectedLangs.includes(l));
+  }
+
+  @HostListener('document:click')
+  closeLangDropdown(): void {
+    this.showLangDropdown = false;
+  }
+
 
   constructor(private fb: FormBuilder, public svc: ArticlesService) {
     this.articleForm = this.fb.group({
@@ -55,6 +73,20 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
     this.activeLang = lang;
     if (!this.selectedLangs.includes(lang)) {
       this.selectedLangs.push(lang);
+    }
+  }
+
+  removeLang(lang: string): void {
+    if (lang === 'de') return;
+    this.selectedLangs = this.selectedLangs.filter(l => l !== lang);
+    this.langBlocks[lang] = [];
+    this.langFilesMap[lang] = new Map();
+    this.langFilePreviews[lang] = new Map();
+    const patch: any = {};
+    patch[`title_${lang}`] = '';
+    this.articleForm.patchValue(patch);
+    if (this.activeLang === lang) {
+      this.activeLang = 'de';
     }
   }
 

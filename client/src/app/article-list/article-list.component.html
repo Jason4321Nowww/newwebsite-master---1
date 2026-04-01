@@ -1,83 +1,99 @@
-<div class="page-container">
-  <h1 class="scroll-reveal">{{ langService.t('articles.title') }}</h1>
-  <div class="search-container">
-    <input [(ngModel)]="searchTerm" type="text" [placeholder]="langService.t('articles.search')" />
-    <!-- <span class="search-icon">🔍</span> -->
-     <mat-icon class="search-icon">search</mat-icon>
-  </div>
+<div class="articles-page">
 
- <div class="article-grid stagger">
-  <div class="article-card"
-       *ngFor="let article of filteredArticles"
-       (click)="openArticle(article.id)">
-
-    <!-- FIRST IMAGE FROM BODY -->
-    <div class="article-images" *ngIf="getFirstImage(article)">
-      <img
-        [src]="'http://localhost:5000' + getFirstImage(article)"
-        alt="Article image"
-        style="width: 100%; height: auto; object-fit: contain; border-radius: 8px;"
-      />
-    </div>
-    
-
-    <h2>{{ langService.getField(article, 'title') }}</h2>
-
-    <!-- TEXT PREVIEW — translated if available, else DE fallback -->
-    <div class="body">
-      <p>{{ getBodyPreview(article) }}</p>
-    </div>
-
-    <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>
-
-    <p class="author">
-      <mat-icon inline>person</mat-icon>
-      {{ article.author }}
-    </p>
-  </div>
-</div>
-
-
-  <!-- <div class="article-grid">
- <div class="article-card"
-     *ngFor="let article of filteredArticles"
-     (click)="openArticle(article.id)">
-
-
-  <div class="article-images">
-    <img
-      *ngIf="article.imageUrls && article.imageUrls.length > 0"
-      [src]="'http://localhost:5000' + article.imageUrls[0]"
-      alt="Article image"
-    />
-  </div>
-
-  <h2>{{ article.title }}</h2>
-
- 
-  <div class="body">
-    <ng-container *ngFor="let block of article.body">
-      <div *ngIf="block.type === 'text'"
-           [innerHTML]="convertToParagraphs(block.value)">
+  <!-- ── Hero with Search ──────────────────────────────────────────── -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <div class="search-pill">
+        <mat-icon class="pill-icon">search</mat-icon>
+        <input [(ngModel)]="searchTerm" type="text" [placeholder]="langService.t('articles.search')" />
+        <button class="pill-btn" type="button">{{ langService.t('articles.searchBtn') || 'Search' }}</button>
       </div>
-    </ng-container>
+    </div>
+
+    <!-- City skyline SVG -->
+    <div class="hero-skyline">
+   
+    </div>
   </div>
 
-  <p class="date">{{ article.createdAt | date: 'dd.MM.yyyy' }}</p>
+  <!-- ── Popular Articles ───────────────────────────────────────────── -->
+  <section class="popular-section" *ngIf="popularArticles.length > 0">
+    <h2 class="section-title">{{ langService.t('articles.popular') || 'Popular Articles' }}</h2>
 
-  <p class="author">
-    <mat-icon inline>person</mat-icon>
-    {{ article.author }}
-  </p>
+    <div class="popular-layout">
+
+      <!-- Featured (large) card -->
+      <div class="featured-card" *ngIf="featuredArticle" (click)="openArticle(featuredArticle.id)">
+        <div class="featured-image" *ngIf="getFirstImage(featuredArticle)">
+          <img [src]="'http://localhost:5000' + getFirstImage(featuredArticle)" alt="Featured article" />
+        </div>
+        <div class="featured-body">
+          <h3 class="featured-title">{{ langService.getField(featuredArticle, 'title') }}</h3>
+          <p class="featured-excerpt">{{ getBodyPreview(featuredArticle, 200) }}</p>
+          <div class="card-meta">
+            <span class="meta-item"><mat-icon inline>person</mat-icon>{{ featuredArticle.author }}</span>
+            <span class="meta-item"><mat-icon inline>calendar_today</mat-icon>{{ featuredArticle.createdAt | date: 'dd-MM-yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side cards (articles 2–4) -->
+      <div class="side-cards">
+        <div class="side-card" *ngFor="let article of sideArticles" (click)="openArticle(article.id)">
+          <div class="side-card-image" *ngIf="getFirstImage(article)">
+            <img [src]="'http://localhost:5000' + getFirstImage(article)" alt="Article image" />
+          </div>
+          <div class="side-card-body">
+            <h4 class="side-card-title">{{ langService.getField(article, 'title') }}</h4>
+            <p class="side-card-excerpt">{{ getBodyPreview(article, 100) }}</p>
+            <div class="card-meta">
+              <span class="meta-item"><mat-icon inline>calendar_today</mat-icon>{{ article.createdAt | date: 'dd-MM-yyyy' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Latest Articles ────────────────────────────────────────────── -->
+  <section class="latest-section" *ngIf="latestArticles.length > 0">
+    <h2 class="section-title">{{ langService.t('articles.latest') || 'Latest Articles' }}</h2>
+
+    <div class="article-grid stagger">
+      <div class="article-card" *ngFor="let article of paginatedArticles" (click)="openArticle(article.id)">
+        <div class="article-card-image" *ngIf="getFirstImage(article)">
+          <img [src]="'http://localhost:5000' + getFirstImage(article)" alt="Article image" />
+        </div>
+        <div class="article-card-body">
+          <h3 class="article-card-title">{{ langService.getField(article, 'title') }}</h3>
+          <p class="article-card-excerpt">{{ getBodyPreview(article, 120) }}</p>
+          <div class="card-meta">
+            <span class="meta-item"><mat-icon inline>person</mat-icon>{{ article.author }}</span>
+            <span class="meta-item"><mat-icon inline>calendar_today</mat-icon>{{ article.createdAt | date: 'dd-MM-yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button class="page-btn" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button class="page-btn"
+              *ngFor="let p of pageNumbers"
+              [class.active]="p === currentPage"
+              (click)="goToPage(p)">{{ p }}</button>
+      <button class="page-btn" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <!-- Empty state -->
+  <div class="no-articles" *ngIf="filtered.length === 0">
+    <p>{{ langService.t('articles.empty') || 'No articles found.' }}</p>
+  </div>
 
 </div>
-
-    
-
-
-
-</div> -->
-
-
-</div>
-
