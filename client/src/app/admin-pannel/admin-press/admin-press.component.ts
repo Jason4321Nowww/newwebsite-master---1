@@ -46,6 +46,7 @@ export class AdminPressComponent implements OnInit {
   selectedRecipients: string[] = [];
   emails: any[] = [];
   lists: string[] = [];
+  sendLang: string = 'de';
 // sendImage: File | null = null;
 
 
@@ -144,9 +145,35 @@ onImageSelected(event: any) {
 
 
 
+  /** Returns languages that have both title and content filled in for this release */
+  getAvailableSendLangs(release: PressRelease): { code: string; label: string; flag: string }[] {
+    const all = [
+      { code: 'de', title: release.title,    content: release.content    },
+      { code: 'it', title: release.title_it,  content: release.content_it  },
+      { code: 'fr', title: release.title_fr,  content: release.content_fr  },
+      { code: 'en', title: release.title_en,  content: release.content_en  },
+    ];
+    return all
+      .filter(l => l.title && l.content)
+      .map(l => ({ code: l.code, ...this.langMeta[l.code] }));
+  }
+
+  /** Returns the title/content for the currently selected send language */
+  private getLangContent(release: PressRelease, lang: string): { title: string; content: string } {
+    if (lang === 'de') return { title: release.title, content: release.content };
+    return {
+      title:   (release as any)[`title_${lang}`]   || release.title,
+      content: (release as any)[`content_${lang}`] || release.content,
+    };
+  }
+
 openEmailDialog(release: PressRelease) {
   this.selectedRelease = release;
+  // Default to first available language
+  const available = this.getAvailableSendLangs(release);
+  this.sendLang = available.length ? available[0].code : 'de';
 
+  this.selectedRecipients = [];
   this.emailService.getAllEmails().subscribe((data: any) => this.emails = data);
   this.emailService.getLists().subscribe((lists: any) => this.lists = lists);
 }
@@ -205,9 +232,7 @@ async confirmSend() {
   if (!this.selectedRelease) return;
 
   const release = this.selectedRelease;
-
-  console.log('Selected Release:', release);
-  console.log('Selected Recipients:', this.selectedRecipients);
+  const { title: langTitle, content: langContent } = this.getLangContent(release, this.sendLang);
 
   const leftFlag = '../../../assets/logo/starlinelessbiggertransparent.png';
   const rightFlag = '../../../assets/logo/starlinelessbiggertransparent.png';
@@ -251,11 +276,11 @@ const pressImageHtml = release.image
     <div style="max-width: 900px; margin: auto; padding: 40px; font-family: 'Georgia', serif; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); line-height: 1.8; color: #222; text-align: justify;">
       <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 30px;">
         <img src="${leftFlag}" style="height: 50px;" crossOrigin="anonymous"/>
-        <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500; text-align: center; color: #2c3e50;">${release.title}</h1>
+        <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500; text-align: center; color: #2c3e50;">${langTitle}</h1>
         <img src="${rightFlag}" style="height: 50px;" crossOrigin="anonymous"/>
       </div>
       <hr style="border: none; border-top: 2px solid #aaa; margin: 20px 0;" />
-      <div style="font-size: 1rem; margin-bottom: 30px;">${release.content}</div>
+      <div style="font-size: 1rem; margin-bottom: 30px;">${langContent}</div>
        ${pressImageHtml}
 
       <div style="display: flex; align-items: center; font-size: 0.95rem; color: #555; font-style: italic; border-left: 4px solid #ccc; padding-left: 8px; max-width: 300px;">
@@ -302,7 +327,8 @@ const pressImageHtml = release.image
           await this.pressService.sendRelease(release._id!, {
             email,
             pdfBase64: base64,
-          
+            lang: this.sendLang,
+            langTitle,
           }).toPromise();
           console.log(`✅ Email sent to: ${email}`);
         } catch (err) {

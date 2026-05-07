@@ -20,12 +20,27 @@ const adminSchema = new mongoose.Schema({
   },
   lastLogin: Date,
 
-  // ✅ Add this to make role-based auth work
   role: {
     type: String,
     enum: ['admin'],
     default: 'admin'
-  }
+  },
+  roleLevel: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 8
+  },
+  isActive: {
+    type: Boolean,
+    default: false
+  },
+  userLocation: {
+    kantonCode: { type: String, default: '' },
+    kantonName: { type: String, default: '' },
+    bezirk:     { type: String, default: '' },
+    gemeinde:   { type: String, default: '' },
+  },
 }); 
 
 // // ✅ Password hashing

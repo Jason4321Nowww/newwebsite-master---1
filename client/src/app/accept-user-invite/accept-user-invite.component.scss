@@ -1,0 +1,161 @@
+.invite-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f6f9;
+  padding: 2rem 1rem;
+}
+
+.invite-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 440px;
+  text-align: center;
+}
+
+.invite-logo {
+  margin-bottom: 1.25rem;
+
+  .logo-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #009d63;
+    letter-spacing: 0.08em;
+  }
+}
+
+h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.4rem;
+  color: #1a1a2e;
+}
+
+.invite-meta {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+
+  .invite-email {
+    color: #1565c0;
+    font-size: 0.88rem;
+  }
+}
+
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #444;
+  }
+
+  input {
+    padding: 0.6rem 0.85rem;
+    border: 1.5px solid #d0d7de;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+
+    &:focus { border-color: #009d63; }
+  }
+}
+
+.otp-field input {
+  font-size: 1.4rem;
+  letter-spacing: 0.3em;
+  text-align: center;
+  font-weight: 600;
+  color: #1565c0;
+}
+
+.otp-hint {
+  font-size: 0.78rem;
+  color: #888;
+  margin: 0.1rem 0 0;
+}
+
+.field-error {
+  font-size: 0.82rem;
+  color: #c62828;
+}
+
+.submit-error {
+  font-size: 0.88rem;
+  color: #c62828;
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+}
+
+button[type="submit"] {
+  padding: 0.7rem;
+  background: #009d63;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.25rem;
+
+  &:hover   { background: #007a4d; }
+  &:disabled { background: #bbb; cursor: not-allowed; }
+}
+
+.status-icon {
+  font-size: 3rem;
+  width: 3rem;
+  height: 3rem;
+  margin: 0.5rem auto 1rem;
+  display: block;
+
+  &.error   { color: #c62828; }
+  &.expired { color: #f57f17; }
+  &.success { color: #009d63; }
+}
+
+.status-msg {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #555;
+
+  &.error   { color: #c62828; }
+  &.expired { color: #e65100; }
+  &.success { color: #2e7d32; }
+}
+
+.btn-back {
+  display: inline-block;
+  padding: 0.6rem 1.5rem;
+  background: #f4f6f9;
+  color: #1565c0;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background 0.2s;
+
+  &:hover { background: #e3f2fd; }
+}
+
+.loading-text {
+  color: #888;
+  font-size: 0.95rem;
+}

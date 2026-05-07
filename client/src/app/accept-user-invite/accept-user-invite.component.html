@@ -1,0 +1,88 @@
+<div class="invite-page">
+  <div class="invite-card">
+    <div class="invite-logo">
+      <span class="logo-text">BKP</span>
+    </div>
+
+    <!-- Expired invitation -->
+    <ng-container *ngIf="inviteExpired">
+      <mat-icon class="status-icon expired">schedule</mat-icon>
+      <h2>Invitation Expired</h2>
+      <p class="status-msg expired">
+        This invitation link has expired (valid for 24 hours).<br/>
+        Please contact your administrator and ask them to send a new invitation.
+      </p>
+      <a routerLink="/signin" class="btn-back">Go to Sign In</a>
+    </ng-container>
+
+    <!-- Invalid / already-used token -->
+    <ng-container *ngIf="inviteError">
+      <mat-icon class="status-icon error">error_outline</mat-icon>
+      <h2>Invitation Invalid</h2>
+      <p class="status-msg error">{{ inviteError }}</p>
+      <a routerLink="/signin" class="btn-back">Go to Sign In</a>
+    </ng-container>
+
+    <!-- Success -->
+    <ng-container *ngIf="submitted">
+      <mat-icon class="status-icon success">check_circle_outline</mat-icon>
+      <h2>Account Created</h2>
+      <p class="status-msg success">
+        Your account has been created successfully.<br/>
+        An administrator will activate it shortly.
+      </p>
+      <a routerLink="/signin" class="btn-back">Go to Sign In</a>
+    </ng-container>
+
+    <!-- Invite form -->
+    <ng-container *ngIf="!inviteError && !inviteExpired && !submitted && inviteInfo">
+      <h2>Complete Registration</h2>
+      <p class="invite-meta">
+        You are invited as <strong>{{ inviteInfo.roleName }}</strong><br/>
+        <span class="invite-email">{{ inviteInfo.email }}</span>
+      </p>
+
+      <form (ngSubmit)="onSubmit()" #f="ngForm" class="invite-form">
+
+        <div class="field">
+          <label>Username</label>
+          <input [(ngModel)]="username" name="username" required
+                 minlength="3" placeholder="Choose a username" />
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input [(ngModel)]="password" name="password" type="password"
+                 required minlength="8" placeholder="At least 8 characters" />
+        </div>
+
+        <div class="field">
+          <label>Confirm Password</label>
+          <input [(ngModel)]="confirmPassword" name="confirmPassword" type="password"
+                 required placeholder="Repeat password" />
+          <span class="field-error" *ngIf="passwordMismatch">Passwords do not match.</span>
+        </div>
+
+        <div class="field otp-field">
+          <label>One-Time Code (OTP)</label>
+          <input [(ngModel)]="otp" name="otp" required
+                 maxlength="6" placeholder="6-digit code from your email"
+                 inputmode="numeric" autocomplete="one-time-code" />
+          <p class="otp-hint">Check your email for the 6-digit code that was sent with this invitation.</p>
+        </div>
+
+        <p *ngIf="submitError" class="submit-error">{{ submitError }}</p>
+
+        <button type="submit"
+                [disabled]="f.invalid || passwordMismatch || submitting">
+          {{ submitting ? 'Creating account…' : 'Create Account' }}
+        </button>
+      </form>
+    </ng-container>
+
+    <!-- Loading -->
+    <ng-container *ngIf="!inviteError && !inviteExpired && !submitted && !inviteInfo">
+      <p class="loading-text">Validating invitation…</p>
+    </ng-container>
+  </div>
+</div>

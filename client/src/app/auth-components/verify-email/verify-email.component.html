@@ -1,0 +1,78 @@
+<div class="verify-page">
+  <div class="verify-card">
+
+    <div class="card-logo">BKP</div>
+
+    <!-- ── Missing userId ─────────────────────────────────── -->
+    <ng-container *ngIf="!userId">
+      <mat-icon class="status-icon error">error_outline</mat-icon>
+      <h2>Invalid Link</h2>
+      <p class="status-msg">No user ID found. Please <a routerLink="/signup">sign up again</a>.</p>
+    </ng-container>
+
+    <!-- ── Verified ───────────────────────────────────────── -->
+    <ng-container *ngIf="verified">
+      <mat-icon class="status-icon success">check_circle_outline</mat-icon>
+      <h2>Email Verified!</h2>
+      <div class="approval-banner">
+        <mat-icon>hourglass_top</mat-icon>
+        <p>
+          Your email has been confirmed. Your account is now pending admin approval.<br/>
+          You will be able to sign in once an administrator activates your account.
+        </p>
+      </div>
+      <button class="btn-home" (click)="goHome()">Go to Home Page</button>
+    </ng-container>
+
+    <!-- ── OTP Form ───────────────────────────────────────── -->
+    <ng-container *ngIf="userId && !verified">
+      <mat-icon class="status-icon info">mark_email_unread</mat-icon>
+      <h2>Verify your email</h2>
+      <p class="hint">
+        We sent a 6-digit code to your email address.<br/>
+        Enter it below to verify your account.
+      </p>
+
+      <!-- Expired OTP banner -->
+      <div class="expired-banner" *ngIf="expiredOtp">
+        <mat-icon>schedule</mat-icon>
+        <span>Your code has expired. Click <strong>Resend code</strong> to get a new one.</span>
+      </div>
+
+      <!-- OTP input -->
+      <div class="field-group">
+        <label class="field-label">
+          <mat-icon>pin</mat-icon> One-Time Code
+        </label>
+        <div class="otp-row">
+          <input
+            [(ngModel)]="otp"
+            type="text"
+            inputmode="numeric"
+            maxlength="6"
+            placeholder="_ _ _ _ _ _"
+            autocomplete="one-time-code"
+            class="otp-input"
+            (keyup.enter)="verify()"
+          />
+          <button class="btn-verify" (click)="verify()" [disabled]="!canSubmit">
+            {{ submitting ? 'Verifying…' : 'Verify' }}
+          </button>
+        </div>
+      </div>
+
+      <p class="error-msg" *ngIf="error">{{ error }}</p>
+
+      <!-- Resend -->
+      <div class="resend-row">
+        <span>Didn't receive the code?</span>
+        <button class="btn-resend" (click)="resend()"
+                [disabled]="resending || resendCooldown > 0">
+          {{ resendCooldown > 0 ? 'Resend in ' + resendCooldown + 's' : (resending ? 'Sending…' : 'Resend code') }}
+        </button>
+      </div>
+      <p class="resend-msg" *ngIf="resendMessage">{{ resendMessage }}</p>
+    </ng-container>
+
+  </div>
+</div>

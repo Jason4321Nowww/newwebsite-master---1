@@ -1,24 +1,21 @@
 <div class="order-page">
-  <h2>Payment & Shipping Information</h2>
+  <h2>Shipping Information</h2>
 
-  <form (ngSubmit)="checkout()" #orderForm="ngForm">
-    <!-- CUSTOMER DETAILS -->
-    <input type="text" placeholder="Full Name" [(ngModel)]="customer.name" name="name" required />
-    <input type="email" placeholder="Email" [(ngModel)]="customer.email" name="email" required />
-    <input type="text" placeholder="Street Address" [(ngModel)]="customer.address.street" name="street" required />
-    <input type="text" placeholder="Postal Code" [(ngModel)]="customer.address.postalCode" name="postalCode" required />
-    <input type="text" placeholder="City" [(ngModel)]="customer.address.city" name="city" required />
-    <input type="text" placeholder="Country" [(ngModel)]="customer.address.country" name="country" required />
-
-    <!-- PAYMENT FIELDS -->
-    <!-- <input type="text" placeholder="IBAN" [(ngModel)]="customer.customerIBAN" name="IBAN" required maxlength="16" /> -->
-
+  <form (ngSubmit)="proceedToPayment()" #orderForm="ngForm">
+    <input type="text"  placeholder="Full Name"     [(ngModel)]="customer.name"             name="name"       required />
+    <input type="email" placeholder="Email"          [(ngModel)]="customer.email"            name="email"      required />
+    <input type="text"  placeholder="Street Address" [(ngModel)]="customer.address.street"   name="street"     required />
+    <input type="text"  placeholder="Postal Code"    [(ngModel)]="customer.address.postalCode" name="postalCode" required />
+    <input type="text"  placeholder="City"           [(ngModel)]="customer.address.city"     name="city"       required />
+    <input type="text"  placeholder="Country"        [(ngModel)]="customer.address.country"  name="country"    required />
 
     <div class="total-display">
-      💰 <strong>Total to Pay: CHF {{ total.toFixed(2) }}</strong>
+      💰 <strong>Total: CHF {{ total.toFixed(2) }}</strong>
     </div>
 
-    <button type="submit" class="btn">Pay Now</button>
+    <p *ngIf="validationError" class="validation-error">{{ validationError }}</p>
+
+    <button type="submit" class="btn">Continue to Payment →</button>
   </form>
 
   <button type="button" class="btn secondary" routerLink="/shop">← Back to Shop</button>

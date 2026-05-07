@@ -1,78 +1,146 @@
 // server.js
 require('dotenv').config();
-const express = require('express');
-const helmet = require('helmet');
-const cors = require('cors');
-const morgan = require('morgan');
+const express     = require('express');
+const helmet      = require('helmet');
+const cors        = require('cors');
+const morgan      = require('morgan');
 const cookieParser = require('cookie-parser');
-const rateLimit = require('express-rate-limit');
+const path        = require('path');
 
-const connectDB = require('./config/db');
-const authRoutes = require('./routes/auth');
+const connectDB      = require('./config/db');
+const seedLocations  = require('./seeders/seedLocations');
+
+const {
+  ipBlocker, botDetection, mongoSanitize,
+  authLimiter, otpLimiter, contactLimiter,
+  orderLimiter, emailSendLimiter, apiLimiter,
+} = require('./middlewares/security');
+
+// Routes
+const authRoutes    = require('./routes/auth');
 const articleRoutes = require('./routes/articles');
-const shopRoutes = require("./routes/shop");
-const orderRoutes = require('./routes/order');
-const bannerRoutes = require('./routes/infobanner');
-const eventRoutes = require('./routes/events');
-const videoRoutes = require('./routes/videos');
-const pressRoutes = require("./routes/press");
-const actionRoutes = require('./routes/actions');
+const shopRoutes    = require('./routes/shop');
+const orderRoutes   = require('./routes/order');
+const bannerRoutes  = require('./routes/infobanner');
+const eventRoutes   = require('./routes/events');
+const videoRoutes   = require('./routes/videos');
+const pressRoutes   = require('./routes/press');
+const actionRoutes  = require('./routes/actions');
 const contactRoutes = require('./routes/contact');
-const adminRoutes = require('./routes/admin');
-const emailRoutes = require('./routes/email')
-const path = require('path'); // ✅ Required for static file path resolution
+const adminRoutes   = require('./routes/admin');
+const emailRoutes   = require('./routes/email');
+const locationRoutes = require('./routes/location');
 
 const app = express();
-connectDB(); // ✅ Connect to MongoDB
+connectDB().then(() => seedLocations());
 
-// Middlewares
-// Middlewares
-app.use(express.json({ limit: '10mb' })); // or higher if needed
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+// ── Allowed origins ────────────────────────────────────────────────────────────
+const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:4200')
+  .split(',').map(o => o.trim());
 
-app.use(helmet());
-app.use(cors({ origin: 'http://localhost:4200',  credentials: true }));
-app.use(morgan('dev'));
+// ── Security headers (Helmet) ──────────────────────────────────────────────────
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
+  contentSecurityPolicy: false,   // managed by Angular for now
+  hsts: { maxAge: 31536000, includeSubDomains: true },
+}));
+
+// ── CORS ───────────────────────────────────────────────────────────────────────
+app.use(cors({
+  origin: (origin, cb) => {
+    // allow same-origin / Postman in dev / listed origins
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    cb(new Error(`CORS: origin "${origin}" not allowed`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-visitor-id'],
+}));
+
+// ── Body parsing (tight limits) ────────────────────────────────────────────────
+app.use(express.json({ limit: '2mb' }));
+app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 app.use(cookieParser());
 
-// ✅ Static Files for Uploaded Images
-app.use('/uploads', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.header('Cross-Origin-Resource-Policy', 'cross-origin'); // ✅ Required by Chrome
+// ── Logging ────────────────────────────────────────────────────────────────────
+if (process.env.NODE_ENV !== 'test') app.use(morgan('dev'));
 
-  
+// ── Global security middleware (order matters) ─────────────────────────────────
+app.use(ipBlocker);       // block flagged IPs immediately
+app.use(botDetection);    // drop known scanner user-agents
+app.use(mongoSanitize);   // strip $-prefixed keys (NoSQL injection)
+app.use(apiLimiter);      // global fallback: 300 req / 15 min
+
+// ── Static uploads ─────────────────────────────────────────────────────────────
+app.use('/uploads', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGINS[0]);
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   next();
 }, express.static(path.join(__dirname, 'uploads')));
 
+// ── Routes with targeted rate limiters ────────────────────────────────────────
 
-// Rate limiter
-const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
-app.use(limiter);
+// Auth — tight limits on every endpoint; OTP endpoints even tighter
+app.use('/api/auth/signin',           authLimiter);
+app.use('/api/auth/signup',           authLimiter);
+app.use('/api/auth/verify-email-otp', otpLimiter);
+app.use('/api/auth/resend-email-otp', otpLimiter);
+app.use('/api/auth',                  authRoutes);
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/articles', articleRoutes);
-app.use('/api/products', shopRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/banner', bannerRoutes);
-app.use('/api/events', eventRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/press-release', pressRoutes);
-app.use('/api/emails', emailRoutes);
-app.use('/api/actions', actionRoutes);
-app.use('/api/contacts', contactRoutes);
+app.use('/api/admin',                 adminRoutes);
 
+// Press email send
+app.use('/api/press-release/send',    emailSendLimiter);
+app.use('/api/press-release',         pressRoutes);
 
+// Contact form
+app.use('/api/contacts',              contactLimiter, contactRoutes);
 
-// Global error handler — catches multer errors, validation errors, etc.
+// Orders — rate-limit creation
+app.use('/api/orders',                orderLimiter, orderRoutes);
+
+// Standard routes
+app.use('/api/articles',   articleRoutes);
+app.use('/api/products',   shopRoutes);
+app.use('/api/banner',     bannerRoutes);
+app.use('/api/events',     eventRoutes);
+app.use('/api/videos',     videoRoutes);
+app.use('/api/emails',     emailRoutes);
+app.use('/api/actions',    actionRoutes);
+app.use('/api/locations',  locationRoutes);
+
+// ── Global error handler ───────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
-  console.error('Server error:', err.message);
-  const status = err.status || err.statusCode || 500;
+  // CORS errors
+  if (err.message?.startsWith('CORS:')) {
+    return res.status(403).json({ error: err.message });
+  }
+  console.error('[ERROR]', err.message);
+  const status  = err.status || err.statusCode || 500;
   const message = err.code ? `Upload error: ${err.code}` : (err.message || 'Internal server error');
   res.status(status).json({ error: message });
 });
 
-// Start server
+// ── Start ──────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// Graceful shutdown — close DB connection before process exits
+// Prevents stale connection pools from accumulating on restarts
+const shutdown = async (signal) => {
+  console.log(`[${signal}] Shutting down gracefully…`);
+  server.close(async () => {
+    try {
+      await require('mongoose').disconnect();
+      console.log('[DB] MongoDB disconnected cleanly');
+    } catch (e) {
+      console.error('[DB] Error during disconnect:', e.message);
+    }
+    process.exit(0);
+  });
+  // Force exit if shutdown takes too long
+  setTimeout(() => process.exit(1), 10000).unref();
+};
+
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT',  () => shutdown('SIGINT'));

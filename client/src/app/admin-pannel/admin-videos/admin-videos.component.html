@@ -74,12 +74,12 @@
         allowfullscreen
       ></iframe>
     </div>
-    <div class="delete-wrapper">
-      <button mat-icon-button color="primary" (click)="editVideo(video)">
-        <mat-icon>edit</mat-icon>
+    <div class="video-actions">
+      <button class="btn-edit" (click)="editVideo(video)">
+        <mat-icon>edit</mat-icon> Edit
       </button>
-      <button mat-icon-button color="warn" (click)="deleteVideo(video._id!)">
-        <mat-icon>delete_forever</mat-icon>
+      <button class="btn-delete" (click)="deleteVideo(video._id!)">
+        <mat-icon>delete</mat-icon> Delete
       </button>
     </div>
   </li>
@@ -98,12 +98,12 @@
         allowfullscreen
       ></iframe>
     </div>
-    <div class="delete-wrapper">
-      <button mat-icon-button color="primary" (click)="editVideo(video)">
-        <mat-icon>edit</mat-icon>
+    <div class="video-actions">
+      <button class="btn-edit" (click)="editVideo(video)">
+        <mat-icon>edit</mat-icon> Edit
       </button>
-      <button mat-icon-button color="warn" (click)="deleteVideo(video._id!)">
-        <mat-icon>delete_forever</mat-icon>
+      <button class="btn-delete" (click)="deleteVideo(video._id!)">
+        <mat-icon>delete</mat-icon> Delete
       </button>
     </div>
   </li>

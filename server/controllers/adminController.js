@@ -34,7 +34,10 @@ const adminLogin = async (req, res) => {
     const isMatch = await argon2.verify(admin.password, password);
     if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
-  
+    if (!admin.isActive) {
+      return res.status(403).json({ error: 'Your account is not yet activated. Please contact a higher authority.' });
+    }
+
     await admin.save();
 
     if (!process.env.JWT_ADMIN_SECRET) {
@@ -42,7 +45,7 @@ const adminLogin = async (req, res) => {
     }
 
     const adminToken = jwt.sign(
-      { id: admin._id, email: admin.email, role: admin.role },
+      { id: admin._id, email: admin.email, role: admin.role, roleLevel: admin.roleLevel ?? 0 },
       process.env.JWT_ADMIN_SECRET,
       { expiresIn: '5d' }
     );

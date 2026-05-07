@@ -24,7 +24,7 @@ export class AdminpressService {
   return this.http.delete(`${this.baseUrl}/${id}`);
 }
 
-  sendRelease(id: string, payload: { email: string; pdfBase64: string;  imageBase64?: string | null  }): Observable<any> {
+  sendRelease(id: string, payload: { email: string; pdfBase64: string; imageBase64?: string | null; lang?: string; langTitle?: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/send/${id}`, payload);
   }
 }

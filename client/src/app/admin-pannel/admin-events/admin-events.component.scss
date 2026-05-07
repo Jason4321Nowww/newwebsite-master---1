@@ -264,3 +264,184 @@ mat-icon.text-danger:hover {
     padding: 8px;
   }
 }
+
+/* ── Attendees clickable badge ─────────────────────────────────────── */
+.attendees-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  background: #f0f0f0;
+  color: #555;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &.has-attendees {
+    background: #e6f7f0;
+    color: #009d63;
+    cursor: pointer;
+
+    &:hover {
+      background: #009d63;
+      color: #fff;
+    }
+  }
+}
+
+/* ── Attendees modal ───────────────────────────────────────────────── */
+.att-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+}
+
+.att-modal {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 30px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+}
+
+.att-close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: #888;
+  line-height: 1;
+  &:hover { color: #222; }
+}
+
+.att-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #009d63;
+  font-size: 1.05rem;
+  margin: 0 0 18px;
+  padding-right: 24px;
+
+  mat-icon { font-size: 1.2rem; height: 1.2rem; width: 1.2rem; }
+}
+
+/* Summary strip */
+.att-summary {
+  display: flex;
+  gap: 0;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.att-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border-right: 1px solid #e0e0e0;
+
+  &:last-child { border-right: none; }
+
+  &:first-child { background: #f5f5f5; }
+  &:nth-child(2) { background: #e6f7f0; }
+  &:last-child   { background: #fff3e0; }
+}
+
+.att-stat-num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a2e;
+  line-height: 1;
+}
+
+.att-stat-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* Attendee rows */
+.att-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.att-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fafafa;
+  font-size: 0.9rem;
+
+  &:hover { background: #f0f0f0; }
+}
+
+.att-index {
+  color: #bbb;
+  font-size: 0.78rem;
+  min-width: 20px;
+  text-align: right;
+}
+
+.att-icon {
+  font-size: 1.1rem;
+  height: 1.1rem;
+  width: 1.1rem;
+  color: #009d63;
+
+  &.guest-icon { color: #aaa; }
+}
+
+.att-name {
+  flex: 1;
+  font-weight: 600;
+  color: #222;
+}
+
+.att-role {
+  font-size: 0.78rem;
+  color: #888;
+}
+
+.att-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+
+  &.badge-member { background: #e6f7f0; color: #009d63; }
+  &.badge-guest  { background: #f5f5f5; color: #999; }
+}
+
+.att-empty {
+  text-align: center;
+  color: #aaa;
+  padding: 24px 0;
+  font-size: 0.9rem;
+}

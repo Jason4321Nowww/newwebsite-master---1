@@ -1,6 +1,5 @@
 <div class="admin-users admin-card">
 
-
   <!-- Registration Key Section -->
   <div class="reg-key-box">
     <div class="reg-key-header">
@@ -8,6 +7,9 @@
       <span class="key-preview" *ngIf="keyPreview">
         <mat-icon class="lock-icon">lock</mat-icon>
         Current: <strong>{{ keyPreview }}</strong>
+        <button type="button" class="btn-copy" (click)="copyKey()" [title]="copied ? 'Copied!' : 'Copy key'">
+          <mat-icon>{{ copied ? 'check' : 'content_copy' }}</mat-icon>
+        </button>
       </span>
       <span class="key-preview no-key" *ngIf="!keyPreview">
         <mat-icon class="lock-icon warn">lock_open</mat-icon>
@@ -15,33 +17,89 @@
       </span>
     </div>
 
-    <form (ngSubmit)="submitKey()" #keyForm="ngForm" class="key-form">
-      <input
-        type="text"
-        [(ngModel)]="registrationKey"
-        name="registrationKey"
-        minlength="4"
-        maxlength="20"
-        required
-        placeholder="Enter key (4–20 characters)"
-      />
-      <button type="submit" [disabled]="keyForm.invalid || registrationKey.trim().length < 4">
-        {{ keyPreview ? 'Update Key' : 'Set Key' }}
-      </button>
-    </form>
+    <ng-container *ngIf="isSuperAdmin">
+      <form (ngSubmit)="submitKey()" #keyForm="ngForm" class="key-form">
+        <div class="key-input-wrap">
+          <div class="key-input-row">
+            <input
+              type="text"
+              [(ngModel)]="registrationKey"
+              name="registrationKey"
+              #keyInput="ngModel"
+              minlength="20"
+              maxlength="20"
+              pattern="[A-Za-z0-9!@#$%^&amp;+=\-_.,;:|~?]{20}"
+              required
+              placeholder="Exactly 20 chars — letters, numbers &amp; symbols"
+            />
+            <button type="button" class="btn-generate" (click)="generateKey()">
+              <mat-icon>refresh</mat-icon> Generate
+            </button>
+            <button type="submit" [disabled]="keyForm.invalid || registrationKey.trim().length !== 20">
+              {{ keyPreview ? 'Update Key' : 'Set Key' }}
+            </button>
+          </div>
+          <div class="key-errors" *ngIf="keyInput.invalid && (keyInput.touched || keyInput.dirty)">
+            <span *ngIf="keyInput.errors?.['required']">Key is required.</span>
+            <span *ngIf="keyInput.errors?.['minlength'] || keyInput.errors?.['maxlength']">Key must be exactly 20 characters (currently {{ registrationKey.trim().length }}).</span>
+            <span *ngIf="keyInput.errors?.['pattern']">Only letters, numbers and ! &#64; # $ % ^ &amp; + = - _ . , ; : | ~ ? are allowed.</span>
+          </div>
+        </div>
+      </form>
+      <p *ngIf="keyUpdateMessage" class="key-message" [class.error]="keyUpdateError">{{ keyUpdateMessage }}</p>
+    </ng-container>
 
-    <p *ngIf="keyUpdateMessage" class="key-message" [class.error]="keyUpdateError">
-      {{ keyUpdateMessage }}
+    <p *ngIf="!isSuperAdmin" class="key-message" style="margin-top:0.25rem;color:#888;font-size:0.85rem;">
+      Only Superadmin can set or update the registration key.
     </p>
   </div>
 
-  <!-- Users Table -->
+  <!-- ── Invite Section ── -->
+  <div class="invite-box">
+    <h3 class="section-title"><mat-icon>person_add</mat-icon> Invite Member</h3>
+
+    <div class="invite-form-row">
+      <input type="email" [(ngModel)]="inviteEmail"
+             placeholder="Email address" class="invite-input" />
+      <select class="invite-select"
+              [ngModel]="inviteRoleLevel"
+              (ngModelChange)="onInviteRoleLevelChange($event?.toString() ?? '')">
+        <option [ngValue]="null" disabled>Select role</option>
+        <option *ngFor="let r of inviteOptions" [ngValue]="r.value">{{ r.label }}</option>
+      </select>
+    </div>
+
+    <div class="invite-form-row location-row">
+      <select [value]="inviteKantonCode" (change)="onInviteKantonChange($any($event.target).value)" class="invite-select">
+        <option value="">— Kanton (optional) —</option>
+        <option *ngFor="let c of cantons" [value]="c.kantonCode">{{ c.kantonName }}</option>
+      </select>
+      <select *ngIf="inviteBezirke.length" [value]="inviteBezirk"
+              (change)="onInviteBezirkChange($any($event.target).value)" class="invite-select">
+        <option value="">— Bezirk —</option>
+        <option *ngFor="let b of inviteBezirke" [value]="b">{{ b }}</option>
+      </select>
+      <select *ngIf="inviteGemeinden.length" [(ngModel)]="inviteGemeinde" class="invite-select">
+        <option value="">— Gemeinde —</option>
+        <option *ngFor="let g of inviteGemeinden" [value]="g">{{ g }}</option>
+      </select>
+   
+    </div>
+       <button class="btn-invite mt-3" (click)="sendInvite()"
+              [disabled]="!inviteEmail || inviteRoleLevel === null || inviting">
+        <mat-icon>send</mat-icon> {{ inviting ? 'Sending…' : 'Send Invite' }}
+      </button>
+
+    <p *ngIf="inviteMessage" class="invite-msg" [class.error]="inviteError">{{ inviteMessage }}</p>
+  </div>
+
+  <!-- ── Users Table (all members: pending / inactive / active) ── -->
   <div *ngIf="loading" class="loading-text">Loading users...</div>
 
   <table *ngIf="!loading" class="user-table">
     <thead>
       <tr>
-        <th>Username</th>
+        <th>Username / Email</th>
         <th>Role</th>
         <th>Location</th>
         <th>Status</th>
@@ -49,34 +107,41 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let user of users" [class.editing]="editingUserId === user.id">
+      <tr *ngFor="let user of users" [class.editing]="editingUserId === user.id" [class.row-pending]="user._status === 'pending'">
 
-        <!-- Username -->
-        <td class="username-cell">{{ user.username }}</td>
+        <!-- Username / Email -->
+        <td class="username-cell">
+          <span *ngIf="user.username">{{ user.username }}</span>
+          <span *ngIf="!user.username" class="email-pending">{{ user.email }}</span>
+        </td>
 
         <!-- Role -->
         <td>
           <ng-container *ngIf="editingUserId === user.id; else roleView">
             <select [(ngModel)]="editRoleLevel" class="edit-select">
-              <option *ngFor="let role of roleOptions" [ngValue]="role.value">
-                {{ role.label }}
-              </option>
+              <option *ngFor="let role of roleOptions" [ngValue]="role.value">{{ role.label }}</option>
             </select>
           </ng-container>
           <ng-template #roleView>
-            <span class="role-badge role-{{ user.roleLevel }}">
-              {{ getRoleLabel(user.roleLevel) }}
-            </span>
+            <span class="role-badge role-{{ user.roleLevel }}">{{ getRoleLabel(user.roleLevel) }}</span>
           </ng-template>
         </td>
 
         <!-- Location -->
         <td>
           <ng-container *ngIf="editingUserId === user.id; else locationView">
-            <select [(ngModel)]="editUserLocation" class="edit-select">
-              <option *ngFor="let loc of locationOptions" [value]="loc.value">
-                {{ loc.label }}
-              </option>
+            <select [value]="editKantonCode" (change)="onEditKantonChange($any($event.target).value)" class="edit-select">
+              <option value="">— Kanton —</option>
+              <option *ngFor="let c of cantons" [value]="c.kantonCode">{{ c.kantonName }}</option>
+            </select>
+            <select *ngIf="editBezirke.length" [value]="editBezirk"
+                    (change)="onEditBezirkChange($any($event.target).value)" class="edit-select" style="margin-top:4px">
+              <option value="">— Bezirk —</option>
+              <option *ngFor="let b of editBezirke" [value]="b">{{ b }}</option>
+            </select>
+            <select *ngIf="editGemeinden.length" [(ngModel)]="editGemeinde" class="edit-select" style="margin-top:4px">
+              <option value="">— Gemeinde —</option>
+              <option *ngFor="let g of editGemeinden" [value]="g">{{ g }}</option>
             </select>
           </ng-container>
           <ng-template #locationView>
@@ -86,40 +151,46 @@
 
         <!-- Status -->
         <td>
-          <span class="status-badge" [class.active]="user.isActive">
-            {{ user.isActive ? 'Active' : 'Inactive' }}
+          <span class="status-badge" [class.active]="user._status === 'active'" [class.pending]="user._status === 'pending'">
+            {{ getStatusLabel(user) }}
           </span>
         </td>
 
         <!-- Actions -->
         <td class="action-cell">
-          <!-- Edit mode: Save / Cancel -->
-          <ng-container *ngIf="editingUserId === user.id">
-            <button class="btn-save" (click)="saveEdit(user)">
-              <mat-icon>check</mat-icon> Save
-            </button>
-            <button class="btn-cancel" (click)="cancelEdit()">
-              <mat-icon>close</mat-icon> Cancel
+          <ng-container *ngIf="isSelf(user)">
+            <span class="no-action-label">You</span>
+          </ng-container>
+
+          <!-- Pending invite: delete only -->
+          <ng-container *ngIf="!isSelf(user) && user._status === 'pending' && canDelete(user)">
+            <button class="btn-delete" (click)="deleteUser(user)" matTooltip="Cancel invite">
+              <mat-icon>delete</mat-icon>
             </button>
           </ng-container>
 
-          <!-- Normal mode: Edit / Activate / Delete -->
-          <ng-container *ngIf="editingUserId !== user.id">
-            <button class="btn-edit" (click)="startEdit(user)" matTooltip="Edit role & location">
-              <mat-icon>edit</mat-icon>
-            </button>
+          <!-- Active / Inactive: full actions -->
+          <ng-container *ngIf="!isSelf(user) && canManage(user)">
+            <ng-container *ngIf="editingUserId === user.id">
+              <button class="btn-save" (click)="saveEdit(user)"><mat-icon>check</mat-icon> Save</button>
+              <button class="btn-cancel" (click)="cancelEdit()"><mat-icon>close</mat-icon> Cancel</button>
+            </ng-container>
+            <ng-container *ngIf="editingUserId !== user.id">
+              <button *ngIf="canEdit(user)" class="btn-edit" (click)="startEdit(user)" matTooltip="Edit role & location">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="btn-toggle" [class.active]="user.isActive"
+                      (click)="toggleActivation(user)" [matTooltip]="user.isActive ? 'Deactivate' : 'Activate'">
+                <mat-icon>{{ user.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
+              </button>
+              <button class="btn-delete" (click)="deleteUser(user)" matTooltip="Delete user">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
+          </ng-container>
 
-            <button
-              class="btn-toggle"
-              [class.active]="user.isActive"
-              (click)="toggleActivation(user)"
-              [matTooltip]="user.isActive ? 'Deactivate' : 'Activate'">
-              <mat-icon>{{ user.isActive ? 'toggle_on' : 'toggle_off' }}</mat-icon>
-            </button>
-
-            <button class="btn-delete" (click)="deleteUser(user)" matTooltip="Delete user">
-              <mat-icon>delete</mat-icon>
-            </button>
+          <ng-container *ngIf="!isSelf(user) && user._status !== 'pending' && !canManage(user)">
+            <span class="no-action-label">—</span>
           </ng-container>
         </td>
 

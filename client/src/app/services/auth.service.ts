@@ -13,7 +13,7 @@ export interface AuthResponse {
   token: string;
   id: string; // ✅ Add this
   roleLevel: number,
-  userLocation: string;
+  userLocation: { kantonCode: string; kantonName: string; bezirk: string; gemeinde: string } | string;
   
 }
 
@@ -29,19 +29,29 @@ export class AuthService {
 
   constructor(private router:Router, private snackBar: MatSnackBar ,private http:HttpClient) { }
 
-  setSession(res: { token: string; username: string; id: string; roleLevel: number; userLocation?: string }): void {
+  setSession(res: { token: string; username: string; id: string; roleLevel: number; userLocation?: any }): void {
     const expiry = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
     localStorage.setItem('token', res.token);
     localStorage.setItem('tokenExpiry', String(expiry));
     localStorage.setItem('username', res.username);
     localStorage.setItem('id', res.id);
     localStorage.setItem('roleLevel', String(res.roleLevel));
-    if (res.userLocation) localStorage.setItem('userLocation', res.userLocation);
+    if (res.userLocation) {
+      localStorage.setItem('userLocation', JSON.stringify(res.userLocation));
+    }
     this._userName.next(res.username);
   }
 
-  signup(data: { username: string; password: string; registrationKey: string; userLocation?: string }): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.baseUrl}/signup`, data);
+  signup(data: { username: string; email: string; password: string; userLocation?: any; registrationKey?: string }): Observable<{ message: string; userId: string }> {
+    return this.http.post<{ message: string; userId: string }>(`${this.baseUrl}/signup`, data);
+  }
+
+  verifyEmailOtp(userId: string, otp: string, registrationKey = ''): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/verify-email-otp`, { userId, otp, registrationKey });
+  }
+
+  resendEmailOtp(userId: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.baseUrl}/resend-email-otp`, { userId });
   }
 
   signin(data: { username: string; password: string }): Observable<AuthResponse> {

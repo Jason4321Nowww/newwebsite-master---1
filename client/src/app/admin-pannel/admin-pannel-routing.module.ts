@@ -8,6 +8,7 @@ import { AdminPressComponent } from './admin-press/admin-press.component';
 import { AdminShopComponent } from './admin-shop/admin-shop.component';
 import { AdminVideosComponent } from './admin-videos/admin-videos.component';
 import { AdminGuard } from '../guards/admin.guard';
+import { InviteGuard } from '../guards/invite.guard';
 import { AdminUserComponent } from './admin-user/admin-user.component';
 import { AdminActionComponent } from './admin-action/admin-action.component';
 import { AdminOrdersComponent } from './admin-orders/admin-orders.component';

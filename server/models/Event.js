@@ -44,12 +44,18 @@ const eventSchema = new mongoose.Schema(
       enum: [0, 1, 2, 3, 4, 5, 6, 7],
       default: 7,
     },
-  eventLocation: { type: String, default: '' },
+  eventLocation: {
+    kantonCode: { type: String, default: '' },
+    bezirk:     { type: String, default: '' },
+    gemeinde:   { type: String, default: '' },
+  },
 
     attendees: [
       {
-        user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        user:        { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         isAnonymous: { type: Boolean, default: false },
+        visitorId:   { type: String, default: null },  // persistent browser fingerprint
+        ip:          { type: String, default: null },  // client IP at time of attendance
       },
     ],
 

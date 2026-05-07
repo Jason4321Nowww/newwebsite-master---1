@@ -1,0 +1,131 @@
+.invite-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f6f9;
+  padding: 2rem 1rem;
+}
+
+.invite-card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+
+  h2 {
+    margin: 0.5rem 0 0.75rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #1a1a1a;
+  }
+}
+
+.invite-logo {
+  margin-bottom: 1rem;
+  .logo-text {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #009d63;
+    letter-spacing: 0.05em;
+  }
+}
+
+.status-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  margin: 0.5rem 0;
+  &.success { color: #2e7d32; }
+  &.error   { color: #c62828; }
+}
+
+.status-msg {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  &.success { color: #2e7d32; }
+  &.error   { color: #c62828; }
+}
+
+.invite-meta {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  .invite-email { color: #888; font-size: 0.87rem; }
+}
+
+.invite-form {
+  text-align: left;
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #555;
+    }
+
+    input {
+      padding: 0.55rem 0.8rem;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+      &:focus { border-color: #009d63; }
+    }
+
+    .field-error {
+      font-size: 0.8rem;
+      color: #c62828;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 0.7rem;
+    background: #009d63;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+    &:hover { background: #007a4d; }
+    &:disabled { background: #bbb; cursor: not-allowed; }
+  }
+}
+
+.submit-error {
+  color: #c62828;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn-back {
+  display: inline-block;
+  margin-top: 1.2rem;
+  padding: 0.5rem 1.4rem;
+  background: #009d63;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  &:hover { background: #007a4d; }
+}
+
+.loading-text {
+  color: #888;
+  font-size: 0.95rem;
+  padding: 1rem 0;
+}

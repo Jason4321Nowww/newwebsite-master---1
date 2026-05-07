@@ -18,7 +18,7 @@ const createVideo = async (req, res) => {
 };
 const getVideos = async (req, res) => {
   try {
-    const videos = await Video.find(); // ← MongoDB find method
+    const videos = await Video.find().sort({ _id: -1 });
     res.status(200).json(videos);
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error });
@@ -28,10 +28,10 @@ const getVideos = async (req, res) => {
 const updateVideo = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, title_it, title_fr, title_en, orientation } = req.body;
+    const { title, title_it, title_fr, title_en, videoId, orientation } = req.body;
     const updated = await Video.findByIdAndUpdate(
       id,
-      { title, title_it, title_fr, title_en, orientation },
+      { title, title_it, title_fr, title_en, videoId, orientation },
       { new: true }
     );
     if (!updated) return res.status(404).json({ message: 'Video not found' });

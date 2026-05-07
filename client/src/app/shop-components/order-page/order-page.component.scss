@@ -111,6 +111,12 @@
       }
     }
 
+    .validation-error {
+      color: #e53935;
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
     .btn {
       background-color: var(--btn-primary-bg);
       color: var(--btn-primary-text);

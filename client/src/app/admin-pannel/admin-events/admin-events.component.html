@@ -89,12 +89,26 @@
       </select>
     </label>
 
+    <!-- Event Location — cascading Kanton → Bezirk → Gemeinde -->
     <label>
       Event Location (Kanton):
-      <select formControlName="eventLocation">
-        <option *ngFor="let location of locationOptions" [value]="location.value">
-          {{ location.label }}
-        </option>
+      <select [value]="evtKantonCode" (change)="onEvtKantonChange($any($event.target).value)">
+        <option value="">— Alle Kantone (kein Filter) —</option>
+        <option *ngFor="let c of cantons" [value]="c.kantonCode">{{ c.kantonName }}</option>
+      </select>
+    </label>
+    <label *ngIf="bezirke.length">
+      Bezirk:
+      <select [value]="evtBezirk" (change)="onEvtBezirkChange($any($event.target).value)">
+        <option value="">— Kein Bezirk-Filter —</option>
+        <option *ngFor="let b of bezirke" [value]="b">{{ b }}</option>
+      </select>
+    </label>
+    <label *ngIf="gemeinden.length">
+      Gemeinde:
+      <select [value]="evtGemeinde" (change)="evtGemeinde = $any($event.target).value">
+        <option value="">— Kein Gemeinde-Filter —</option>
+        <option *ngFor="let g of gemeinden" [value]="g">{{ g }}</option>
       </select>
     </label>
 
@@ -126,9 +140,8 @@
 
       <label for="locationFilter">Filter by Location:</label>
       <select id="locationFilter" name="locationFilter" [(ngModel)]="selectedLocationFilter" (change)="applyFilterByLocation()">
-        <option *ngFor="let location of locationOptions" [value]="location.value">
-          {{ location.label }}
-        </option>
+        <option value="">— Alle Kantone —</option>
+        <option *ngFor="let c of cantons" [value]="c.kantonCode">{{ c.kantonName }}</option>
       </select>
     </div>
 
@@ -148,9 +161,13 @@
           <tr *ngFor="let event of filteredEvents">
             <td>{{ event.title }}</td>
             <td>{{ event.eventDate | date: 'dd-MM-yyyy' }}</td>
-            <td>{{ event.attendees.length || 0 }}</td>
+            <td>
+              <span class="attendees-badge" (click)="openAttendeesModal(event)" [class.has-attendees]="event.attendees.length > 0">
+                {{ event.attendees.length || 0 }}
+              </span>
+            </td>
             <td>{{ getEventTypeLabel(event.eventType || '') }}</td>
-            <td>{{ event.eventLocation || '—' }}</td>
+            <td>{{ getEventLocationLabel(event.eventLocation) }}</td>
             <td>
               <mat-icon class="text-primary" (click)="editEvent(event)">edit</mat-icon>
               <mat-icon class="text-danger" (click)="deleteEvent(event.id!)">delete</mat-icon>
@@ -160,5 +177,52 @@
       </table>
     </div>
   </div>
+
+<!-- Attendees Modal -->
+<div class="att-backdrop" *ngIf="attendeesModalEvent" (click)="closeAttendeesModal()">
+  <div class="att-modal" (click)="$event.stopPropagation()">
+    <button class="att-close" (click)="closeAttendeesModal()">✕</button>
+
+    <h3 class="att-title">
+      <mat-icon>people</mat-icon>
+      Attendees — {{ attendeesModalEvent.title }}
+    </h3>
+
+    <!-- Summary -->
+    <div class="att-summary">
+      <div class="att-stat">
+        <span class="att-stat-num">{{ attendeesModalEvent.attendees.length }}</span>
+        <span class="att-stat-label">Total</span>
+      </div>
+      <div class="att-stat">
+        <span class="att-stat-num">{{ memberAttendees.length }}</span>
+        <span class="att-stat-label">Members</span>
+      </div>
+      <div class="att-stat">
+        <span class="att-stat-num">{{ guestAttendees.length }}</span>
+        <span class="att-stat-label">Guests</span>
+      </div>
+    </div>
+
+    <!-- List -->
+    <div class="att-list" *ngIf="attendeesModalEvent.attendees.length > 0; else noAttendees">
+      <div class="att-row" *ngFor="let a of attendeesModalEvent.attendees; let i = index">
+        <span class="att-index">{{ i + 1 }}</span>
+        <mat-icon class="att-icon" [class.guest-icon]="a.isAnonymous">
+          {{ a.isAnonymous ? 'person_outline' : 'person' }}
+        </mat-icon>
+        <span class="att-name">{{ getAttendeeName(a) }}</span>
+        <span class="att-role" *ngIf="getAttendeeRole(a)">{{ getAttendeeRole(a) }}</span>
+        <span class="att-badge" [class.badge-guest]="a.isAnonymous" [class.badge-member]="!a.isAnonymous">
+          {{ a.isAnonymous ? 'Guest' : 'Member' }}
+        </span>
+      </div>
+    </div>
+
+    <ng-template #noAttendees>
+      <p class="att-empty">No attendees yet.</p>
+    </ng-template>
+  </div>
+</div>
 
 </div>

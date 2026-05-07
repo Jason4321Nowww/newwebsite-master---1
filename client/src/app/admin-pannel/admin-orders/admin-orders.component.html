@@ -1,67 +1,106 @@
 <div class="admin-orders-page admin-card">
- 
+  <h2 class="section-title">Orders</h2>
 
+  <p *ngIf="actionMessage" class="action-msg" [class.error]="actionError">{{ actionMessage }}</p>
 
-<!-- Filters -->
-<button (click)="loadOrders()">All</button>
-<button (click)="loadOrders('pending')">Pending</button>
-<button (click)="loadOrders('paid')">Paid</button>
-<button (click)="loadOrders('shipped')">Shipped</button>
+  <!-- Filters -->
+  <div class="filter-bar">
+    <button (click)="loadOrders()" class="filter-btn">All</button>
+    <button (click)="loadOrders('pending')" class="filter-btn">Pending</button>
+    <button (click)="loadOrders('paid')" class="filter-btn">Paid</button>
+    <button (click)="loadOrders('shipped')" class="filter-btn">Shipped</button>
+    <button (click)="loadOrders('cancelled')" class="filter-btn">Cancelled</button>
+  </div>
 
-<!-- Orders List -->
-<table>
-  <thead>
-    <tr>
-      <th>Customer</th>
-      <th>Email</th>
-      <th>Total</th>
-      <th>Status</th>
-      <th>Actions</th>
-      <th>Details</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let order of orders">
-      <td>{{ order.customerName }}</td>
-      <td>{{ order.customerEmail }}</td>
-      <td>CHF {{ order.totalAmount }}</td>
-      <td>{{ order.status | titlecase }}</td>
-      <td>
-        <button *ngIf="order.status === 'pending'" (click)="markAsPaid(order._id)">Mark Paid</button>
-        <button *ngIf="order.status === 'paid'" (click)="markAsShipped(order._id)">Mark Shipped</button>
-      </td>
-      <td><button (click)="viewDetails(order)">View</button></td>
-    </tr>
-  </tbody>
-</table>
+  <!-- Orders Table -->
+  <div class="table-wrap">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Invoice #</th>
+          <th>Kaufnummer</th>
+          <th>Customer</th>
+          <th>Email</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td class="invoice-num">{{ order.invoiceNumber || '—' }}</td>
+          <td class="payment-num">{{ order.paymentNumber || '—' }}</td>
+          <td>{{ order.customerName }}</td>
+          <td>{{ order.customerEmail }}</td>
+          <td>CHF {{ order.totalAmount }}</td>
+          <td>
+            <span class="status-badge status-{{ order.status }}">{{ order.status | titlecase }}</span>
+          </td>
+          <td class="actions-cell">
+            <button *ngIf="order.status === 'pending'" class="btn-paid" (click)="markAsPaid(order._id)">Mark Paid</button>
+            <button *ngIf="order.status === 'paid'" class="btn-shipped" (click)="markAsShipped(order._id)">Mark Shipped</button>
+            <button *ngIf="order.status !== 'cancelled' && order.status !== 'shipped'" class="btn-cancel" (click)="cancelOrder(order._id)">Cancel</button>
+            <button class="btn-view" (click)="viewDetails(order)">View</button>
+          </td>
+        </tr>
+        <tr *ngIf="orders.length === 0">
+          <td colspan="7" style="text-align:center;color:#aaa;padding:24px;">No orders found.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-<!-- Detail Modal -->
-<div *ngIf="selectedOrder" class="order-details">
-  <h3>📝 Order Details - {{ selectedOrder._id }}</h3>
+  <!-- Detail Modal -->
+  <div *ngIf="selectedOrder" class="order-modal-backdrop" (click)="closeDetails()">
+    <div class="order-modal" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeDetails()">✕</button>
+      <h3>Order Details</h3>
 
-  <p><strong>Customer:</strong> {{ selectedOrder.customerName }}</p>
-  <p><strong>Email:</strong> {{ selectedOrder.customerEmail }}</p>
-   <p><strong>customerIBAN:</strong> {{ selectedOrder.customerIBAN }}</p>
-  <p><strong>Address:</strong> 
-    {{ selectedOrder.customerAddress.street }},
-    {{ selectedOrder.customerAddress.city }},
-    {{ selectedOrder.customerAddress.country }},
-    {{ selectedOrder.customerAddress.postalCode }}
-  </p>
+      <div class="modal-section">
+        <div class="modal-row"><span>Invoice #</span><strong class="invoice-num">{{ selectedOrder.invoiceNumber || '—' }}</strong></div>
+        <div class="modal-row"><span>Kaufnummer</span><strong class="payment-num">{{ selectedOrder.paymentNumber || '—' }}</strong></div>
+        <div class="modal-row"><span>Status</span><span class="status-badge status-{{ selectedOrder.status }}">{{ selectedOrder.status | titlecase }}</span></div>
+        <div class="modal-row"><span>Date</span><span>{{ selectedOrder.createdAt | date:'dd.MM.yyyy HH:mm' }}</span></div>
+        <div class="modal-row"><span>Language</span><span>{{ selectedOrder.lang | uppercase }}</span></div>
+      </div>
 
-  <p><strong>Payment Method:</strong> {{ selectedOrder.paymentMethod }}</p>
-  <p><strong>Status:</strong> {{ selectedOrder.status }}</p>
+      <div class="modal-section">
+        <h4>Customer</h4>
+        <div class="modal-row"><span>Name</span><span>{{ selectedOrder.customerName }}</span></div>
+        <div class="modal-row"><span>Email</span><span>{{ selectedOrder.customerEmail }}</span></div>
+        <div class="modal-row"><span>Address</span>
+          <span>
+            {{ selectedOrder.customerAddress?.street }},
+            {{ selectedOrder.customerAddress?.postalCode }}
+            {{ selectedOrder.customerAddress?.city }},
+            {{ selectedOrder.customerAddress?.country }}
+          </span>
+        </div>
+      </div>
 
-  <h4>🛍️ Items:</h4>
-  <ul>
-    <li *ngFor="let item of selectedOrder.items">
-      {{ item.product?.name || 'Product' }} × {{ item.quantity }}
-    </li>
-  </ul>
+      <div class="modal-section">
+        <h4>Payment</h4>
+        <div class="modal-row"><span>Method</span><span>{{ selectedOrder.paymentMethod | titlecase }}</span></div>
+        <div class="modal-row"><span>Kaufnummer</span><strong class="payment-num">{{ selectedOrder.paymentNumber || '—' }}</strong></div>
+      </div>
 
-  <p><strong>Total:</strong> CHF {{ selectedOrder.totalAmount }}</p>
+      <div class="modal-section">
+        <h4>Items</h4>
+        <div class="modal-row" *ngFor="let item of selectedOrder.items">
+          <span>{{ item.product?.name || 'Product' }}</span>
+          <span>× {{ item.quantity }}</span>
+        </div>
+        <div class="modal-row total-row">
+          <span>Total</span>
+          <strong>CHF {{ selectedOrder.totalAmount }}</strong>
+        </div>
+      </div>
 
-  <button (click)="closeDetails()">Close</button>
-</div>
-
+      <div class="modal-actions" *ngIf="selectedOrder.status !== 'cancelled' && selectedOrder.status !== 'shipped'">
+        <button *ngIf="selectedOrder.status === 'pending'" class="btn-paid" (click)="markAsPaid(selectedOrder._id)">Mark Paid</button>
+        <button *ngIf="selectedOrder.status === 'paid'" class="btn-shipped" (click)="markAsShipped(selectedOrder._id)">Mark Shipped</button>
+        <button class="btn-cancel" (click)="cancelOrder(selectedOrder._id)">Cancel Order</button>
+      </div>
+    </div>
+  </div>
 </div>

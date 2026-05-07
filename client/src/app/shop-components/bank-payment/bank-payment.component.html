@@ -1,0 +1,102 @@
+<div class="bp-page">
+  <div class="bp-card">
+
+    <!-- Success State -->
+    <ng-container *ngIf="success">
+      <div class="bp-success">
+        <div class="bp-success-icon">✓</div>
+        <h2>Bestellung erfolgreich! / Order Placed!</h2>
+        <p>Eine Bestätigungs-E-Mail wurde an <strong>{{ customer?.email }}</strong> gesendet.</p>
+
+        <div class="bp-kaufnummer-box">
+          <p class="bp-kauf-label">Kaufnummer / Payment Number</p>
+          <div class="bp-kauf-value">{{ paymentNumber }}</div>
+          <p class="bp-kauf-hint">
+            Bitte verwenden Sie diese Nummer als Zahlungsreferenz bei Ihrer Banküberweisung.<br/>
+            Please use this number as the reference in your bank transfer.
+          </p>
+        </div>
+
+        <div class="bp-bank-box bp-bank-box--compact">
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">IBAN</span>
+            <span class="bp-bank-value bp-iban">{{ bankDetails.iban }}</span>
+          </div>
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">Betrag / Amount</span>
+            <span class="bp-bank-value bp-amount">CHF {{ total.toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <p class="bp-redirect-note">Weiterleitung zum Shop in wenigen Sekunden… / Redirecting to shop…</p>
+      </div>
+    </ng-container>
+
+    <!-- Payment Form -->
+    <ng-container *ngIf="!success">
+
+      <div class="bp-logo"><span>BKP</span></div>
+      <h2 class="bp-title">Banküberweisung / Bank Transfer</h2>
+      <p class="bp-subtitle">
+        Klicken Sie auf «Bestellung aufgeben», um Ihre Bestellung abzuschließen.
+        Die Kaufnummer (Zahlungsreferenz) wird automatisch generiert und per E-Mail zugestellt.
+      </p>
+
+      <!-- Bank Details -->
+      <div class="bp-bank-box">
+        <h3>Bankverbindung / Bank Details</h3>
+        <div class="bp-bank-grid">
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">Kontoinhaber / Account Holder</span>
+            <span class="bp-bank-value">{{ bankDetails.holder }}</span>
+          </div>
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">IBAN</span>
+            <span class="bp-bank-value bp-iban">{{ bankDetails.iban }}</span>
+          </div>
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">Bank</span>
+            <span class="bp-bank-value">{{ bankDetails.bank }}</span>
+          </div>
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">Adresse / Address</span>
+            <span class="bp-bank-value">{{ bankDetails.address }}</span>
+          </div>
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">Währung / Currency</span>
+            <span class="bp-bank-value">CHF</span>
+          </div>
+          <div class="bp-bank-row">
+            <span class="bp-bank-label">Betrag / Amount</span>
+            <span class="bp-bank-value bp-amount">CHF {{ total.toFixed(2) }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="bp-summary">
+        <h3>Bestellübersicht / Order Summary</h3>
+        <div class="bp-summary-item" *ngFor="let item of cartItems">
+          <span>{{ item.name }} × {{ item.quantity }}</span>
+          <span>CHF {{ (item.price * item.quantity).toFixed(2) }}</span>
+        </div>
+        <div class="bp-summary-total">
+          <span>Total</span>
+          <span>CHF {{ total.toFixed(2) }}</span>
+        </div>
+      </div>
+
+      <p *ngIf="errorMsg" class="bp-error">{{ errorMsg }}</p>
+
+      <button
+        class="bp-btn-place"
+        (click)="placeOrder()"
+        [disabled]="submitting">
+        {{ submitting ? 'Wird verarbeitet…' : 'Bestellung aufgeben / Place Order' }}
+      </button>
+
+      <a routerLink="/order" class="bp-back">← Zurück / Back to Checkout</a>
+
+    </ng-container>
+  </div>
+</div>

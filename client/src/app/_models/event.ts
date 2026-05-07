@@ -1,5 +1,5 @@
 export interface Attendee {
-  user?: string; // ObjectId as string (optional for anonymous)
+  user?: { _id?: string; username?: string; roleLevel?: number } | string;
   isAnonymous: boolean;
 }
 
@@ -21,7 +21,7 @@ export interface Event {
   repeatEndDate?: string;
   eventType?: 'oeffentlich' | 'nationalversammlung' | 'lokalversammlung' | 'regionalversammlung' | 'rv_zusammenkunft' | 'lv_zusammenkunft' | 'vorstand' | 'vorsitzende' | 'admin';
   visibilityLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-  eventLocation: string;
+  eventLocation: { kantonCode: string; bezirk: string; gemeinde: string } | null;
   attendees: Attendee[];
   isActive?: boolean;
   createdAt?: string;

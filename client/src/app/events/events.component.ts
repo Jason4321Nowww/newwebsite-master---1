@@ -33,13 +33,10 @@ ngOnInit(): void {
   // Server filters events by role+location; client just renders what it receives
   this.eventService.getEvents().subscribe({
     next: (events: any[]) => {
-      const userId = localStorage.getItem('id');
       this.events = events.map(e => ({
         ...e,
-        attendeesCount: e.attendees?.length ?? 0,
-        isAttending: userId
-          ? e.attendees?.some((a: any) => a.user === userId)
-          : false
+        attendeesCount: e.attendeesCount ?? e.attendees?.length ?? 0,
+        isAttending: e.isAttending ?? false,
       }));
       this.loading = false;
     },

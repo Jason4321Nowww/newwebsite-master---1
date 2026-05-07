@@ -5,5 +5,5 @@ export interface User {
   isAdmin: boolean;
   isActive: boolean;
   roleLevel: number;
-  userLocation: string;
+  userLocation: { kantonCode: string; kantonName: string; bezirk: string; gemeinde: string } | string;
 }

@@ -14,7 +14,7 @@ export class SpecialMemberPageComponent implements OnInit{
 
   userName = '';
   userRole = 7;          // default public
-  userLocation = '';
+  userLocation: any = null;
   events: Event[] = [];
   loading = false;
 
@@ -52,22 +52,42 @@ truncateHtml(text: string | undefined, limit: number): string {
 
   loadEvents() {
     this.eventService.getEvents().subscribe((allEvents: Event[]) => {
-      this.events = allEvents.filter(e => {
-        // Event is visible if its visibilityLevel >= user's roleLevel
-        // (lower roleLevel = higher privilege, e.g. 0=Admin, 7=Public)
-        const level = e.visibilityLevel ?? 7;
-        const levelMatch = level >= this.userRole;
-
-        // Only apply location filter when both event and user have a location
-        const locationMatch =
-          !e.eventLocation ||
-          !this.userLocation ||
-          e.eventLocation.toLowerCase() === this.userLocation.toLowerCase();
-
-        return levelMatch && locationMatch;
-      });
+      // Server applies all role+location filtering — trust the result as a safety net
+      this.events = allEvents.filter(e => this.canSeeEvent(e));
       this.loading = false;
     });
+  }
+
+  private canSeeEvent(e: Event): boolean {
+    const r = this.userRole;
+    const loc = this.userLocation || {};
+    const userKanton   = typeof loc === 'object' ? (loc.kantonCode || '') : '';
+    const userGemeinde = typeof loc === 'object' ? (loc.gemeinde   || '') : '';
+    const evtKanton    = e.eventLocation?.kantonCode || '';
+    const evtGemeinde  = e.eventLocation?.gemeinde   || '';
+    const t = e.eventType;
+
+    if (t === 'oeffentlich')         return true;
+    if (t === 'nationalversammlung') return r <= 6;
+    if (t === 'vorstand')            return r <= 3;
+    if (t === 'vorsitzende')         return r <= 1;
+    if (t === 'rv_zusammenkunft')    return r <= 4;
+
+    if (t === 'regionalversammlung') {
+      if (r <= 3) return true;
+      return r <= 7 && !!userKanton && userKanton === evtKanton;
+    }
+    if (t === 'lokalversammlung') {
+      if (r <= 3) return true;
+      return r <= 7 && !!userGemeinde && userGemeinde === evtGemeinde;
+    }
+    if (t === 'lv_zusammenkunft') {
+      if (r <= 3) return true;
+      if (r === 4) return !!userKanton && userKanton === evtKanton;
+      if (r === 5) return !!userGemeinde && userGemeinde === evtGemeinde;
+      return false;
+    }
+    return false;
   }
 }
 

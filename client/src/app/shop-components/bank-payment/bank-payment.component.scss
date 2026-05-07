@@ -1,0 +1,304 @@
+.bp-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 40px 16px 60px;
+}
+
+.bp-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+  padding: 36px 40px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.bp-logo {
+  text-align: center;
+  margin-bottom: 18px;
+
+  span {
+    display: inline-block;
+    background: #009d63;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: .1em;
+    border-radius: 10px;
+    padding: 8px 28px;
+  }
+}
+
+.bp-title {
+  text-align: center;
+  color: #1a1a2e;
+  margin: 0 0 6px;
+  font-size: 1.4rem;
+}
+
+.bp-subtitle {
+  text-align: center;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 24px;
+}
+
+/* Bank details box */
+.bp-bank-box {
+  background: #f0faf5;
+  border: 1.5px solid #009d63;
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 22px;
+
+  h3 {
+    margin: 0 0 14px;
+    color: #009d63;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+}
+
+.bp-bank-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bp-bank-row {
+  display: flex;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.bp-bank-label {
+  color: #777;
+  min-width: 130px;
+  flex-shrink: 0;
+}
+
+.bp-bank-value {
+  color: #222;
+  font-weight: 500;
+}
+
+.bp-iban {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  letter-spacing: .08em;
+  color: #1565c0;
+}
+
+.bp-amount {
+  color: #009d63;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+/* Order summary */
+.bp-summary {
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+
+  h3 {
+    margin: 0 0 12px;
+    color: #333;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+}
+
+.bp-summary-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #555;
+  padding: 4px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.bp-summary-total {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #1a1a2e;
+  margin-top: 10px;
+  padding-top: 8px;
+}
+
+/* Reference input */
+.bp-ref-box {
+  margin-bottom: 6px;
+}
+
+.bp-ref-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.bp-ref-hint {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: #888;
+  margin-top: 2px;
+}
+
+.bp-ref-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  letter-spacing: .1em;
+  color: #222;
+  transition: border-color .2s;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #009d63;
+  }
+
+  &.error {
+    border-color: #e53935;
+  }
+}
+
+.bp-ref-counter {
+  text-align: right;
+  font-size: 0.78rem;
+  color: #aaa;
+  margin-top: 4px;
+
+  &.full {
+    color: #009d63;
+    font-weight: 600;
+  }
+}
+
+.bp-error {
+  color: #e53935;
+  font-size: 0.85rem;
+  margin: 8px 0 12px;
+}
+
+.bp-btn-place {
+  width: 100%;
+  padding: 14px;
+  background: #009d63;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: background .2s, opacity .2s;
+
+  &:hover:not(:disabled) {
+    background: #007a4d;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.bp-back {
+  display: block;
+  text-align: center;
+  margin-top: 14px;
+  color: #009d63;
+  font-size: 0.88rem;
+  text-decoration: none;
+
+  &:hover { text-decoration: underline; }
+}
+
+/* Kaufnummer box in success state */
+.bp-kaufnummer-box {
+  background: #e3f2fd;
+  border: 2px solid #1565c0;
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.bp-kauf-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: #555;
+  margin: 0 0 8px !important;
+}
+
+.bp-kauf-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: .2em;
+  color: #1565c0;
+  margin-bottom: 10px;
+}
+
+.bp-kauf-hint {
+  font-size: 0.82rem !important;
+  color: #555 !important;
+  margin: 0 !important;
+  line-height: 1.5 !important;
+}
+
+.bp-bank-box--compact {
+  margin: 16px 0 0;
+  h3 { display: none; }
+}
+
+/* Success */
+.bp-success {
+  text-align: center;
+  padding: 20px 0;
+
+  h2 { color: #009d63; margin-bottom: 12px; }
+  p  { color: #555; font-size: 0.95rem; line-height: 1.6; }
+}
+
+.bp-success-icon {
+  width: 72px;
+  height: 72px;
+  background: #e6f7f0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: #009d63;
+  margin: 0 auto 20px;
+}
+
+.bp-redirect-note {
+  color: #aaa !important;
+  font-size: 0.82rem !important;
+  margin-top: 16px;
+}
+
+@media (max-width: 480px) {
+  .bp-card { padding: 24px 18px; }
+  .bp-bank-row { flex-direction: column; gap: 2px; }
+  .bp-bank-label { min-width: unset; }
+}

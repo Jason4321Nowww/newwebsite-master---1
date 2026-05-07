@@ -2,42 +2,37 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Event } from '../_models/event';
+import { FingerprintService } from './fingerprint.service';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class EventsService {
   private baseUrl = 'http://localhost:5000/api/events';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private fingerprint: FingerprintService,
+  ) {}
+
+  private get commonHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders().set('x-visitor-id', this.fingerprint.visitorId);
+    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+    return headers;
+  }
 
   getPublicEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(`${this.baseUrl}/public`);
+    return this.http.get<Event[]>(`${this.baseUrl}/public`, { headers: this.commonHeaders });
   }
+
   getEvents(): Observable<Event[]> {
-    const token = localStorage.getItem('token');
-    const headers = token ? new HttpHeaders().set('Authorization', `Bearer ${token}`) : new HttpHeaders();
-    return this.http.get<Event[]>(`${this.baseUrl}/events`, { headers });
+    return this.http.get<Event[]>(`${this.baseUrl}/events`, { headers: this.commonHeaders });
   }
 
-  getProtectedEvents(): Observable<Event[]> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<Event[]>(`${this.baseUrl}/protected`, { headers });
+  toggleAttendance(eventId: string, attend: boolean): Observable<{ attendees: number }> {
+    return this.http.post<{ attendees: number }>(
+      `${this.baseUrl}/attend`,
+      { eventId, attend, visitorId: this.fingerprint.visitorId },
+      { headers: this.commonHeaders }
+    );
   }
-
-
-
-toggleAttendance(eventId: string, attend: boolean) {
-  const token = localStorage.getItem('token') || '';
-  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  return this.http.post<{ attendees: number }>(
-    `http://localhost:5000/api/events/attend`,
-    { eventId, attend }, {
-      headers
-    }
-  );
-}
-
-
 }

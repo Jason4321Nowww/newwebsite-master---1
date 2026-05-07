@@ -171,25 +171,47 @@ li {
   }
 }
 
-/* Delete Icon */
-.delete-wrapper {
-  margin-top: 0.8rem;
-  text-align: center;
+/* Video action buttons */
+.video-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
 
   button {
-    background: #fbe9e7;
-    border-radius: 50%;
-    transition: background-color 0.2s;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 7px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+
+    mat-icon {
+      font-size: 1rem;
+      height: 1rem;
+      width: 1rem;
+    }
+
+    &:active { transform: scale(0.97); }
   }
 
-  mat-icon {
-    color: #d32f2f;
-    font-size: 24px;
-    transition: color 0.2s;
+  .btn-edit {
+    background: #e6f7f0;
+    color: #007a4d;
+
+    &:hover { background: #009d63; color: #fff; }
   }
 
-  button:hover mat-icon {
-    color: #b71c1c;
+  .btn-delete {
+    background: #fdecea;
+    color: #c62828;
+
+    &:hover { background: #e53935; color: #fff; }
   }
 }
 

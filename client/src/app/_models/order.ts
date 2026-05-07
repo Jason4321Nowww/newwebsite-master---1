@@ -1,5 +1,5 @@
 export interface OrderItem {
-  product: string;         // Product ID
+  product: string;
   quantity: number;
 }
 
@@ -11,15 +11,16 @@ export interface CustomerAddress {
 }
 
 export interface Order {
-  _id?: string; // Optional, returned after saving
+  _id?: string;
   items: OrderItem[];
   customerName: string;
   customerEmail: string;
   customerAddress: CustomerAddress;
-  customerIBAN?: string ,
-  paymentMethod: 'vorkasse'
+  paymentMethod: 'vorkasse';
   totalAmount: number;
-  status?: 'pending' | 'paid' | 'shipped'; // Optional, default: pending
-  createdAt?: string; // Optional ISO timestamp
-
+  paymentNumber?: string;   // Auto-generated Kaufnummer for bank transfer reference
+  invoiceNumber?: string;   // 10-char alphanumeric, generated server-side
+  lang?: string;            // Customer's UI language at time of order
+  status?: 'pending' | 'paid' | 'shipped' | 'cancelled';
+  createdAt?: string;
 }

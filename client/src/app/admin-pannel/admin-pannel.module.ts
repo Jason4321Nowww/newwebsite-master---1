@@ -18,6 +18,7 @@ import { AdminActionComponent } from './admin-action/admin-action.component';
 import { AdminOrdersComponent } from './admin-orders/admin-orders.component';
 import { AdminContactsComponent } from './admin-contacts/admin-contacts.component';
 import { AdminSignupComponent } from './admin-signup/admin-signup.component';
+import { AdminAcceptInviteComponent } from './admin-accept-invite/admin-accept-invite.component';
 import { AdminSigninComponent } from './admin-signin/admin-signin.component';
 import { AdminEmailComponent } from './admin-email/admin-email.component';
 import { AdminLangPickerComponent } from './admin-lang-picker/admin-lang-picker.component';
@@ -38,6 +39,7 @@ import { AdminLangPickerComponent } from './admin-lang-picker/admin-lang-picker.
     AdminOrdersComponent,
     AdminContactsComponent,
     AdminSignupComponent,
+    AdminAcceptInviteComponent,
     AdminSigninComponent,
     AdminEmailComponent,
     AdminLangPickerComponent,

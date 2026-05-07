@@ -18,7 +18,6 @@ import { ShortsVideoPlayerModule } from './shorts-videoplayer/shorts-videoplayer
 import { ShortsVideoPlayer } from './shorts-videoplayer/shorts-videoplayer.component';
 import { TodolistComponent } from './todolist/todolist.component';
 import { HomeComponent } from './home/home.component';
-import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -26,7 +25,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { SigninComponent } from './auth-components/signin/signin.component';
 import { SignupComponent } from './auth-components/signup/signup.component';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ArticleComponent } from './article/article.component';
 import { EventsComponent } from './events/events.component';
@@ -39,6 +40,9 @@ import { OrderPageComponent } from './shop-components/order-page/order-page.comp
 import { ProductDetailComponent } from './shop-components/product-detail/product-detail.component';
 import { CartDetailsComponent } from './shop-components/cart-details/cart-details.component';
 import { SpecialMemberPageComponent } from './special-member-page/special-member-page.component';
+import { AcceptUserInviteComponent } from './accept-user-invite/accept-user-invite.component';
+import { VerifyEmailComponent } from './auth-components/verify-email/verify-email.component';
+import { BankPaymentComponent } from './shop-components/bank-payment/bank-payment.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -67,8 +71,10 @@ import { SpecialMemberPageComponent } from './special-member-page/special-member
     OrderPageComponent,
     ProductDetailComponent,
     CartDetailsComponent,
-    SpecialMemberPageComponent
-  
+    SpecialMemberPageComponent,
+    AcceptUserInviteComponent,
+    VerifyEmailComponent,
+    BankPaymentComponent,
   ],
   imports: [
     //only modules
@@ -85,11 +91,11 @@ import { SpecialMemberPageComponent } from './special-member-page/special-member
     MatButtonModule,
     ReactiveFormsModule,
     MatTooltipModule,
-    
-    
+    MatSnackBarModule,
 ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })

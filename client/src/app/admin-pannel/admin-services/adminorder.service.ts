@@ -8,9 +8,11 @@ export interface AdminOrder {
   customerEmail: string;
   customerAddress: any;
   paymentMethod: string;
-  customerIBAN: string;
+  paymentNumber?: string;
+  invoiceNumber?: string;
+  lang?: string;
   totalAmount: number;
-  status: 'pending' | 'paid' | 'shipped';
+  status: 'pending' | 'paid' | 'shipped' | 'cancelled';
   createdAt: string;
   items: { product: any; quantity: number }[];
 }
@@ -29,11 +31,15 @@ export class AdminOrderService {
     return this.http.get<AdminOrder[]>(`${this.baseUrl}/filter?status=${status}`);
   }
 
-  markAsPaid(orderId: string) {
+  markAsPaid(orderId: string): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${orderId}/mark-paid`, {});
   }
 
-  markAsShipped(orderId: string) {
+  markAsShipped(orderId: string): Observable<any> {
     return this.http.patch(`${this.baseUrl}/${orderId}/mark-shipped`, {});
+  }
+
+  cancelOrder(orderId: string): Observable<any> {
+    return this.http.patch(`${this.baseUrl}/${orderId}/cancel`, {});
   }
 }

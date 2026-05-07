@@ -1,7 +1,7 @@
 footer {
   padding: 2.5rem 2rem 1.5rem;
   background-color: var(--footer-bg);
-  color: var(--footer-text);
+  color: var(--footer-text) !important;
   font-family: 'Montserrat', sans-serif;
   font-size: 0.9rem;
   transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
@@ -41,7 +41,7 @@ footer {
         margin: 0 0 1rem 0;
         line-height: 1.6;
         font-size: 0.875rem;
-        color: var(--footer-text);
+        color: var(--footer-text) !important;
         opacity: 0.9;
         transition: color 0.3s ease-in-out;
       }
@@ -112,7 +112,7 @@ footer {
     padding-top: 1.5rem;
     text-align: center;
     font-size: 0.85rem;
-    color: var(--footer-text);
+    color: var(--footer-text) !important;
     opacity: 0.7;
     border-top: 1px solid var(--border-color);
     transition: color 0.3s ease-in-out, border-color 0.3s ease-in-out;
@@ -120,6 +120,7 @@ footer {
     h4 {
       margin: 0;
       font-weight: 400;
+       color: var(--footer-text) !important;
     }
   }
 

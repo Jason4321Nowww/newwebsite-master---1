@@ -1,38 +1,51 @@
 const Event = require('../models/Event');
 
+// Strip tracking fields (ip, visitorId) from attendees before sending to client
+const sanitiseEvent = (eventObj, userId, visitorId, clientIp) => {
+  const isAttending = eventObj.attendees.some(a =>
+    (userId    && a.user?.toString() === userId)    ||
+    (visitorId && a.visitorId === visitorId)        ||
+    (clientIp  && a.ip === clientIp)
+  );
+  return {
+    ...eventObj,
+    attendeesCount: eventObj.attendees.length,
+    isAttending,
+    attendees: eventObj.attendees.map(a => ({
+      user:        a.user,
+      isAnonymous: a.isAnonymous,
+    })),
+  };
+};
+
 // for not-loggedIn users
 const getPublicEvents = async (req, res) => {
   try {
-    const events = await Event.find({ visibilityLevel: 0, isActive: true }).populate('attendees.user', 'username roleLevel');
-    return res.status(200).json(events);
+    const visitorId = req.headers['x-visitor-id'] || null;
+    const clientIp  = req.ip;
+    const events    = await Event.find({ visibilityLevel: 0, isActive: true })
+      .populate('attendees.user', 'username roleLevel');
+    return res.status(200).json(
+      events.map(e => sanitiseEvent(e.toObject({ virtuals: true }), null, visitorId, clientIp))
+    );
   } catch (error) {
     console.error('Public events error:', error);
     return res.status(500).json({ message: 'Failed to fetch public events' });
   }
 };
 
-
-// Admin-only: Get all events regardless of role
-const getAllEventsForAdmin = async (req, res) => {
+// Admin-only: Get all events regardless of role (includes tracking fields for admin visibility)
+const getAllEventsForAdmin = async (_req, res) => {
   try {
-    const events = await Event.find({ isActive: true });
+    const events = await Event.find({ isActive: true })
+      .populate('attendees.user', 'username roleLevel');
     res.json(events);
   } catch (err) {
     console.error('Admin fetch error:', err);
     res.status(500).json({ message: 'Failed to fetch all events for admin' });
   }
 };
-// Get events filtered by user's role and location (eventType-based)
-// eventType:
-//   oeffentlich        → everyone
-//   nationalversammlung→ all logged-in users
-//   lokalversammlung   → roles 4,5,6 + location
-//   regionalversammlung→ roles 3,4,5,6 + location
-//   rv_zusammenkunft   → roles 1,2,3 (no location filter)
-//   lv_zusammenkunft   → roles 3,4 + location
-//   vorstand           → roles 0,1,2
-//   vorsitzende        → roles 0,1
-//   admin              → role 0 only
+
 const getEvents = async (req, res) => {
   try {
     let query = { isActive: true };
@@ -40,58 +53,55 @@ const getEvents = async (req, res) => {
     if (!req.user) {
       query.eventType = 'oeffentlich';
     } else {
-      const roleLevel = req.user.roleLevel;
-      const userLocation = req.user.userLocation || '';
+      const { roleLevel } = req.user;
+      const loc          = req.user.userLocation || {};
+      const userKanton   = typeof loc === 'object' ? (loc.kantonCode || '') : '';
+      const userGemeinde = typeof loc === 'object' ? (loc.gemeinde   || '') : '';
 
       if (roleLevel === 0) {
-        // Admin: sees all events — no additional filter
+        // Superadmin: sees all events
       } else {
-        const locationMatch = [
-          { eventLocation: '' },
-          { eventLocation: null },
-          { eventLocation: { $exists: false } },
-          { eventLocation: userLocation },
-        ];
+        const conditions = [{ eventType: 'oeffentlich' }];
+        if (roleLevel === 1) conditions.push({ eventType: 'vorsitzende' });
+        if (roleLevel <= 3)  conditions.push({ eventType: 'vorstand' });
+        if (roleLevel <= 6)  conditions.push({ eventType: 'nationalversammlung' });
+        if (roleLevel <= 4)  conditions.push({ eventType: 'rv_zusammenkunft' });
 
-        const conditions = [
-          { eventType: 'oeffentlich' },
-          { eventType: 'nationalversammlung' },
-        ];
+        if (roleLevel <= 3) {
+          conditions.push({ eventType: 'regionalversammlung' });
+        } else if (roleLevel <= 7 && userKanton) {
+          conditions.push({ eventType: 'regionalversammlung', 'eventLocation.kantonCode': userKanton });
+        }
 
-        if (roleLevel === 1) {
-          conditions.push({ eventType: 'vorsitzende' });
-          conditions.push({ eventType: 'vorstand' });
-          conditions.push({ eventType: 'rv_zusammenkunft' });
-        } else if (roleLevel === 2) {
-          conditions.push({ eventType: 'vorstand' });
-          conditions.push({ eventType: 'rv_zusammenkunft' });
-        } else if (roleLevel === 3) {
-          conditions.push({ eventType: 'rv_zusammenkunft' });
-          conditions.push({ $and: [{ eventType: 'lv_zusammenkunft' }, { $or: locationMatch }] });
-          conditions.push({ $and: [{ eventType: 'regionalversammlung' }, { $or: locationMatch }] });
-        } else if (roleLevel === 4) {
-          conditions.push({ $and: [{ eventType: 'lv_zusammenkunft' }, { $or: locationMatch }] });
-          conditions.push({ $and: [{ eventType: 'regionalversammlung' }, { $or: locationMatch }] });
-          conditions.push({ $and: [{ eventType: 'lokalversammlung' }, { $or: locationMatch }] });
-        } else if (roleLevel === 5) {
-          conditions.push({ $and: [{ eventType: 'regionalversammlung' }, { $or: locationMatch }] });
-          conditions.push({ $and: [{ eventType: 'lokalversammlung' }, { $or: locationMatch }] });
-        } else if (roleLevel === 6) {
-          conditions.push({ $and: [{ eventType: 'lokalversammlung' }, { $or: locationMatch }] });
+        if (roleLevel <= 3) {
+          conditions.push({ eventType: 'lokalversammlung' });
+        } else if (roleLevel <= 7 && userGemeinde) {
+          conditions.push({ eventType: 'lokalversammlung', 'eventLocation.gemeinde': userGemeinde });
+        }
+
+        if (roleLevel <= 3) {
+          conditions.push({ eventType: 'lv_zusammenkunft' });
+        } else if (roleLevel === 4 && userKanton) {
+          conditions.push({ eventType: 'lv_zusammenkunft', 'eventLocation.kantonCode': userKanton });
+        } else if (roleLevel === 5 && userGemeinde) {
+          conditions.push({ eventType: 'lv_zusammenkunft', 'eventLocation.gemeinde': userGemeinde });
         }
 
         query.$or = conditions;
       }
     }
 
+    const userId    = req.user?.id?.toString() || null;
+    const visitorId = req.headers['x-visitor-id'] || null;
+    const clientIp  = req.ip;
+
     const events = await Event.find(query);
-    res.json(events);
+    res.json(events.map(e => sanitiseEvent(e.toObject({ virtuals: true }), userId, visitorId, clientIp)));
   } catch (err) {
     console.error('Events fetch error:', err);
     res.status(500).json({ message: 'Failed to fetch events' });
   }
 };
-
 
 // Create Event
 const createEvent = async (req, res) => {
@@ -99,19 +109,14 @@ const createEvent = async (req, res) => {
     const {
       title, title_it, title_fr, title_en,
       description, description_it, description_fr, description_en,
-      isMandatory,
-      eventDate,
-      repeat,
-      repeatEndDate,
-      eventType,
-      eventLocation
+      isMandatory, eventDate, repeat, repeatEndDate, eventType,
+      eventLocation: eventLocationRaw
     } = req.body;
 
-    if (!req.file) {
-      return res.status(400).json({ message: 'Image is required' });
-    }
+    if (!req.file) return res.status(400).json({ message: 'Image is required' });
 
-    const imageUrl = `/uploads/events/${req.file.filename}`;
+    let eventLocation = { kantonCode: '', bezirk: '', gemeinde: '' };
+    try { if (eventLocationRaw) eventLocation = JSON.parse(eventLocationRaw); } catch {}
 
     const event = new Event({
       title, title_it, title_fr, title_en,
@@ -122,12 +127,11 @@ const createEvent = async (req, res) => {
       repeatEndDate: repeatEndDate || null,
       eventType: eventType || 'oeffentlich',
       eventLocation,
-      image: imageUrl,
+      image: `/uploads/events/${req.file.filename}`,
       date: eventDate,
     });
 
     await event.save();
-
     res.status(201).json({ message: 'Event created successfully', event });
   } catch (err) {
     console.error('Create Event Error:', err);
@@ -135,92 +139,117 @@ const createEvent = async (req, res) => {
   }
 };
 
-//update Event
 const updateEvent = async (req, res) => {
   try {
     const {
       title, title_it, title_fr, title_en,
       description, description_it, description_fr, description_en,
-      isMandatory,
-      eventDate,
-      repeat,
-      repeatEndDate,
-      eventType,
-      eventLocation,
+      isMandatory, eventDate, repeat, repeatEndDate, eventType,
+      eventLocation: eventLocationRaw,
     } = req.body;
+
+    let eventLocation = { kantonCode: '', bezirk: '', gemeinde: '' };
+    try { if (eventLocationRaw) eventLocation = JSON.parse(eventLocationRaw); } catch {}
 
     const updatedData = {
       title, title_it, title_fr, title_en,
       description, description_it, description_fr, description_en,
-      isMandatory,
-      eventDate,
-      repeat,
+      isMandatory, eventDate, repeat,
       repeatEndDate: repeatEndDate || null,
       eventType: eventType || 'oeffentlich',
       eventLocation,
       date: eventDate,
     };
 
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
-    }
+    if (!await Event.findById(req.params.id)) return res.status(404).json({ message: 'Event not found' });
 
-    // If new image uploaded, replace old one
-    if (req.file) {
-       updatedData.image = `/uploads/events/${req.file.filename}`; 
-    }
+    if (req.file) updatedData.image = `/uploads/events/${req.file.filename}`;
 
-    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, updatedData, {
-      new: true
-    });
-
+    const updatedEvent = await Event.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     res.status(200).json({ message: 'Event updated successfully', event: updatedEvent });
-
   } catch (err) {
     console.error('Update Event Error:', err);
     res.status(500).json({ message: 'Failed to update event' });
   }
 };
 
-
-// Delete Event
 const deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
-   return    res.json({ message: 'Event deleted successfully' });
+    await Event.findByIdAndDelete(req.params.id);
+    return res.json({ message: 'Event deleted successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Server error while deleting event' });
   }
 };
 
 // Attend/Unattend
-const  toggleAttendance = async (req, res) => {
-  const { eventId, attend, anonymous } = req.body;
-  const event = await Event.findById(eventId);
-  if (!event) return res.status(404).json({ message: 'Event not found' });
+// Uniqueness: logged-in users by userId; guests by visitorId OR IP
+const toggleAttendance = async (req, res) => {
+  try {
+    const { eventId, attend, anonymous, visitorId } = req.body;
+    const userId   = req.user?.id?.toString() || null;
+    const clientIp = req.ip;
 
-  const userId = req.user?.id;
+    let updated;
 
-  if (attend) {
-    // Add attendee
-    if (!event.attendees.some(a => a.user?.toString() === userId?.toString())) {
-      event.attendees.push({
-        user: userId || null,
-        isAnonymous: !userId || anonymous,
-      });
+    if (attend) {
+      // Build uniqueness condition — reject if any matching identifier already present
+      let condition;
+      if (userId) {
+        condition = { _id: eventId, 'attendees.user': { $ne: userId } };
+      } else {
+        // For guests block by visitorId OR IP
+        condition = {
+          _id: eventId,
+          $nor: [
+            ...(visitorId ? [{ 'attendees.visitorId': visitorId }] : []),
+            { 'attendees.ip': clientIp },
+          ],
+        };
+      }
+
+      const newAttendee = {
+        user:        userId || null,
+        isAnonymous: !userId || !!anonymous,
+        visitorId:   visitorId || null,
+        ip:          clientIp,
+      };
+
+      updated = await Event.findOneAndUpdate(
+        condition,
+        { $push: { attendees: newAttendee } },
+        { new: true }
+      );
+
+      // Condition didn't match — already attending, just return current count
+      if (!updated) updated = await Event.findById(eventId);
+    } else {
+      // Remove this specific attendee
+      let pullFilter;
+      if (userId) {
+        pullFilter = { user: userId };
+      } else if (visitorId) {
+        pullFilter = { visitorId };
+      } else {
+        pullFilter = { ip: clientIp };
+      }
+
+      updated = await Event.findByIdAndUpdate(
+        eventId,
+        { $pull: { attendees: pullFilter } },
+        { new: true }
+      );
     }
-  } else {
-    // Remove attendee
-    event.attendees = event.attendees.filter(a =>
-      userId ? a.user?.toString() !== userId.toString() : !a.isAnonymous
-    );
-  }
 
-  await event.save();
-  res.json({ attendees: event.attendees.length });
+    if (!updated) return res.status(404).json({ message: 'Event not found' });
+    res.json({ attendees: updated.attendees.length });
+  } catch (err) {
+    console.error('toggleAttendance error:', err);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
-
-module.exports = {getEvents,
-  getPublicEvents,   getAllEventsForAdmin, createEvent, updateEvent, deleteEvent, toggleAttendance}
+module.exports = {
+  getEvents, getPublicEvents, getAllEventsForAdmin,
+  createEvent, updateEvent, deleteEvent, toggleAttendance,
+};

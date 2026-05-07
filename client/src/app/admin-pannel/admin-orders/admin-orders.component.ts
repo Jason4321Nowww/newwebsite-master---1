@@ -9,32 +9,65 @@ import { AdminOrder, AdminOrderService } from '../admin-services/adminorder.serv
 export class AdminOrdersComponent implements OnInit {
   orders: AdminOrder[] = [];
   selectedOrder: AdminOrder | null = null;
+  actionMessage = '';
+  actionError = false;
 
   constructor(private orderService: AdminOrderService) {}
 
   ngOnInit() {
-    this.loadOrders(); 
-    console.log(this.loadOrders())
+    this.loadOrders();
   }
 
   loadOrders(status?: string) {
     const fetch = status
       ? this.orderService.getOrdersByStatus(status)
       : this.orderService.getAllOrders();
-    fetch.subscribe((res) => (this.orders = res));
+    fetch.subscribe(res => this.orders = res);
   }
 
   markAsPaid(orderId: string) {
-    this.orderService.markAsPaid(orderId).subscribe(() => {
-      alert('✅ Order marked as paid!');
-      this.loadOrders();
+    this.orderService.markAsPaid(orderId).subscribe({
+      next: () => {
+        this.actionError = false;
+        this.actionMessage = 'Order marked as paid.';
+        this.loadOrders();
+        setTimeout(() => this.actionMessage = '', 4000);
+      },
+      error: (err) => {
+        this.actionError = true;
+        this.actionMessage = err.error?.error || 'Failed to mark as paid.';
+      }
     });
   }
 
   markAsShipped(orderId: string) {
-    this.orderService.markAsShipped(orderId).subscribe(() => {
-      alert('📦 Order marked as shipped!');
-      this.loadOrders();
+    this.orderService.markAsShipped(orderId).subscribe({
+      next: () => {
+        this.actionError = false;
+        this.actionMessage = 'Order marked as shipped. Shipping email sent.';
+        this.loadOrders();
+        setTimeout(() => this.actionMessage = '', 4000);
+      },
+      error: (err) => {
+        this.actionError = true;
+        this.actionMessage = err.error?.error || 'Failed to mark as shipped.';
+      }
+    });
+  }
+
+  cancelOrder(orderId: string) {
+    this.orderService.cancelOrder(orderId).subscribe({
+      next: () => {
+        this.actionError = false;
+        this.actionMessage = 'Order cancelled. Cancellation email sent to customer.';
+        this.loadOrders();
+        if (this.selectedOrder?._id === orderId) this.selectedOrder = null;
+        setTimeout(() => this.actionMessage = '', 4000);
+      },
+      error: (err) => {
+        this.actionError = true;
+        this.actionMessage = err.error?.error || 'Failed to cancel order.';
+      }
     });
   }
 

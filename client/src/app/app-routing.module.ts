@@ -21,9 +21,12 @@ import { CartDetailsComponent } from './shop-components/cart-details/cart-detail
 import { ValuesComponent } from './values/values.component';
 import { ContactFormComponent } from './contact-form/contact-form.component';
 import { ShortsVideoPlayer } from './shorts-videoplayer/shorts-videoplayer.component';
-import { AdminSignupComponent } from './admin-pannel/admin-signup/admin-signup.component';
 import { AdminSigninComponent } from './admin-pannel/admin-signin/admin-signin.component';
+import { AdminAcceptInviteComponent } from './admin-pannel/admin-accept-invite/admin-accept-invite.component';
 import { SpecialMemberPageComponent } from './special-member-page/special-member-page.component';
+import { AcceptUserInviteComponent } from './accept-user-invite/accept-user-invite.component';
+import { VerifyEmailComponent } from './auth-components/verify-email/verify-email.component';
+import { BankPaymentComponent } from './shop-components/bank-payment/bank-payment.component';
 
 
 
@@ -46,19 +49,26 @@ const routes: Routes = [
   { path: 'signin', component: SigninComponent },
   { path: 'product/:id', component: ProductDetailComponent },
   { path: 'order', component: OrderPageComponent },
+  { path: 'bank-payment', component: BankPaymentComponent },
   { path: 'cart-details', component: CartDetailsComponent },
 
  { path: 'special-member-page', component: SpecialMemberPageComponent,
   canActivate: [authGuard] 
   },
 
- // ✅ Public admin routes — no layout, no guard
-    { path: 'admin/admin-signup', component: AdminSignupComponent },
-  { path: 'admin/admin-signin', component: AdminSigninComponent },
- // Lazy-loaded Admin Pannel
+  // Public routes — no auth guard
+  { path: 'accept-user-invite',   component: AcceptUserInviteComponent },
+  { path: 'verify-email',         component: VerifyEmailComponent },
+
+  // Public admin routes — no layout, no guard
+  { path: 'admin/admin-signin',   component: AdminSigninComponent },
+  { path: 'admin/accept-invite',  component: AdminAcceptInviteComponent },
+  // Signup removed — admins are invited only
+  { path: 'admin/admin-signup',   redirectTo: 'admin/admin-signin', pathMatch: 'full' },
+  // Lazy-loaded Admin Panel — canMatch prevents the bundle from loading for unauthenticated users
   {
     path: 'admin',
-  //  canLoad: [AdminGuard], 
+    canMatch: [AdminGuard],
     loadChildren: () =>
       import('./admin-pannel/admin-pannel.module').then(m => m.AdminPannelModule),
   },

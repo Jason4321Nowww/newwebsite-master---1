@@ -80,15 +80,18 @@ const getReleaseById = async (req, res) => {
 
 const sendReleaseEmail = async (req, res) => {
   try {
-    const { email, pdfBase64 } = req.body;
+    const { email, pdfBase64, lang, langTitle } = req.body;
     const press = await PressRelease.findById(req.params.id);
+    if (!press) return res.status(404).json({ error: 'Press release not found.' });
+
+    // Resolve language-specific content for the email body
+    const useLang = lang || 'de';
+    const emailTitle   = langTitle || (useLang === 'de' ? press.title   : press[`title_${useLang}`]   || press.title);
+    const emailContent = useLang  === 'de' ? press.content : (press[`content_${useLang}`] || press.content);
 
     const imagePath = press.image
   ? path.join(__dirname, '..', press.image)
   : null;
-
-
-    if (!press) return res.status(404).json({ error: 'Press release not found.' });
 
     // ✅ Ensure /tmp folder exists
     const tmpDir = path.join(__dirname, '../tmp');
@@ -114,10 +117,10 @@ const sendReleaseEmail = async (req, res) => {
     const mailOptions = {
       from: process.env.GMAIL_USER,
       to: email,
-      subject: `📢 ${press.title}`,
-      text: press.content.replace(/<[^>]+>/g, ''), // plain version
+      subject: `📢 ${emailTitle}`,
+      text: emailContent.replace(/<[^>]+>/g, ''),
       html: `
-  ${press.content}
+  ${emailContent}
   ${
     imagePath
       ? `<br/><img src="cid:pressImage" style="max-width:100%;margin-top:20px;border-radius:8px;" />`

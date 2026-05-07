@@ -7,6 +7,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AdmineventService } from '../admin-services/adminevent.service';
 import { Event } from 'src/app/_models/event';
+import { LocationService, Canton } from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-admin-events',
@@ -48,52 +49,35 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
 
 
   eventTypeOptions = [
-    { label: 'Öffentlich', value: 'oeffentlich' },
+    { label: 'Admin',               value: 'admin' },
+    { label: 'Vorsitzende',         value: 'vorsitzende' },
+    { label: 'Vorstand',            value: 'vorstand' },
     { label: 'Nationalversammlung', value: 'nationalversammlung' },
-    { label: 'Lokalversammlung', value: 'lokalversammlung' },
     { label: 'Regionalversammlung', value: 'regionalversammlung' },
-    { label: 'RV-Zusammenkunft', value: 'rv_zusammenkunft' },
-    { label: 'LV-Zusammenkunft', value: 'lv_zusammenkunft' },
-    { label: 'Vorstand', value: 'vorstand' },
-    { label: 'Vorsitzende', value: 'vorsitzende' },
-    { label: 'Admin', value: 'admin' },
-  ];
-
-  locationOptions = [
-    { value: '', label: '— Alle Kantone (kein Filter) —' },
-    { value: 'AG', label: 'Aargau' },
-    { value: 'AI', label: 'Appenzell Innerrhoden' },
-    { value: 'AR', label: 'Appenzell Ausserrhoden' },
-    { value: 'BE', label: 'Bern' },
-    { value: 'BL', label: 'Basel-Landschaft' },
-    { value: 'BS', label: 'Basel-Stadt' },
-    { value: 'FR', label: 'Fribourg' },
-    { value: 'GE', label: 'Genf' },
-    { value: 'GL', label: 'Glarus' },
-    { value: 'GR', label: 'Graubünden' },
-    { value: 'JU', label: 'Jura' },
-    { value: 'LU', label: 'Luzern' },
-    { value: 'NE', label: 'Neuenburg' },
-    { value: 'NW', label: 'Nidwalden' },
-    { value: 'OW', label: 'Obwalden' },
-    { value: 'SG', label: 'St. Gallen' },
-    { value: 'SH', label: 'Schaffhausen' },
-    { value: 'SO', label: 'Solothurn' },
-    { value: 'SZ', label: 'Schwyz' },
-    { value: 'TG', label: 'Thurgau' },
-    { value: 'TI', label: 'Tessin' },
-    { value: 'UR', label: 'Uri' },
-    { value: 'VD', label: 'Waadt' },
-    { value: 'VS', label: 'Wallis' },
-    { value: 'ZG', label: 'Zug' },
-    { value: 'ZH', label: 'Zürich' },
+    { label: 'Lokalversammlung',    value: 'lokalversammlung' },
+    { label: 'RV-Zusammenkunft',    value: 'rv_zusammenkunft' },
+    { label: 'LV-Zusammenkunft',    value: 'lv_zusammenkunft' },
+    { label: 'Öffentlich',          value: 'oeffentlich' },
   ];
 
   repeatOptions = ['none', 'weekly', 'biweekly', 'monthly', 'annually'];
 
+  // ── Cascading location for form ──────────────────────────────
+  cantons:   Canton[] = [];
+  bezirke:   string[] = [];
+  gemeinden: string[] = [];
+  evtKantonCode = '';
+  evtKantonName = '';
+  evtBezirk     = '';
+  evtGemeinde   = '';
+
+  // ── Filter: kanton-level only (simple dropdown from loaded cantons) ──
+  get filterCantons(): Canton[] { return this.cantons; }
+
   constructor(
-    private fb: FormBuilder,
-    private adminevent: AdmineventService
+    private fb:          FormBuilder,
+    private adminevent:  AdmineventService,
+    private locationSvc: LocationService,
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +95,11 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
       repeat: ['none'],
       repeatEndDate: [''],
       eventType: ['oeffentlich', Validators.required],
-      eventLocation: [''],
+    });
+
+    this.locationSvc.getCantons().subscribe({
+      next: (data) => { this.cantons = data; },
+      error: () => {},
     });
 
     this.getEvents();
@@ -150,7 +138,9 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     if (!selected) {
       this.filteredEvents = [...this.events];
     } else {
-      this.filteredEvents = this.events.filter((e) => e.eventLocation === selected);
+      this.filteredEvents = this.events.filter(
+        (e) => e.eventLocation?.kantonCode === selected
+      );
     }
   }
 
@@ -173,6 +163,50 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
 
   onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
+  }
+
+  // ── Location cascade ─────────────────────────────────────────
+  onEvtKantonChange(kantonCode: string): void {
+    const c = this.cantons.find(x => x.kantonCode === kantonCode);
+    this.evtKantonCode = kantonCode;
+    this.evtKantonName = c?.kantonName || '';
+    this.evtBezirk     = '';
+    this.evtGemeinde   = '';
+    this.bezirke       = [];
+    this.gemeinden     = [];
+    if (kantonCode) {
+      this.locationSvc.getBezirke(kantonCode).subscribe({
+        next: (d) => { this.bezirke = d; },
+        error: () => {},
+      });
+    }
+  }
+
+  onEvtBezirkChange(bezirk: string): void {
+    this.evtBezirk   = bezirk;
+    this.evtGemeinde = '';
+    this.gemeinden   = [];
+    if (bezirk && this.evtKantonCode) {
+      this.locationSvc.getGemeinden(this.evtKantonCode, bezirk).subscribe({
+        next: (d) => { this.gemeinden = d; },
+        error: () => {},
+      });
+    }
+  }
+
+  private resetLocationState(): void {
+    this.evtKantonCode = '';
+    this.evtKantonName = '';
+    this.evtBezirk     = '';
+    this.evtGemeinde   = '';
+    this.bezirke       = [];
+    this.gemeinden     = [];
+  }
+
+  getEventLocationLabel(loc: any): string {
+    if (!loc) return '—';
+    const parts = [loc.kantonCode, loc.bezirk, loc.gemeinde].filter(Boolean);
+    return parts.length ? parts.join(' / ') : '—';
   }
 
   createEvent() {
@@ -198,7 +232,11 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     formData.append('repeat', formValues.repeat);
     if (formValues.repeatEndDate) formData.append('repeatEndDate', formValues.repeatEndDate);
     formData.append('eventType', formValues.eventType);
-    formData.append('eventLocation', formValues.eventLocation || '');
+    formData.append('eventLocation', JSON.stringify({
+      kantonCode: this.evtKantonCode,
+      bezirk:     this.evtBezirk,
+      gemeinde:   this.evtGemeinde,
+    }));
     formData.append('date', formValues.eventDate);
     formData.append('image', this.selectedFile);
 
@@ -210,6 +248,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
         this.formError = '';
         this.activeLang = 'de';
         this.selectedLangs = ['de'];
+        this.resetLocationState();
         this.getEvents();
       },
       error: (err) => {
@@ -234,8 +273,29 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
       repeat: event.repeat,
       repeatEndDate: event.repeatEndDate ? new Date(event.repeatEndDate).toISOString().split('T')[0] : '',
       eventType: event.eventType || 'oeffentlich',
-      eventLocation: event.eventLocation || '',
     });
+
+    // Restore location state from saved event
+    const loc = event.eventLocation;
+    this.evtKantonCode = loc?.kantonCode || '';
+    this.evtBezirk     = loc?.bezirk     || '';
+    this.evtGemeinde   = loc?.gemeinde   || '';
+    this.bezirke       = [];
+    this.gemeinden     = [];
+    if (this.evtKantonCode) {
+      this.locationSvc.getBezirke(this.evtKantonCode).subscribe({
+        next: (d) => {
+          this.bezirke = d;
+          if (this.evtBezirk) {
+            this.locationSvc.getGemeinden(this.evtKantonCode, this.evtBezirk).subscribe({
+              next: (g) => { this.gemeinden = g; },
+              error: () => {},
+            });
+          }
+        },
+        error: () => {},
+      });
+    }
 
     this.activeLang = 'de';
     this.selectedLangs = ['de'];
@@ -267,7 +327,11 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     formData.append('repeat', formValues.repeat);
     if (formValues.repeatEndDate) formData.append('repeatEndDate', formValues.repeatEndDate);
     formData.append('eventType', formValues.eventType);
-    formData.append('eventLocation', formValues.eventLocation || '');
+    formData.append('eventLocation', JSON.stringify({
+      kantonCode: this.evtKantonCode,
+      bezirk:     this.evtBezirk,
+      gemeinde:   this.evtGemeinde,
+    }));
     formData.append('date', formValues.eventDate);
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
@@ -281,6 +345,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
         this.formError = '';
         this.activeLang = 'de';
         this.selectedLangs = ['de'];
+        this.resetLocationState();
         this.getEvents();
       },
       error: (err) => {
@@ -292,6 +357,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   cancelEdit() {
     this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
     this.selectedFile = null;
+    this.resetLocationState();
     if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
     this.editingEventId = null;
     this.formError = '';
@@ -347,4 +413,48 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     });
     return text.trim();
   }
+
+  // ── Attendees modal ───────────────────────────────────────────
+  attendeesModalEvent: Event | null = null;
+
+  openAttendeesModal(event: Event): void {
+    this.attendeesModalEvent = event;
+  }
+
+  closeAttendeesModal(): void {
+    this.attendeesModalEvent = null;
+  }
+
+  get memberAttendees() {
+    return this.attendeesModalEvent?.attendees.filter(a => !a.isAnonymous) ?? [];
+  }
+
+  get guestAttendees() {
+    return this.attendeesModalEvent?.attendees.filter(a => a.isAnonymous) ?? [];
+  }
+
+  getAttendeeName(a: { user?: any; isAnonymous: boolean }): string {
+    if (a.isAnonymous || !a.user) return 'Guest';
+    if (typeof a.user === 'object' && a.user?.username) return a.user.username;
+    return 'Member';
+  }
+
+  getAttendeeRole(a: { user?: any; isAnonymous: boolean }): string {
+    if (a.isAnonymous || !a.user || typeof a.user !== 'object') return '';
+    const level = a.user?.roleLevel;
+    const opt = this.allRoleOptions.find((r: any) => r.value === level);
+    return opt ? opt.label : '';
+  }
+
+  private readonly allRoleOptions = [
+    { label: 'Superadmin',         value: 0 },
+    { label: 'Vorsitzende',        value: 1 },
+    { label: 'Vorstand',           value: 2 },
+    { label: 'Admin',              value: 3 },
+    { label: 'Regionalverwaltung', value: 4 },
+    { label: 'Lokalverwaltung',    value: 5 },
+    { label: 'Vollmitglied',       value: 6 },
+    { label: 'Regulaermitglied',   value: 7 },
+    { label: 'Oeffentlich',        value: 8 },
+  ];
 }

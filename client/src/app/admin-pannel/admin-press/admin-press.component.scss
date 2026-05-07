@@ -181,6 +181,59 @@ button:not(.lang-add-btn) {
   margin-bottom: 1.3rem;
 }
 
+/* Language selector row */
+.send-lang-row {
+  margin-bottom: 14px;
+}
+
+.send-lang-label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 8px;
+}
+
+.send-lang-options {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.send-lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1.5px solid #ddd;
+  border-radius: 20px;
+  background: #fff;
+  color: #444;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, color .15s;
+
+  &.active {
+    border-color: #009d63;
+    background: #009d63;
+    color: #fff;
+  }
+
+  &:hover:not(.active) {
+    border-color: #009d63;
+    color: #009d63;
+  }
+}
+
+.send-lang-flag {
+  width: 18px;
+  height: 13px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
 /* Dropdown */
 .email-dialog select {
   width: 100%;

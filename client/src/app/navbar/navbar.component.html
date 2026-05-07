@@ -35,6 +35,7 @@
     <ng-container *ngIf="!userName">
       <a [routerLink]="['/signin']" class="signin-link">
         <mat-icon class="signin-icon">login</mat-icon>
+        <span class="signin-label">Login</span>
       </a>
       <button class="theme-toggle" (click)="toggleTheme()"
         [attr.aria-label]="isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'">

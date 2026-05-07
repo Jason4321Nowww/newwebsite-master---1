@@ -89,14 +89,29 @@
 <div class="email-modal" *ngIf="selectedRelease">
   <div class="email-dialog">
     <h3><i class="fas fa-paper-plane"></i> Send Press Release</h3>
-    <p class="subtext">Enter recipient Gmail address to send the press release as PDF.</p>
+    <p class="subtext">Select language, then choose recipients to send the press release as PDF.</p>
+
+    <!-- Language selector -->
+    <div class="send-lang-row">
+      <label class="send-lang-label">Language</label>
+      <div class="send-lang-options">
+        <button
+          *ngFor="let l of getAvailableSendLangs(selectedRelease)"
+          type="button"
+          class="send-lang-btn"
+          [class.active]="sendLang === l.code"
+          (click)="sendLang = l.code">
+          <img [src]="l.flag" [alt]="l.label" class="send-lang-flag" />
+          {{ l.label }}
+        </button>
+      </div>
+    </div>
 
     <!-- Select Recipients -->
     <select multiple (change)="onSelectChange($event)">
       <optgroup label="Lists">
         <option *ngFor="let list of lists" [value]="'list:' + list">{{ list }}</option>
       </optgroup>
-
       <optgroup label="Individual Emails">
         <option *ngFor="let e of emails" [value]="'email:' + e.email">
           {{ e.name }} ({{ e.email }})
@@ -104,7 +119,6 @@
       </optgroup>
     </select>
 
- 
     <div class="modal-actions">
       <button (click)="confirmSend()" [disabled]="selectedRecipients.length === 0">
         <i class="fas fa-envelope-open-text"></i> Send

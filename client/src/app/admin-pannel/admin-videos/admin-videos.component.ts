@@ -103,6 +103,7 @@ export class AdminVideosComponent implements OnInit {
 
     if (this.editingVideoId) {
       const video: Partial<Video> = {
+        videoId: this.videoId.trim(),
         title: this.videoTitle.trim(),
         title_it: this.videoTitle_it.trim() || undefined,
         title_fr: this.videoTitle_fr.trim() || undefined,

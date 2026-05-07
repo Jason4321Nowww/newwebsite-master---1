@@ -17,16 +17,18 @@ const orderSchema = new mongoose.Schema({
   },
   paymentMethod: {
     type: String,
-    enum: ['vorkasse'], // Only vorkasse
+    enum: ['vorkasse'],
     required: true
   },
   totalAmount: Number,
   status: {
     type: String,
-    enum: ['pending', 'paid', 'shipped'],
+    enum: ['pending', 'paid', 'shipped', 'cancelled'],
     default: 'pending'
   },
-  bankReference: String, // optional field for payment reference
+  paymentNumber: { type: String },   // Auto-generated Kaufnummer shown to customer for bank transfer reference
+  invoiceNumber: { type: String, unique: true, sparse: true }, // 10-char alphanumeric, generated on create
+  lang: { type: String, enum: ['de', 'fr', 'it', 'en'], default: 'de' }, // Customer's UI language
   createdAt: { type: Date, default: Date.now }
 });
 
