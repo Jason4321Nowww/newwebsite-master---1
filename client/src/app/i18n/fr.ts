@@ -16,6 +16,10 @@ export const fr: Record<string, string> = {
   'home.latestArticles': 'Derniers articles',
   'home.allArticles':    'Tous les articles →',
   'home.learnMore':      'En savoir plus',
+  'home.updatedDaily':   'mis à jour quotidiennement',
+  'home.readMore':       'Lire la suite',
+  'home.blogsNews':      'BLOGS & ACTUALITÉS',
+  'home.announcement':   'Annonce:',
 
   // ── Article List ─────────────────────────────────────────────
   'articles.title':   'Tous les articles',
@@ -139,4 +143,5 @@ export const fr: Record<string, string> = {
   'about.stephanieOccupation':  'Technologie de l\'information',
   'about.stephanieHobbies':     'Peinture, séries, cyclisme',
   'about.stephanieMotivation':  'Nous avons besoin de plus de femmes actives en politique.',
+  
 };

@@ -1,52 +1,76 @@
-import { Component, VERSION, HostListener } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { gsap } from 'gsap';
-
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Observer } from 'gsap/Observer';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import { LanguageService } from '../services/language.service';
 
-gsap.registerPlugin(ScrollTrigger, Observer, ScrollToPlugin);
+gsap.registerPlugin(ScrollTrigger);
 
 @Component({
   selector: 'app-values',
   templateUrl: './values.component.html',
   styleUrls: ['./values.component.scss'],
 })
-export class ValuesComponent {
+export class ValuesComponent implements AfterViewInit {
   constructor(public langService: LanguageService) {}
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
     this.setupGsap();
   }
 
   setupGsap(): void {
-      gsap.from('.extra-box', {
-    scrollTrigger: '.top-row',
-    duration: 1,
-    opacity: 0,
-    y: -50,
-    stagger: 0.3,
-  });
+    // Top boxes — fade down with stagger
+    gsap.from('.extra-box', {
+      scrollTrigger: {
+        trigger: '.top-row',
+        start: 'top 85%',
+        once: true,
+      },
+      duration: 0.65,
+      opacity: 0,
+      y: -40,
+      stagger: 0.2,
+      ease: 'power2.out',
+    });
+
+    // Arbeit — slide from left
     gsap.from('.arbeit', {
-      scrollTrigger: '.values-container',
-      duration: 0.75,
-      opacity: 0.3,
-      x: -100,
+      scrollTrigger: {
+        trigger: '.values',
+        start: 'top 80%',
+        once: true,
+      },
+      duration: 0.7,
+      opacity: 0,
+      x: -80,
+      ease: 'power2.out',
     });
 
+    // Technologie — slide from bottom
     gsap.from('.technologie', {
-      scrollTrigger: '.values-container',
-      duration: 1,
-      opacity: 0.3,
-      x: -500,
+      scrollTrigger: {
+        trigger: '.values',
+        start: 'top 80%',
+        once: true,
+      },
+      duration: 0.7,
+      opacity: 0,
+      y: 80,
+      delay: 0.15,
+      ease: 'power2.out',
     });
 
+    // Umwelt — slide from right
     gsap.from('.umwelt', {
-      scrollTrigger: '.values-container',
-      duration: 1.5,
-      opacity: 0.3,
-      x: -800,
+      scrollTrigger: {
+        trigger: '.values',
+        start: 'top 80%',
+        once: true,
+      },
+      duration: 0.7,
+      opacity: 0,
+      x: 80,
+      delay: 0.3,
+      ease: 'power2.out',
     });
   }
 }

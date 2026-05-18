@@ -16,6 +16,10 @@ export const de: Record<string, string> = {
   'home.latestArticles': 'Neueste Beiträge',
   'home.allArticles':    'Alle Beiträge →',
   'home.learnMore':      'Mehr erfahren',
+  'home.updatedDaily':   'täglich aktualisiert',
+  'home.readMore':       'Mehr lesen',
+  'home.blogsNews':      'BLOGS & NEUIGKEITEN',
+  'home.announcement':   'Aktuell:',
 
   // ── Article List ─────────────────────────────────────────────
   'articles.title':   'Alle Beiträge',

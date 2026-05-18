@@ -15,35 +15,41 @@
 .lang-trigger {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   background: transparent;
-  border: 1px solid var(--btn-primary-bg, #009d63);
-  color: var(--btn-primary-bg, #009d63);
+  border: 1.5px solid var(--border-color, #ddd);
+  color: var(--text-primary);
   border-radius: var(--radius-md);
-  padding: 4px 10px;
+  padding: 5px 10px;
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
   white-space: nowrap;
 
   .lang-arrow {
     font-size: 0.65rem;
+    color: var(--text-secondary);
     transition: transform 0.2s;
   }
 
   &:hover {
-    background: var(--btn-primary-bg, #009d63);
-    color: #fff;
+    border-color: #009d63;
+    color: #009d63;
+    background: rgba(0, 157, 99, 0.05);
+
+    .lang-arrow { color: #009d63; }
   }
 }
 
 .lang-dropdown.open .lang-trigger {
-  background: var(--btn-primary-bg, #009d63);
-  color: #fff;
+  border-color: #009d63;
+  color: #009d63;
+  background: rgba(0, 157, 99, 0.05);
 
   .lang-arrow {
     transform: rotate(180deg);
+    color: #009d63;
   }
 }
 

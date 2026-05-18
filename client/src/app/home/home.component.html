@@ -1,51 +1,70 @@
 <main id="home-anchor">
-  <!-- Info Banner -->
-  <div class="infoBanner scroll-reveal-left" *ngIf="activeBanner">
-    <mat-icon class="info-icon">info</mat-icon>
-    {{ langService.getField(activeBanner, 'statement') }}
-    <a *ngIf="activeBanner.link" [href]="activeBanner.link" target="_blank" class="learn-more-btn">
-      {{ langService.t('home.learnMore') }}
-    </a>
-  </div>
-
   <!-- Hero Slider -->
   <app-titlescreen></app-titlescreen>
 
   <!-- Values -->
-  <app-values id="werte-anchor" class="scroll-reveal"></app-values>
+  <app-values id="werte-anchor"></app-values>
 
   <!-- Short Videos -->
-  <app-shorts-videoplayer class="scroll-reveal"></app-shorts-videoplayer>
+  <app-shorts-videoplayer></app-shorts-videoplayer>
 
   <!-- Latest Articles -->
-  <section class="latest-articles scroll-reveal" *ngIf="latestArticles.length > 0">
-    <h2 class="section-title">{{ langService.t('home.latestArticles') }}</h2>
+  <section class="latest-articles" *ngIf="latestArticles.length > 0">
+    <div class="articles-layout">
 
-    <div class="article-cards stagger">
-      <div
-        class="article-card"
-        *ngFor="let article of latestArticles"
-        (click)="openArticle(article.id)"
-        role="button"
-        tabindex="0"
-        (keyup.enter)="openArticle(article.id)"
-      >
-        <div class="article-card-image" *ngIf="getFirstImage(article)">
-          <img [src]="getFirstImage(article)" [alt]="langService.getField(article, 'title')" loading="lazy" />
+      <!-- Left: intro + title list -->
+      <div class="articles-sidebar">
+        <span class="articles-eyebrow">{{ langService.t('home.blogsNews') }}</span>
+        <h2 class="articles-heading">
+          {{ langService.t('home.latestArticles') }}<br>
+          <span class="articles-accent">{{ langService.t('home.updatedDaily') }}</span>
+        </h2>
+        <ul class="articles-title-list">
+          <li
+            *ngFor="let article of latestArticles"
+            (click)="openArticle(article.id)"
+            tabindex="0"
+            (keyup.enter)="openArticle(article.id)"
+          >
+            <span class="list-arrow">→</span>
+            <span>{{ langService.getField(article, 'title') }}</span>
+          </li>
+        </ul>
+        <div class="all-articles-link">
+          <a [routerLink]="['/article-list']" class="btn-all-articles">{{ langService.t('home.allArticles') }}</a>
         </div>
-        <div class="article-card-content">
-          <h3 class="article-title">{{ langService.getField(article, 'title') }}</h3>
-          <p class="article-excerpt">{{ getExcerpt(article) }}</p>
-          <div class="article-meta">
-            <span class="article-author">{{ article.author }}</span>
-            <span class="article-date">{{ article.createdAt | date:'dd.MM.yyyy' }}</span>
+      </div>
+
+      <!-- Right: article cards -->
+      <div class="article-cards">
+        <div
+          class="article-card"
+          *ngFor="let article of latestArticles | slice:0:2"
+          (click)="openArticle(article.id)"
+          role="button"
+          tabindex="0"
+          (keyup.enter)="openArticle(article.id)"
+        >
+          <div class="article-card-image">
+            <img
+              *ngIf="getFirstImage(article)"
+              [src]="getFirstImage(article)"
+              [alt]="langService.getField(article, 'title')"
+            >
+            <div *ngIf="!getFirstImage(article)" class="image-placeholder"></div>
+          </div>
+          <div class="article-card-body">
+            <div class="article-date-row">
+              <mat-icon class="date-icon">calendar_today</mat-icon>
+              <span>{{ article.createdAt | date:'dd.MM.yyyy' }}</span>
+            </div>
+            <h3 class="article-title">{{ langService.getField(article, 'title') }}</h3>
+            <p class="article-excerpt">{{ getExcerpt(article) }}</p>
+            <span class="read-more-link">{{ langService.t('home.readMore') }} →</span>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="all-articles-link">
-      <a [routerLink]="['/article-list']" class="btn-all-articles">{{ langService.t('home.allArticles') }}</a>
     </div>
   </section>
 

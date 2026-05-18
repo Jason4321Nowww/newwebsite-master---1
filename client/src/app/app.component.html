@@ -18,6 +18,36 @@
   </div>
 </div>
 
-<app-navbar  *ngIf="!isAdminRoute"></app-navbar>
+<app-navbar *ngIf="!isAdminRoute"></app-navbar>
+
+<!-- Announcement ticker — below the navbar -->
+<div class="announcement-bar" *ngIf="banners.length > 0 && !isAdminRoute">
+  <div class="announcement-content">
+    <mat-icon class="announcement-icon">campaign</mat-icon>
+    
+    <div class="ticker-wrapper">
+      <span
+        class="ticker-item"
+        [class.exiting]="bannerState === 'exiting'"
+        [class.entering]="bannerState === 'entering'"
+      >{{ langService.getField(banners[currentBannerIndex], 'statement') }}</span>
+    </div>
+    <a
+      *ngIf="banners[currentBannerIndex]?.link"
+      [href]="banners[currentBannerIndex].link"
+      target="_blank"
+      rel="noopener"
+      class="announcement-link"
+    >{{ langService.t('home.learnMore') }} →</a>
+  </div>
+  <div class="ticker-dots" *ngIf="banners.length > 1">
+    <span
+      *ngFor="let b of banners; let i = index"
+      class="ticker-dot"
+      [class.active]="i === currentBannerIndex"
+    ></span>
+  </div>
+</div>
+
 <router-outlet></router-outlet>
 <app-footer class="foooter"></app-footer>

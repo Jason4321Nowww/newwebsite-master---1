@@ -16,10 +16,10 @@
   --user-name-color: rgb(105, 245, 66);
   --logout-color: rgb(184, 6, 6);
   --logout-hover: #d32f2f;
-  --footer-bg: #2c2c2c;
-  --footer-text: #e0e0e0;
+  --footer-bg: #007a4d;
+  --footer-text: rgba(255, 255, 255, 0.88);
   --footer-link: #ffffff;
-  --footer-link-hover: #4caf50;
+  --footer-link-hover: rgba(255, 255, 255, 0.75);
   
   /* Card and Container Variables */
   --card-bg: #ffffff;
@@ -48,9 +48,9 @@
   --event-date-text: #ffffff;
   
   /* Info Banner Variables */
-  --info-banner-bg: #d1ecf1;
-  --info-banner-border: #0c5460;
-  --info-banner-text: #0c5460;
+  --info-banner-bg: rgba(0, 157, 99, 0.08);
+  --info-banner-border: #009d63;
+  --info-banner-text: #005a38;
   
   /* Calendar Variables */
   --calendar-cell-bg: #fdfdfd;
@@ -79,10 +79,10 @@
   --user-name-color: rgb(105, 245, 66);
   --logout-color: rgb(255, 82, 82);
   --logout-hover: #ff5252;
-  --footer-bg: #111111;
-  --footer-text: #cccccc;
-  --footer-link: #e0e0e0;
-  --footer-link-hover: #4caf50;
+  --footer-bg: #005f3b;
+  --footer-text: rgba(255, 255, 255, 0.80);
+  --footer-link: #ffffff;
+  --footer-link-hover: rgba(255, 255, 255, 0.65);
 
   /* Card and Container Variables */
   --card-bg: #1e1e1e;
@@ -111,9 +111,9 @@
   --event-date-text: #ffffff;
 
   /* Info Banner Variables */
-  --info-banner-bg: #1a2e3a;
-  --info-banner-border: #3a7a9a;
-  --info-banner-text: #009d63;
+  --info-banner-bg: rgba(0, 157, 99, 0.10);
+  --info-banner-border: #009d63;
+  --info-banner-text: #4ade9a;
 
   /* Calendar Variables */
   --calendar-cell-bg: #1e1e1e;
@@ -363,31 +363,38 @@ router-outlet + [class*="admin-"] {
 }
 
 /* ── Scroll-reveal base states (pre-animation) ───────────── */
+/* NOTE: No will-change here — it creates a new stacking context that
+   breaks position:fixed children (e.g. video popups inside carousels).
+   will-change is applied only during the animation via animate-in. */
 .scroll-reveal,
 .scroll-reveal-left,
 .scroll-reveal-right,
 .scroll-reveal-scale,
 .scroll-reveal-fade {
   opacity: 0;
-  will-change: opacity, transform;
 }
 
 /* ── Scroll-reveal triggered state ──────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
   .scroll-reveal.animate-in {
     animation: enterUp 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    will-change: opacity, transform;
   }
   .scroll-reveal-left.animate-in {
     animation: enterLeft 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    will-change: opacity, transform;
   }
   .scroll-reveal-right.animate-in {
     animation: enterRight 0.65s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    will-change: opacity, transform;
   }
   .scroll-reveal-scale.animate-in {
     animation: enterScale 0.55s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    will-change: opacity, transform;
   }
   .scroll-reveal-fade.animate-in {
     animation: enterFade 0.6s ease both;
+    will-change: opacity;
   }
 
   /* ── Stagger helpers — wrap a list with .stagger; children animate in sequence */
@@ -402,6 +409,7 @@ router-outlet + [class*="admin-"] {
   /* Children of a stagger container also animate */
   .stagger.animate-in > * {
     animation: enterUp 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+    will-change: opacity, transform;
   }
 }
 

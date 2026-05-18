@@ -18,15 +18,15 @@ const createTransporter = () =>
 
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 
-const sendOtpEmail = async (email, otp) => {
-  const tpl = otpEmail(otp, OTP_EXPIRY_MINUTES);
+const sendOtpEmail = async (email, otp, lang = 'de') => {
+  const tpl = otpEmail(otp, OTP_EXPIRY_MINUTES, lang);
   await createTransporter().sendMail({ from: process.env.GMAIL_USER, to: email, ...tpl });
 };
 
 const UNVERIFIED_DELETE_HOURS = 48;
 
 const signup = async (req, res) => {
-  const { username, email, password, userLocation } = req.body;
+  const { username, email, password, userLocation, lang } = req.body;
   try {
     if (!email) return res.status(400).json({ message: 'Email is required.' });
 
@@ -43,6 +43,8 @@ const signup = async (req, res) => {
     const deleteAt   = new Date(Date.now() + UNVERIFIED_DELETE_HOURS * 60 * 60 * 1000);
 
     const hashedPassword = await argon2.hash(password, { type: argon2.argon2id });
+    const userLang = ['de', 'fr', 'it', 'en'].includes(lang) ? lang : 'de';
+
     const newUser = await User.create({
       username,
       email:           email.toLowerCase(),
@@ -59,9 +61,10 @@ const signup = async (req, res) => {
       emailOtp:        otp,
       emailOtpExpires: otpExpires,
       deleteAt,        // auto-delete if not verified within 48 h
+      lang:            userLang,
     });
 
-    await sendOtpEmail(email, otp);
+    await sendOtpEmail(email, otp, userLang);
 
     res.status(201).json({
       message: 'Account created. Please check your email for the verification code.',
@@ -108,7 +111,7 @@ const verifyEmailOtp = async (req, res) => {
     await user.save();
 
     // Send welcome email (fire-and-forget)
-    const tpl = welcomeEmail(user.username);
+    const tpl = welcomeEmail(user.username, user.lang || 'de');
     createTransporter().sendMail({ from: process.env.GMAIL_USER, to: user.email, ...tpl }).catch(() => {});
 
     res.status(200).json({ message: 'Email verified successfully.' });
@@ -134,7 +137,7 @@ const resendEmailOtp = async (req, res) => {
     user.emailOtpExpires = new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000);
     await user.save();
 
-    await sendOtpEmail(user.email, otp);
+    await sendOtpEmail(user.email, otp, user.lang || 'de');
 
     res.status(200).json({ message: 'A new verification code has been sent to your email.' });
   } catch (err) {
@@ -368,7 +371,7 @@ const updateUser = async (req, res) => {
       const isAdminRec = isAdminRecord;
       const signinUrl  = isAdminRec ? `${clientUrl}/admin/admin-signin` : `${clientUrl}/signin`;
       const name       = record.username || record.name || record.email;
-      const tpl        = accountActivatedEmail(name, signinUrl);
+      const tpl        = accountActivatedEmail(name, signinUrl, record.lang || 'de');
       createTransporter().sendMail({ from: process.env.GMAIL_USER, to: record.email, ...tpl }).catch(() => {});
     }
 

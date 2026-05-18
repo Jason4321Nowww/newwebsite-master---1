@@ -25,6 +25,7 @@ const userSchema = new mongoose.Schema(
       enum: [0, 1, 2, 3, 4, 5, 6, 7, 8],
       default: 8,
     },
+    lang: { type: String, enum: ['de', 'fr', 'it', 'en'], default: 'de' },
   },
   {
     timestamps: true,

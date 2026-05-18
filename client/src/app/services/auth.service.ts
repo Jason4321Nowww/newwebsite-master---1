@@ -42,7 +42,7 @@ export class AuthService {
     this._userName.next(res.username);
   }
 
-  signup(data: { username: string; email: string; password: string; userLocation?: any; registrationKey?: string }): Observable<{ message: string; userId: string }> {
+  signup(data: { username: string; email: string; password: string; userLocation?: any; registrationKey?: string; lang?: string }): Observable<{ message: string; userId: string }> {
     return this.http.post<{ message: string; userId: string }>(`${this.baseUrl}/signup`, data);
   }
 

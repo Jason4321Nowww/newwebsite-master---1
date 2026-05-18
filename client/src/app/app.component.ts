@@ -1,30 +1,41 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart, NavigationCancel, NavigationError, Event } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { ThemeService } from './services/theme.service';
+import { InfoBannerService } from './services/info-banner.service';
+import { InfoBanner } from './_models/infoBanner';
+import { LanguageService } from './services/language.service';
 
-const MIN_INITIAL_MS = 1800; // first page load — long enough for assets
-const MIN_NAV_MS     = 500;  // subsequent in-app navigations
+const MIN_INITIAL_MS = 600;
+const MIN_NAV_MS     = 300;
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'Büezer und KMU Partei';
   showNavbar = true;
   isAdminRoute: boolean = false;
   isLoading = true;
 
+  // Announcement ticker
+  banners: InfoBanner[] = [];
+  currentBannerIndex = 0;
+  bannerState: 'visible' | 'exiting' | 'entering' = 'visible';
+
   private isFirstNav = true;
   private loadingStartTime = Date.now();
   private hideTimer: any;
+  private tickerTimer: any;
   private scrollRevealObserver?: IntersectionObserver;
 
-constructor(
+  constructor(
     private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private infoBannerService: InfoBannerService,
+    public langService: LanguageService
   ) {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationStart) {
@@ -46,13 +57,10 @@ constructor(
     const elapsed = Date.now() - this.loadingStartTime;
     this.hideTimer = setTimeout(() => {
       this.isLoading = false;
-      // Re-scan for new scroll-reveal elements after page transition completes
       setTimeout(() => this.setupScrollReveal(), 100);
     }, Math.max(0, min - elapsed));
   }
 
-  /** Creates (or re-uses) a global IntersectionObserver that adds
-   *  `.animate-in` to any element carrying a scroll-reveal utility class. */
   private setupScrollReveal(): void {
     const SELECTOR =
       '.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, ' +
@@ -68,15 +76,46 @@ constructor(
             }
           });
         },
-        { threshold: 0.1 }
+        { threshold: 0, rootMargin: '0px 0px 600px 0px' }
       );
     }
 
-    // Observe all matching elements that haven't been animated yet
     document.querySelectorAll(SELECTOR).forEach(el => {
       if (!el.classList.contains('animate-in')) {
         this.scrollRevealObserver!.observe(el);
       }
+    });
+  }
+
+  private startTicker(): void {
+    const tick = () => {
+      // Slide current item out
+      this.bannerState = 'exiting';
+
+      setTimeout(() => {
+        // Advance index and jump to enter position instantly
+        this.currentBannerIndex = (this.currentBannerIndex + 1) % this.banners.length;
+        this.bannerState = 'entering';
+
+        // One frame later: transition to visible (triggers slide-in animation)
+        setTimeout(() => {
+          this.bannerState = 'visible';
+
+          // Schedule next tick after this item has been displayed
+          this.tickerTimer = setTimeout(tick, 3500);
+        }, 40);
+      }, 400);
+    };
+
+    // First tick after initial display period
+    this.tickerTimer = setTimeout(tick, 3500);
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.setupScrollReveal(), 50);
+    this.infoBannerService.getBanners().subscribe(banners => {
+      this.banners = banners.filter(b => b.isActive);
+      if (this.banners.length > 0) this.startTicker();
     });
   }
 
@@ -99,7 +138,6 @@ constructor(
   ngOnDestroy(): void {
     this.scrollRevealObserver?.disconnect();
     clearTimeout(this.hideTimer);
+    clearTimeout(this.tickerTimer);
   }
 }
-
-

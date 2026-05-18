@@ -2,8 +2,6 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ElementRef, ChangeDetector
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { InfoBanner } from 'src/app/_models/infoBanner';
-import { InfoBannerService } from '../services/info-banner.service';
 import { LanguageService } from '../services/language.service';
 import { ArticlesService } from '../services/articles.service';
 import { Article } from '../_models/article';
@@ -14,13 +12,11 @@ import { Article } from '../_models/article';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
-  activeBanner: InfoBanner | null = null;
   latestArticles: Article[] = [];
   private revealObserver?: IntersectionObserver;
   private langSub!: Subscription;
 
   constructor(
-    private infoBanner: InfoBannerService,
     public langService: LanguageService,
     private articleService: ArticlesService,
     private router: Router,
@@ -30,9 +26,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit(): void {
     this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
-    this.infoBanner.getBanners().subscribe(banners => {
-      this.activeBanner = banners.find(b => b.isActive) || null;
-    });
 
     this.articleService.getArticles().subscribe({
       next: (articles) => {

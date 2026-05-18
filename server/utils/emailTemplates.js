@@ -22,42 +22,117 @@ const wrap = (content) => `
     </div>
   </div>`;
 
+// ── Auth email translations ──────────────────────────────────────────────────
+const authI18n = {
+  de: {
+    otp_subject:       'BKP-Konto bestätigen — Einmalcode',
+    otp_title:         'E-Mail-Adresse bestätigen',
+    otp_body:          (min) => `Verwenden Sie den folgenden Code, um Ihr BKP-Konto zu bestätigen. Er läuft in <strong>${min} Minuten</strong> ab.`,
+    otp_ignore:        'Falls Sie kein BKP-Konto erstellt haben, können Sie diese E-Mail ignorieren.',
+    welcome_subject:   'Willkommen bei BKP — Konto bestätigt',
+    welcome_title:     (name) => `Willkommen bei BKP, ${name}!`,
+    welcome_body:      'Ihre E-Mail-Adresse wurde erfolgreich bestätigt. Ihr Konto wartet nun auf die Freigabe durch einen Administrator.',
+    welcome_pending:   'Sie erhalten eine weitere E-Mail, sobald Ihr Konto aktiviert wird. Danach können Sie sich hier anmelden.',
+    welcome_btn:       'Zur Anmeldung',
+    welcome_ignore:    'Falls Sie sich nicht registriert haben, ignorieren Sie bitte diese E-Mail.',
+    activated_subject: 'Ihr BKP-Konto wurde aktiviert',
+    activated_title:   'Konto aktiviert!',
+    activated_hi:      (name) => `Hallo <strong>${name}</strong>,`,
+    activated_text:    'Ihr BKP-Konto wurde von einem Administrator überprüft und <strong>aktiviert</strong>. Sie können sich jetzt anmelden.',
+    activated_btn:     'Jetzt anmelden',
+    activated_footer:  'Bei Fragen wenden Sie sich bitte an Ihren Administrator.',
+  },
+  fr: {
+    otp_subject:       'Confirmez votre compte BKP — Code unique',
+    otp_title:         'Vérifiez votre adresse e-mail',
+    otp_body:          (min) => `Utilisez le code ci-dessous pour vérifier votre compte BKP. Il expire dans <strong>${min} minutes</strong>.`,
+    otp_ignore:        'Si vous n\'avez pas créé de compte BKP, vous pouvez ignorer cet e-mail.',
+    welcome_subject:   'Bienvenue sur BKP — Compte confirmé',
+    welcome_title:     (name) => `Bienvenue sur BKP, ${name} !`,
+    welcome_body:      'Votre adresse e-mail a été vérifiée avec succès. Votre compte est en attente d\'approbation par un administrateur.',
+    welcome_pending:   'Vous recevrez un autre e-mail dès que votre compte sera activé. Vous pourrez alors vous connecter via le lien ci-dessous.',
+    welcome_btn:       'Se connecter',
+    welcome_ignore:    'Si vous ne vous êtes pas inscrit, veuillez ignorer cet e-mail.',
+    activated_subject: 'Votre compte BKP a été activé',
+    activated_title:   'Compte activé !',
+    activated_hi:      (name) => `Bonjour <strong>${name}</strong>,`,
+    activated_text:    'Votre compte BKP a été examiné et <strong>activé</strong> par un administrateur. Vous pouvez maintenant vous connecter.',
+    activated_btn:     'Se connecter maintenant',
+    activated_footer:  'Pour toute question, veuillez contacter votre administrateur.',
+  },
+  it: {
+    otp_subject:       'Conferma il tuo account BKP — Codice unico',
+    otp_title:         'Verifica il tuo indirizzo e-mail',
+    otp_body:          (min) => `Usa il codice sottostante per verificare il tuo account BKP. Scade tra <strong>${min} minuti</strong>.`,
+    otp_ignore:        'Se non hai creato un account BKP, puoi ignorare questa e-mail.',
+    welcome_subject:   'Benvenuto su BKP — Account confermato',
+    welcome_title:     (name) => `Benvenuto su BKP, ${name}!`,
+    welcome_body:      'Il tuo indirizzo e-mail è stato verificato con successo. Il tuo account è in attesa di approvazione da parte di un amministratore.',
+    welcome_pending:   'Riceverai un\'altra e-mail non appena il tuo account verrà attivato. Potrai quindi accedere tramite il link sottostante.',
+    welcome_btn:       'Accedi',
+    welcome_ignore:    'Se non ti sei registrato, ignora questa e-mail.',
+    activated_subject: 'Il tuo account BKP è stato attivato',
+    activated_title:   'Account attivato!',
+    activated_hi:      (name) => `Ciao <strong>${name}</strong>,`,
+    activated_text:    'Il tuo account BKP è stato esaminato e <strong>attivato</strong> da un amministratore. Ora puoi accedere.',
+    activated_btn:     'Accedi ora',
+    activated_footer:  'Per qualsiasi domanda, contatta il tuo amministratore.',
+  },
+  en: {
+    otp_subject:       'Verify your BKP account — One-Time Code',
+    otp_title:         'Verify your email',
+    otp_body:          (min) => `Use the code below to verify your BKP account. It expires in <strong>${min} minutes</strong>.`,
+    otp_ignore:        'If you did not create a BKP account, you can safely ignore this email.',
+    welcome_subject:   'Welcome to BKP — Account confirmed',
+    welcome_title:     (name) => `Welcome to BKP, ${name}!`,
+    welcome_body:      'Your email has been successfully verified. Your account is now pending admin approval.',
+    welcome_pending:   'You will receive another email as soon as an administrator activates your account. Once active, you can sign in at the link below.',
+    welcome_btn:       'Go to Sign In',
+    welcome_ignore:    'If you did not register, please ignore this email.',
+    activated_subject: 'Your BKP account has been activated',
+    activated_title:   'Account Activated!',
+    activated_hi:      (name) => `Hi <strong>${name}</strong>,`,
+    activated_text:    'Your BKP account has been reviewed and <strong>activated</strong> by an administrator. You can now sign in and access all features available to your role.',
+    activated_btn:     'Sign In Now',
+    activated_footer:  'If you have any questions, please contact your administrator.',
+  },
+};
+
+const getA = (lang) => authI18n[lang] || authI18n.de;
+
 // ── OTP verification email ──────────────────────────────────────────────────
-const otpEmail = (otp, expiryMinutes) => ({
-  subject: 'Verify your BKP account — One-Time Code',
-  html: wrap(`
-    <h2 style="color:#009d63;margin:0 0 0.5rem;">Verify your email</h2>
-    <p style="color:#444;">Use the code below to verify your BKP account. It expires in <strong>${expiryMinutes} minutes</strong>.</p>
-    <div style="font-size:2.2rem;font-weight:700;letter-spacing:0.3em;color:#1565c0;background:#e3f2fd;padding:16px 28px;border-radius:8px;display:inline-block;margin:12px 0;">
-      ${otp}
-    </div>
-    <p style="color:#888;font-size:0.82rem;margin-top:20px;">
-      If you did not create a BKP account, you can safely ignore this email.
-    </p>`),
-});
+const otpEmail = (otp, expiryMinutes, lang = 'de') => {
+  const t = getA(lang);
+  return {
+    subject: t.otp_subject,
+    html: wrap(`
+      <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.otp_title}</h2>
+      <p style="color:#444;">${t.otp_body(expiryMinutes)}</p>
+      <div style="font-size:2.2rem;font-weight:700;letter-spacing:0.3em;color:#1565c0;background:#e3f2fd;padding:16px 28px;border-radius:8px;display:inline-block;margin:12px 0;">
+        ${otp}
+      </div>
+      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.otp_ignore}</p>`),
+  };
+};
 
 // ── Welcome email (sent after OTP verified) ─────────────────────────────────
-const welcomeEmail = (username) => ({
-  subject: 'Welcome to BKP — Account confirmed',
-  html: wrap(`
-    <h2 style="color:#009d63;margin:0 0 0.5rem;">Welcome to BKP, ${username}!</h2>
-    <p style="color:#444;">
-      Your email has been successfully verified. Your account is now pending admin approval.
-    </p>
-    <p style="color:#444;">
-      You will receive another email as soon as an administrator activates your account.
-      Once active, you can sign in at the link below.
-    </p>
-    <div style="text-align:center;margin:24px 0;">
-      <a href="${CLIENT_URL}/signin"
-         style="display:inline-block;padding:12px 32px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1rem;">
-        Go to Sign In
-      </a>
-    </div>
-    <p style="color:#888;font-size:0.82rem;">
-      If you did not register, please ignore this email.
-    </p>`),
-});
+const welcomeEmail = (username, lang = 'de') => {
+  const t = getA(lang);
+  return {
+    subject: t.welcome_subject,
+    html: wrap(`
+      <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.welcome_title(username)}</h2>
+      <p style="color:#444;">${t.welcome_body}</p>
+      <p style="color:#444;">${t.welcome_pending}</p>
+      <div style="text-align:center;margin:24px 0;">
+        <a href="${CLIENT_URL}/signin"
+           style="display:inline-block;padding:12px 32px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1rem;">
+          ${t.welcome_btn}
+        </a>
+      </div>
+      <p style="color:#888;font-size:0.82rem;">${t.welcome_ignore}</p>`),
+  };
+};
 
 // ── Admin invite email ───────────────────────────────────────────────────────
 const adminInviteEmail = (roleName, inviteUrl, expiryHours) => ({
@@ -105,25 +180,23 @@ const userInviteEmail = (roleName, otp, inviteUrl, expiryHours) => ({
 });
 
 // ── Account activated email ──────────────────────────────────────────────────
-const accountActivatedEmail = (name, signinUrl) => ({
-  subject: 'Your BKP account has been activated',
-  html: wrap(`
-    <h2 style="color:#009d63;margin:0 0 0.5rem;">Account Activated!</h2>
-    <p style="color:#444;">Hi <strong>${name}</strong>,</p>
-    <p style="color:#444;">
-      Great news — your BKP account has been reviewed and <strong>activated</strong> by an administrator.
-      You can now sign in and access all features available to your role.
-    </p>
-    <div style="text-align:center;margin:24px 0;">
-      <a href="${signinUrl}"
-         style="display:inline-block;padding:12px 32px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1rem;">
-        Sign In Now
-      </a>
-    </div>
-    <p style="color:#888;font-size:0.82rem;">
-      If you have any questions, please contact your administrator.
-    </p>`),
-});
+const accountActivatedEmail = (name, signinUrl, lang = 'de') => {
+  const t = getA(lang);
+  return {
+    subject: t.activated_subject,
+    html: wrap(`
+      <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.activated_title}</h2>
+      <p style="color:#444;">${t.activated_hi(name)}</p>
+      <p style="color:#444;">${t.activated_text}</p>
+      <div style="text-align:center;margin:24px 0;">
+        <a href="${signinUrl}"
+           style="display:inline-block;padding:12px 32px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1rem;">
+          ${t.activated_btn}
+        </a>
+      </div>
+      <p style="color:#888;font-size:0.82rem;">${t.activated_footer}</p>`),
+  };
+};
 
 // ── Order email translations ─────────────────────────────────────────────────
 const orderI18n = {

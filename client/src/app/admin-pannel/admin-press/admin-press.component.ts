@@ -236,9 +236,8 @@ async confirmSend() {
 
   const leftFlag = '../../../assets/logo/starlinelessbiggertransparent.png';
   const rightFlag = '../../../assets/logo/starlinelessbiggertransparent.png';
-  const releaseDate = new Date(release.date).toLocaleDateString('en-US', {
-    year: 'numeric', month: 'long', day: 'numeric'
-  });
+  const d = new Date(release.date);
+  const releaseDate = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
 
   const calendarIconSVG = `
     <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 0 24 24" width="18" fill="#666" style="margin-right: 6px;">

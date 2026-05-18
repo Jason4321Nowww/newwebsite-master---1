@@ -11,13 +11,13 @@
   </div>
 
   <div class="links" [class.hidden]="isMobileView && !isMenuOpen">
-    <a routerLink="">{{ langService.t('nav.home') }}</a>
+    <a routerLink="" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}">{{ langService.t('nav.home') }}</a>
     <a href="https://bkps.ch/HTML/mitgliedschaft/formular.php#kontakt-anchor" target="_blank" rel="noopener">{{ langService.t('nav.join') }}</a>
-    <a [routerLink]="['/values']" fragment="werte-anchor">{{ langService.t('nav.values') }}</a>
-    <a [routerLink]="['/shop']">{{ langService.t('nav.shop') }}</a>
-    <a [routerLink]="['/actions']">{{ langService.t('nav.actions') }}</a>
-    <a [routerLink]="['/events']">{{ langService.t('nav.events') }}</a>
-    <a [routerLink]="['/press']">{{ langService.t('nav.press') }}</a>
+    <a [routerLink]="['/values']" routerLinkActive="active-link" fragment="werte-anchor">{{ langService.t('nav.values') }}</a>
+    <a [routerLink]="['/shop']" routerLinkActive="active-link">{{ langService.t('nav.shop') }}</a>
+    <a [routerLink]="['/actions']" routerLinkActive="active-link">{{ langService.t('nav.actions') }}</a>
+    <a [routerLink]="['/events']" routerLinkActive="active-link">{{ langService.t('nav.events') }}</a>
+    <a [routerLink]="['/press']" routerLinkActive="active-link">{{ langService.t('nav.press') }}</a>
   </div>
 
   <div class="navbar-right">

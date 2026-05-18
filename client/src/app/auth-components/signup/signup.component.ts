@@ -93,8 +93,9 @@ export class SignupComponent implements OnInit {
       bezirk:     this.selectedBezirk,
       gemeinde:   this.selectedGemeinde,
     };
+    const lang = localStorage.getItem('bkp_lang') || 'de';
 
-    this.auth.signup({ username, email, password, userLocation }).subscribe({
+    this.auth.signup({ username, email, password, userLocation, lang }).subscribe({
       next: (res) => {
         this.submitting = false;
         this.router.navigate(['/verify-email'], {
