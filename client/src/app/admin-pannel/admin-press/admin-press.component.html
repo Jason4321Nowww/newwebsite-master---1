@@ -71,7 +71,7 @@
   <p><i>{{ release.date | date: 'medium' }}</i></p>
     <img
   *ngIf="release.image"
-  [src]="'http://localhost:5000' + release.image"
+  [src]="'' + release.image"
   class="thumb"
 />
   <button (click)="openEmailDialog(release)">

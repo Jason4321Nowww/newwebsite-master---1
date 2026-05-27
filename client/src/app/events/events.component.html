@@ -22,7 +22,7 @@
       <!-- Image -->
       <img *ngIf="event.image"
            class="event-image"
-           [src]="'http://localhost:5000' + event.image"
+           [src]="'' + event.image"
            [alt]="langService.getField(event, 'title')" />
 
       <!-- Content -->

@@ -8,7 +8,7 @@ import { PressRelease } from '../../_models/press';
   providedIn: 'root'
 })
 export class AdminpressService {
-  private baseUrl = 'http://localhost:5000/api/press-release';
+  private baseUrl = '/api/press-release';
 
   constructor(private http: HttpClient) {}
 

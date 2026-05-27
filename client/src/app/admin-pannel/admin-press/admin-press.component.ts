@@ -253,7 +253,7 @@ const pressImageHtml = release.image
   ? `
     <div style="text-align:center; margin: 25px 0;">
       <img 
-        src="http://localhost:5000${release.image}" 
+        src="${release.image}" 
         style="
           max-width: 350px;
           width: 100%;

@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class AdminemailService {
-  private base = 'http://localhost:5000/api/emails';
+  private base = '/api/emails';
 
   constructor(private http: HttpClient) {}
 

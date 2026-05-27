@@ -8,7 +8,7 @@ import { Action } from '../_models/action';
 })
 export class ActionService {
 
-   private base = 'http://localhost:5000/api/actions';
+   private base = '/api/actions';
 
   constructor(private http: HttpClient) {}
 

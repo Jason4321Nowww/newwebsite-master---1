@@ -92,8 +92,8 @@
       <tr *ngFor="let action of actions">
         <td>
           <ng-container *ngFor="let media of action.media">
-            <img *ngIf="isImage(media)" [src]="'http://localhost:5000' + media" class="thumb" />
-            <video *ngIf="isVideo(media)" controls [src]="'http://localhost:5000' + media" class="thumb"></video>
+            <img *ngIf="isImage(media)" [src]="'' + media" class="thumb" />
+            <video *ngIf="isVideo(media)" controls [src]="'' + media" class="thumb"></video>
           </ng-container>
         </td>
         <td>{{ action.title }}</td>

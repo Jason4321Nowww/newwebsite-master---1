@@ -426,6 +426,12 @@
 
   .theme-toggle { width: 30px; height: 30px; }
   .theme-icon { font-size: 0.95rem; width: 0.95rem; height: 0.95rem; }
+
+  /* Hide login label on mobile — keep icon only */
+  .signin-label { display: none; }
+
+  /* Tighten signin button padding on mobile */
+  .signin-link { padding: 5px 8px; }
 }
 
 @media (max-width: 480px) {

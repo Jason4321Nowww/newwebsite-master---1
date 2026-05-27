@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartItem, CartService } from '../../services/cart.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-order-page',
@@ -31,8 +32,22 @@ export class OrderPageComponent implements OnInit {
 
   ngOnInit() {
     this.cartService.cart$.subscribe(items => {
-      this.cartItems = items;
+      this.cartItems = items.filter(i => i.quantity > 0);
       this.total = this.cartService.getTotalPrice();
+
+      // Guard: redirect if cart is empty
+      if (this.cartItems.length === 0) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Cart is empty',
+          text: 'You need at least one item in your cart to place an order.',
+          confirmButtonColor: '#009d63',
+          confirmButtonText: 'Go to Shop',
+          allowOutsideClick: false,
+        }).then(() => {
+          this.router.navigate(['/shop']);
+        });
+      }
     });
   }
 

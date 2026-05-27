@@ -4,7 +4,7 @@
     <h1 class="press-title">{{ langService.getField(release, 'title') }}</h1>
 
     <img *ngIf="release.image"
-         [src]="'http://localhost:5000' + release.image"
+         [src]="'' + release.image"
          class="press-image" />
 
     <div class="press-content"

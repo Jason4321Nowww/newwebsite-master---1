@@ -5,7 +5,7 @@
 
     <!-- Show first image from body as hero image -->
     <img *ngIf="getHeroImage()"
-         [src]="'http://localhost:5000' + getHeroImage()"
+         [src]="'' + getHeroImage()"
          class="article-image" />
 
     <div class="article-body">
@@ -14,7 +14,7 @@
       <ng-container *ngIf="currentLang === 'de'">
         <ng-container *ngFor="let block of article.body">
           <img *ngIf="block.type === 'image' && block.url !== getHeroImage()"
-               [src]="'http://localhost:5000' + block.url"
+               [src]="'' + block.url"
                class="body-image" />
           <div *ngIf="block.type === 'text'"
                [innerHTML]="convertToParagraphs(block.value)"
@@ -30,7 +30,7 @@
         <ng-container *ngIf="!getTranslatedBody()">
           <ng-container *ngFor="let block of article.body">
             <img *ngIf="block.type === 'image' && block.url !== getHeroImage()"
-                 [src]="'http://localhost:5000' + block.url"
+                 [src]="'' + block.url"
                  class="body-image" />
             <div *ngIf="block.type === 'text'"
                  [innerHTML]="convertToParagraphs(block.value)"

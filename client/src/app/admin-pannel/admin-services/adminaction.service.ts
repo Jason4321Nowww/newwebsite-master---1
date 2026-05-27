@@ -7,7 +7,7 @@ import { Action } from 'src/app/_models/action';
 
 @Injectable({ providedIn: 'root' })
 export class AdminactionService {
-  private base = 'http://localhost:5000/api/actions';
+  private base = '/api/actions';
 
   constructor(private http: HttpClient) {}
 

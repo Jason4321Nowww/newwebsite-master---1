@@ -8,7 +8,7 @@ import { InfoBanner } from 'src/app/_models/infoBanner';
   providedIn: 'root'
 })
 export class InfoBannerService {
-  private apiUrl = 'http://localhost:5000/api/banner'; // Adjust as needed
+  private apiUrl = '/api/banner'; // Adjust as needed
 
   constructor(private http: HttpClient) {}
 

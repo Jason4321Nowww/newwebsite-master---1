@@ -77,7 +77,7 @@
                 <img [src]="filePreviews.get(i)" alt="preview" />
               </div>
               <div class="preview" *ngIf="!filePreviews.get(i) && block.get('url')?.value">
-                <img [src]="'http://localhost:5000' + block.get('url')?.value" alt="current" />
+                <img [src]="'' + block.get('url')?.value" alt="current" />
               </div>
             </div>
           </div>
@@ -110,7 +110,7 @@
                 <img [src]="langFilePreviews[activeLang].get(i)" alt="preview" />
               </div>
               <div class="preview" *ngIf="!langFilePreviews[activeLang].get(i) && block.url">
-                <img [src]="'http://localhost:5000' + block.url" alt="current" />
+                <img [src]="'' + block.url" alt="current" />
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@
       <p><strong>Author:</strong> {{ a.author }}</p>
       <div class="preview-body">
         <ng-container *ngFor="let b of a.body">
-          <img *ngIf="b.type === 'image' && b.url" [src]="'http://localhost:5000' + b.url" />
+          <img *ngIf="b.type === 'image' && b.url" [src]="'' + b.url" />
           <p *ngIf="b.type === 'text'">{{ b.value | slice: 0:215 }}...</p>
         </ng-container>
       </div>

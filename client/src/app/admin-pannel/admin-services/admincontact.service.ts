@@ -8,7 +8,7 @@ import { Contact } from 'src/app/_models/contact';
 })
 export class AdmincontactService {
 
-  private baseUrl = 'http://localhost:5000/api/contacts/admin'; // Ensure this returns all contacts
+  private baseUrl = '/api/contacts/admin'; // Ensure this returns all contacts
 
   constructor(private http: HttpClient) {}
 

@@ -16,7 +16,7 @@ export interface UserLocation {
 
 @Injectable({ providedIn: 'root' })
 export class LocationService {
-  private base = 'http://localhost:5000/api/locations';
+  private base = '/api/locations';
 
   constructor(private http: HttpClient) {}
 

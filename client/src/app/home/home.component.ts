@@ -74,7 +74,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       : article.body.find(b => b.type === 'image' && b.url)?.url;
 
     if (!url) return undefined;
-    return url.startsWith('http') ? url : `http://localhost:5000${url}`;
+    return url.startsWith('http') ? url : `${url}`;
   }
 
   getExcerpt(article: Article): string {

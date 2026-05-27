@@ -4,7 +4,7 @@ import { Video } from 'src/app/_models/video';
 
 @Injectable({ providedIn: 'root' })
 export class AdminvideoService {
-  private baseUrl = 'http://localhost:5000/api/videos'; // Change if needed
+  private baseUrl = '/api/videos'; // Change if needed
 
   constructor(private http: HttpClient) {}
 

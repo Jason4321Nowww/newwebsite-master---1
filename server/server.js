@@ -38,6 +38,18 @@ connectDB().then(() => seedLocations());
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'http://localhost:4200')
   .split(',').map(o => o.trim());
 
+const IS_DEV = process.env.NODE_ENV !== 'production';
+
+// Matches any private/LAN IP on port 4200 (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
+const LOCAL_NETWORK_REGEX = /^http:\/\/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3}):4200$/;
+
+const isOriginAllowed = (origin) => {
+  if (!origin) return true;                          // same-origin / Postman
+  if (ALLOWED_ORIGINS.includes(origin)) return true; // explicit list
+  if (IS_DEV && LOCAL_NETWORK_REGEX.test(origin)) return true; // any LAN IP in dev
+  return false;
+};
+
 // ── Security headers (Helmet) ──────────────────────────────────────────────────
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
@@ -48,8 +60,7 @@ app.use(helmet({
 // ── CORS ───────────────────────────────────────────────────────────────────────
 app.use(cors({
   origin: (origin, cb) => {
-    // allow same-origin / Postman in dev / listed origins
-    if (!origin || ALLOWED_ORIGINS.includes(origin)) return cb(null, true);
+    if (isOriginAllowed(origin)) return cb(null, true);
     cb(new Error(`CORS: origin "${origin}" not allowed`));
   },
   credentials: true,

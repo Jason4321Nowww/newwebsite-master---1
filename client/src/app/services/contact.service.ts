@@ -12,7 +12,7 @@ export interface ContactResponse {
   providedIn: 'root'
 })
 export class ContactService {
-  private baseUrl = 'http://localhost:5000/api/contacts';
+  private baseUrl = '/api/contacts';
 
   constructor(private http:HttpClient) { }
 

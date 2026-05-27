@@ -6,7 +6,7 @@ import { FingerprintService } from './fingerprint.service';
 
 @Injectable({ providedIn: 'root' })
 export class EventsService {
-  private baseUrl = 'http://localhost:5000/api/events';
+  private baseUrl = '/api/events';
 
   constructor(
     private http: HttpClient,

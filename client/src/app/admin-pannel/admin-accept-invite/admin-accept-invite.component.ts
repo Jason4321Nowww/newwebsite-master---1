@@ -39,7 +39,7 @@ export class AdminAcceptInviteComponent implements OnInit {
       next: (data) => {
         this.inviteInfo = data;
         // Silently fetch the registration key using the invite token
-        this.http.get<{ key: string }>(`http://localhost:5000/api/auth/invite-key?token=${this.token}`)
+        this.http.get<{ key: string }>(`/api/auth/invite-key?token=${this.token}`)
           .subscribe({ next: (r) => { this.regKey = r.key; }, error: () => {} });
       },
       error: (err)  => { this.inviteError = err.error?.error || 'Invalid or expired invitation.'; },

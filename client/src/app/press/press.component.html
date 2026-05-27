@@ -5,7 +5,7 @@
     <div class="press-card scroll-reveal" *ngFor="let release of releases" (click)="openRelease(release._id!)">
 
       <div class="press-card-image" *ngIf="release.image">
-        <img [src]="'http://localhost:5000' + release.image" alt="Press image" />
+        <img [src]="'' + release.image" alt="Press image" />
       </div>
 
       <div class="press-card-body">

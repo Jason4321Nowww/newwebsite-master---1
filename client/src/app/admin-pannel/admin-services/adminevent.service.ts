@@ -9,7 +9,7 @@ import { Event } from 'src/app/_models/event';
   providedIn: 'root'
 })
 export class AdmineventService {
-  private apiUrl = 'http://localhost:5000/api/events';
+  private apiUrl = '/api/events';
 
   constructor(private http: HttpClient) {}
 

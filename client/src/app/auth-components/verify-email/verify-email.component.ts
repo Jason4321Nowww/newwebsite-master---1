@@ -37,7 +37,7 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
       return;
     }
     // Silently fetch the registration key — never shown to the user
-    this.http.get<{ key: string }>(`http://localhost:5000/api/auth/signup-key?userId=${this.userId}`)
+    this.http.get<{ key: string }>(`/api/auth/signup-key?userId=${this.userId}`)
       .subscribe({ next: (res) => { this.regKey = res.key; }, error: () => {} });
   }
 

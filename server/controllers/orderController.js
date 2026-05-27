@@ -35,19 +35,30 @@ const createOrder = async (req, res) => {
   } = req.body;
 
   try {
-    if (!items || items.length === 0) {
-      return res.status(400).json({ error: 'Cart is empty' });
-    }
-
     let total = 0;
     const emailItems = [];
 
-    // Only read prices — stock is decremented when admin marks as paid
+    // Per-item validation: product must exist and quantity must not exceed stock
     for (let item of items) {
+      if (!item.product || !item.quantity || item.quantity < 1) {
+        return res.status(400).json({ error: 'Invalid item in cart — each item needs a product and quantity ≥ 1.' });
+      }
+
       const product = await Product.findById(item.product);
       if (!product) {
-        return res.status(400).json({ error: 'One or more products not found.' });
+        return res.status(400).json({ error: `Product not found: ${item.product}` });
       }
+
+      if (!product.isActive) {
+        return res.status(400).json({ error: `"${product.name}" is no longer available.` });
+      }
+
+      if (item.quantity > product.stock) {
+        return res.status(400).json({
+          error: `Not enough stock for "${product.name}". Available: ${product.stock}, requested: ${item.quantity}.`
+        });
+      }
+
       total += product.price * item.quantity;
       emailItems.push({ name: product.name, quantity: item.quantity, price: product.price });
     }

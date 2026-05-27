@@ -7,8 +7,8 @@ import { User } from 'src/app/_models/user';
   providedIn: 'root'
 })
 export class AdminuserService {
-private apiUrl    = 'http://localhost:5000/api/auth/users';
-  private adminApi  = 'http://localhost:5000/api/admin';
+private apiUrl    = '/api/auth/users';
+  private adminApi  = '/api/admin';
   constructor(private http: HttpClient) { }
 getAllUsers(): Observable<any[]> {
   const adminToken = localStorage.getItem('adminToken');
@@ -87,7 +87,7 @@ getAllUsers(): Observable<any[]> {
   }
 
   // ── User invite (sends invite to regular users) ──
-  private authApi = 'http://localhost:5000/api/auth';
+  private authApi = '/api/auth';
 
   sendUserInvite(email: string, roleLevel: number, userLocation: any): Observable<any> {
     return this.http.post(`${this.authApi}/invite-user`, { email, roleLevel, userLocation }, this.adminHeaders());

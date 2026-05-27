@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrl: './accept-user-invite.component.scss'
 })
 export class AcceptUserInviteComponent implements OnInit {
-  private readonly apiBase = 'http://localhost:5000/api/auth';
+  private readonly apiBase = '/api/auth';
 
   token          = '';
   inviteInfo: { email: string; roleName: string; roleLevel: number } | null = null;

@@ -22,12 +22,12 @@ const eventSchema = new mongoose.Schema(
     },
 
     repeatEndDate: { type: Date, default: null }, // optional end date for repeating events
-
+    //Intenal event type need to add and admin, chairman, board, directors, regional admin,local admin, full member, regular member, non-member
     eventType: {
       type: String,
       enum: [
         'oeffentlich',        // public — everyone
-        'nationalversammlung', // all logged-in members
+        'nationalversammlung', // roles everyone except regular memeber, non-mmber and public
         'lokalversammlung',   // roles 4,5,6 + location
         'regionalversammlung',// roles 3,4,5,6 + location
         'rv_zusammenkunft',   // roles 1,2,3 (no location filter)

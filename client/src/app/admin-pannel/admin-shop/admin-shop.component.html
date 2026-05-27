@@ -127,7 +127,7 @@
   <tbody>
     <tr *ngFor="let p of products">
       <td>
-        <img [src]="'http://localhost:5000' + p.mediaUrl" alt="Product Image" class="product-thumb">
+        <img [src]="'' + p.mediaUrl" alt="Product Image" class="product-thumb">
       </td>
       <td>{{ p.name }}</td>
       <td>{{ p.category }}</td>

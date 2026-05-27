@@ -133,7 +133,7 @@ export class AdminActionComponent implements OnInit {
       description_en: action.description_en || '',
     });
 
-    this.previewUrls = [...this.existingMedia.map(url => 'http://localhost:5000' + url)];
+    this.previewUrls = [...this.existingMedia.map(url => '' + url)];
     this.selectedMedia = [];
 
     this.activeLang = 'de';

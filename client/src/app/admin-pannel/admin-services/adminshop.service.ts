@@ -10,7 +10,7 @@ export class AdminshopService {
   toggleActive(id: string) {
     return this.http.patch(`${this.api}/${id}/toggle`, {});
   }
-  private api = 'http://localhost:5000/api/products';
+  private api = '/api/products';
 
   constructor(private http: HttpClient) {}
 

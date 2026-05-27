@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class AdminauthService {
 
-    private baseUrl = 'http://localhost:5000/api/admin';
+    private baseUrl = '/api/admin';
 
   constructor(private router:Router, private snackBar: MatSnackBar, private http: HttpClient) {}
 

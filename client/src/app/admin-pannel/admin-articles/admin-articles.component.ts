@@ -198,7 +198,7 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
     (article.body || []).forEach((b: any) => {
       this.blocks.push(this.fb.group({ type: [b.type], value: [b.value || ''], url: [b.url || ''] }));
       if (b.type === 'image' && b.url) {
-        this.filePreviews.set(this.blocks.length - 1, `http://localhost:5000${b.url}`);
+        this.filePreviews.set(this.blocks.length - 1, `${b.url}`);
       }
     });
 
@@ -285,7 +285,7 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
   private langBlocksToHtml(lang: string): string {
     return this.langBlocks[lang].map(b => {
       if (b.type === 'text') return `<p>${b.value}</p>`;
-      if (b.type === 'image' && b.url) return `<img src="http://localhost:5000${b.url}" />`;
+      if (b.type === 'image' && b.url) return `<img src="${b.url}" />`;
       return '';
     }).filter(s => s).join('');
   }
@@ -300,7 +300,7 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
         blocks.push({ type: 'text', value: (node as HTMLElement).innerText || node.textContent || '', url: '' });
       } else if (node.nodeName === 'IMG') {
         const src = (node as HTMLImageElement).src || '';
-        const url = src.replace('http://localhost:5000', '');
+        const url = src.replace('', '');
         blocks.push({ type: 'image', value: '', url });
       }
     });

@@ -9,7 +9,7 @@ import { Product } from '../_models/product';
 export class ShopService {
 
 
-  private apiUrl = 'http://localhost:5000/api/products';
+  private apiUrl = '/api/products';
 
   constructor(private http: HttpClient) {}
 
@@ -17,11 +17,11 @@ export class ShopService {
     return this.http.get<Product[]>(this.apiUrl);
   }
   getProductById(id: string) {
-  return this.http.get<Product>(`http://localhost:5000/api/products/${id}`);
+  return this.http.get<Product>(`/api/products/${id}`);
 }
 
 // reduceStock(productId: string, quantity: number) {
-//   return this.http.patch<Product>(`http://localhost:5000/api/products/${productId}/reduce-stock`, { quantity });
+//   return this.http.patch<Product>(`/api/products/${productId}/reduce-stock`, { quantity });
 // }
 
 

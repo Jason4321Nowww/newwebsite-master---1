@@ -10,7 +10,7 @@ import { Article } from '../_models/article';
   providedIn: 'root'
 })
 export class ArticlesService {
-  private baseUrl = 'http://localhost:5000/api/articles';
+  private baseUrl = '/api/articles';
 
   constructor(private http:HttpClient) { }
 

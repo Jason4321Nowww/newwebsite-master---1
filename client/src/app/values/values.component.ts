@@ -14,7 +14,16 @@ export class ValuesComponent implements AfterViewInit {
   constructor(public langService: LanguageService) {}
 
   ngAfterViewInit(): void {
-    this.setupGsap();
+    // Skip GSAP on mobile — elements stay fully visible.
+    // On mobile, ScrollTrigger miscalculates positions due to the shifting
+    // URL bar, and gsap.from() immediately sets opacity:0, leaving boxes
+    // permanently invisible if the trigger never fires.
+    if (window.innerWidth <= 900) return;
+
+    setTimeout(() => {
+      this.setupGsap();
+      ScrollTrigger.refresh();
+    }, 150);
   }
 
   setupGsap(): void {
@@ -36,12 +45,12 @@ export class ValuesComponent implements AfterViewInit {
     gsap.from('.arbeit', {
       scrollTrigger: {
         trigger: '.values',
-        start: 'top 80%',
+        start: 'top 85%',
         once: true,
       },
       duration: 0.7,
       opacity: 0,
-      x: -80,
+      x: -60,
       ease: 'power2.out',
     });
 
@@ -49,12 +58,12 @@ export class ValuesComponent implements AfterViewInit {
     gsap.from('.technologie', {
       scrollTrigger: {
         trigger: '.values',
-        start: 'top 80%',
+        start: 'top 85%',
         once: true,
       },
       duration: 0.7,
       opacity: 0,
-      y: 80,
+      y: 60,
       delay: 0.15,
       ease: 'power2.out',
     });
@@ -63,12 +72,12 @@ export class ValuesComponent implements AfterViewInit {
     gsap.from('.umwelt', {
       scrollTrigger: {
         trigger: '.values',
-        start: 'top 80%',
+        start: 'top 85%',
         once: true,
       },
       duration: 0.7,
       opacity: 0,
-      x: 80,
+      x: 60,
       delay: 0.3,
       ease: 'power2.out',
     });

@@ -3,7 +3,7 @@
   <div class="products-grid stagger">
     <div *ngFor="let product of featuredProducts" class="product-card">
       <a [routerLink]="['/product', product.id]">
-        <img [src]="'http://localhost:5000' + product.mediaUrl" [alt]="langService.getField(product, 'name')" />
+        <img [src]="'' + product.mediaUrl" [alt]="langService.getField(product, 'name')" />
         <h5>{{ langService.getField(product, 'name') }}</h5>
         <p *ngIf="product.price">CHF {{ product.price.toFixed(2) }}</p>
       </a>
@@ -25,7 +25,7 @@
   <div class="products-grid stagger">
     <div *ngFor="let product of regularProducts" class="product-card">
       <a [routerLink]="['/product', product.id]">
-        <img [src]="'http://localhost:5000' + product.mediaUrl" [alt]="langService.getField(product, 'name')" />
+        <img [src]="'' + product.mediaUrl" [alt]="langService.getField(product, 'name')" />
 
         <h5>{{ langService.getField(product, 'name') }}</h5>
         <p *ngIf="product.price">CHF {{ product.price.toFixed(2) }}</p>

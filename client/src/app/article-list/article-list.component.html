@@ -25,7 +25,7 @@
       <!-- Featured (large) card -->
       <div class="featured-card" *ngIf="featuredArticle" (click)="openArticle(featuredArticle.id)">
         <div class="featured-image" *ngIf="getFirstImage(featuredArticle)">
-          <img [src]="'http://localhost:5000' + getFirstImage(featuredArticle)" alt="Featured article" />
+          <img [src]="'' + getFirstImage(featuredArticle)" alt="Featured article" />
         </div>
         <div class="featured-body">
           <h3 class="featured-title">{{ langService.getField(featuredArticle, 'title') }}</h3>
@@ -41,7 +41,7 @@
       <div class="side-cards">
         <div class="side-card" *ngFor="let article of sideArticles" (click)="openArticle(article.id)">
           <div class="side-card-image" *ngIf="getFirstImage(article)">
-            <img [src]="'http://localhost:5000' + getFirstImage(article)" alt="Article image" />
+            <img [src]="'' + getFirstImage(article)" alt="Article image" />
           </div>
           <div class="side-card-body">
             <h4 class="side-card-title">{{ langService.getField(article, 'title') }}</h4>
@@ -63,7 +63,7 @@
     <div class="article-grid stagger">
       <div class="article-card" *ngFor="let article of paginatedArticles" (click)="openArticle(article.id)">
         <div class="article-card-image" *ngIf="getFirstImage(article)">
-          <img [src]="'http://localhost:5000' + getFirstImage(article)" alt="Article image" />
+          <img [src]="'' + getFirstImage(article)" alt="Article image" />
         </div>
         <div class="article-card-body">
           <h3 class="article-card-title">{{ langService.getField(article, 'title') }}</h3>

@@ -19,7 +19,7 @@ export interface AdminOrder {
 
 @Injectable({ providedIn: 'root' })
 export class AdminOrderService {
-  private baseUrl = 'http://localhost:5000/api/orders';
+  private baseUrl = '/api/orders';
 
   constructor(private http: HttpClient) {}
 

@@ -22,7 +22,7 @@ export interface AuthResponse {
 })
 export class AuthService {
 
-  private baseUrl = 'http://localhost:5000/api/auth';
+  private baseUrl = '/api/auth';
 
   private _userName = new BehaviorSubject<string | null>(localStorage.getItem('username'));
   userName$ = this._userName.asObservable();

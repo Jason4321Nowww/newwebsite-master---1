@@ -7,7 +7,7 @@ import { InfoBanner } from 'src/app/_models/infoBanner';
   providedIn: 'root'
 })
 export class InfoBannerService {
-  private apiUrl = 'http://localhost:5000/api/banner'; // 🔁 Replace with your real API endpoint
+  private apiUrl = '/api/banner'; // 🔁 Replace with your real API endpoint
 
   constructor(private http: HttpClient) {}
 
