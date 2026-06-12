@@ -11,6 +11,7 @@ const adminInviteSchema = new mongoose.Schema({
     bezirk:     { type: String, default: '' },
     gemeinde:   { type: String, default: '' },
   },
+  lang:      { type: String, enum: ['de', 'fr', 'it', 'en'], default: 'de' },
   invitedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
   status:    { type: String, enum: ['pending', 'accepted', 'active', 'expired'], default: 'pending' },
   expiresAt: { type: Date, required: true },

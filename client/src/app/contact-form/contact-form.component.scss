@@ -82,7 +82,20 @@ select {
   cursor: pointer;
 }
 
-input[type="submit"] {
+input.invalid,
+select.invalid {
+  border-color: #e74c3c !important;
+}
+
+.error-msg {
+  color: #e74c3c;
+  font-size: 0.78rem;
+  margin-top: -12px;
+  margin-bottom: 4px;
+  display: block;
+}
+
+button[type="submit"] {
   border: none;
   background-color: var(--btn-primary-bg);
   color: var(--btn-primary-text);
@@ -91,14 +104,23 @@ input[type="submit"] {
   border-radius: var(--radius-md);
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+  font-family: inherit;
+  font-size: 1rem;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out, opacity 0.2s ease;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background-color: var(--btn-primary-hover);
     transform: translateY(-2px);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: translateY(0);
+  }
+
+  &.btn-disabled,
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
   }
 }

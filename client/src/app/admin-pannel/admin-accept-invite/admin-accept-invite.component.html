@@ -7,61 +7,78 @@
     <!-- Invalid / expired token -->
     <ng-container *ngIf="inviteError">
       <mat-icon class="status-icon error">error_outline</mat-icon>
-      <h2>Invitation Invalid</h2>
+      <h2>{{ langService.t('adminAcceptInvite.invalidTitle') }}</h2>
       <p class="status-msg error">{{ inviteError }}</p>
-      <a routerLink="/admin/admin-signin" class="btn-back">Go to Sign In</a>
+      <a routerLink="/admin/admin-signin" class="btn-back">{{ langService.t('adminAcceptInvite.goToSignIn') }}</a>
     </ng-container>
 
     <!-- Success -->
     <ng-container *ngIf="submitted">
       <mat-icon class="status-icon success">check_circle_outline</mat-icon>
-      <h2>Account Created</h2>
-      <p class="status-msg success">
-        Your account has been created successfully.<br/>
-        A higher authority will activate it shortly. You will be notified.
-      </p>
-      <a routerLink="/admin/admin-signin" class="btn-back">Go to Sign In</a>
+      <h2>{{ langService.t('adminAcceptInvite.successTitle') }}</h2>
+      <p class="status-msg success">{{ langService.t('adminAcceptInvite.successMsg') }}</p>
+      <a routerLink="/admin/admin-signin" class="btn-back">{{ langService.t('adminAcceptInvite.goToSignIn') }}</a>
     </ng-container>
 
     <!-- Invite form -->
     <ng-container *ngIf="!inviteError && !submitted && inviteInfo">
-      <h2>Accept Invitation</h2>
+      <h2>{{ langService.t('adminAcceptInvite.title') }}</h2>
       <p class="invite-meta">
-        You are invited as <strong>{{ inviteInfo.roleName }}</strong><br/>
+        {{ langService.t('adminAcceptInvite.invitedAs') }} <strong>{{ inviteInfo.roleName }}</strong><br/>
         <span class="invite-email">{{ inviteInfo.email }}</span>
       </p>
 
       <form (ngSubmit)="onSubmit()" #f="ngForm" class="invite-form">
         <div class="field">
-          <label>Full Name</label>
-          <input [(ngModel)]="name" name="name" required placeholder="Your full name" />
+          <label>{{ langService.t('adminAcceptInvite.nameLabel') }}</label>
+          <input [(ngModel)]="name" name="name" required [placeholder]="langService.t('adminAcceptInvite.namePlaceholder')" />
         </div>
 
         <div class="field">
-          <label>Password</label>
+          <label>{{ langService.t('adminAcceptInvite.passwordLabel') }}</label>
           <input [(ngModel)]="password" name="password" type="password" required
-                 minlength="8" placeholder="At least 8 characters" />
+                 minlength="8" [placeholder]="langService.t('adminAcceptInvite.passwordPlaceholder')" />
         </div>
 
         <div class="field">
-          <label>Confirm Password</label>
+          <label>{{ langService.t('adminAcceptInvite.confirmLabel') }}</label>
           <input [(ngModel)]="confirmPassword" name="confirmPassword" type="password"
-                 required placeholder="Repeat password" />
-          <span class="field-error" *ngIf="passwordMismatch">Passwords do not match.</span>
+                 required [placeholder]="langService.t('adminAcceptInvite.confirmPlaceholder')" />
+          <span class="field-error" *ngIf="passwordMismatch">{{ langService.t('adminAcceptInvite.passwordMismatch') }}</span>
+        </div>
+
+        <div class="field key-field">
+          <label>{{ langService.t('adminAcceptInvite.regKeyLabel') }}</label>
+          <div class="key-input-wrap">
+            <input [(ngModel)]="registrationKey" name="registrationKey"
+                   #regKeyInput="ngModel"
+                   required minlength="20" maxlength="20"
+                   [class.error]="keyValid === false"
+                   [class.success]="keyValid === true"
+                   [placeholder]="langService.t('adminAcceptInvite.regKeyPlaceholder')"
+                   autocomplete="off"
+                   (ngModelChange)="onRegKeyChange($event)"
+                   (blur)="onRegKeyBlur()" />
+            <mat-icon class="key-status-icon spinning" *ngIf="keyChecking">sync</mat-icon>
+            <mat-icon class="key-status-icon valid"    *ngIf="keyValid === true">check_circle</mat-icon>
+            <mat-icon class="key-status-icon invalid"  *ngIf="keyValid === false">cancel</mat-icon>
+          </div>
+          <span class="field-error" *ngIf="keyValid === false">{{ langService.t('signup.invalidRegKey') }}</span>
+          <span class="field-error" *ngIf="keyValid === null && regKeyInput.touched && regKeyInput.invalid">{{ langService.t('signup.regKeyRequired') }}</span>
         </div>
 
         <p *ngIf="submitError" class="submit-error">{{ submitError }}</p>
 
         <button type="submit"
-                [disabled]="f.invalid || passwordMismatch || submitting">
-          {{ submitting ? 'Creating account…' : 'Create Account' }}
+                [disabled]="f.invalid || passwordMismatch || keyValid !== true || submitting">
+          {{ submitting ? langService.t('adminAcceptInvite.submitting') : langService.t('adminAcceptInvite.submitBtn') }}
         </button>
       </form>
     </ng-container>
 
     <!-- Loading -->
     <ng-container *ngIf="!inviteError && !submitted && !inviteInfo">
-      <p class="loading-text">Validating invitation…</p>
+      <p class="loading-text">{{ langService.t('adminAcceptInvite.loading') }}</p>
     </ng-container>
   </div>
 </div>

@@ -1,0 +1,38 @@
+<section class="featured-section" *ngIf="!loading && products.length > 0">
+  <div class="featured-wrapper">
+
+    <div class="featured-header">
+      <h2 class="featured-title">
+        {{ langService.t('shop.featuredItems') }}
+      </h2>
+      <a routerLink="/shop" class="view-all-btn">{{ langService.t('shop.allProducts') }} →</a>
+    </div>
+
+    <div class="featured-grid">
+      <div class="product-card" *ngFor="let product of products">
+
+        <a [routerLink]="['/product', product.id]" class="card-image-link">
+          <div class="card-image">
+            <img [src]="'' + product.mediaUrl" [alt]="langService.getField(product, 'name')" />
+          </div>
+        </a>
+
+        <div class="card-body">
+          <h5 class="card-name">{{ langService.getField(product, 'name') }}</h5>
+          <p class="card-price" *ngIf="product.price">CHF {{ product.price.toFixed(2) }}</p>
+
+          <p *ngIf="product.stockWarning" class="stock-warning">{{ langService.t('shop.noStock') }}</p>
+
+          <a *ngIf="product.isExternal" [href]="product.externalUrl" target="_blank" class="btn">
+            {{ langService.t('shop.zumArtikel') }}
+          </a>
+          <button *ngIf="!product.isExternal" class="btn" (click)="addToCart(product)">
+            {{ langService.t('shop.addToCart') }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>

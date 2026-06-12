@@ -41,6 +41,7 @@ const adminSchema = new mongoose.Schema({
     bezirk:     { type: String, default: '' },
     gemeinde:   { type: String, default: '' },
   },
+  lang: { type: String, enum: ['de', 'fr', 'it', 'en'], default: 'de' },
 }); 
 
 // // ✅ Password hashing

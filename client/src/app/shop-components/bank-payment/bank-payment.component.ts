@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartItem, CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
+import { LanguageService } from '../../services/language.service';
 import { Order } from '../../_models/order';
 
 @Component({
@@ -32,6 +33,7 @@ export class BankPaymentComponent implements OnInit {
     private router: Router,
     private orderService: OrderService,
     private cartService: CartService,
+    public langService: LanguageService,
   ) {
     const nav   = this.router.getCurrentNavigation();
     const state = nav?.extras?.state as any;
@@ -52,7 +54,7 @@ export class BankPaymentComponent implements OnInit {
     this.errorMsg  = '';
     this.submitting = true;
 
-    const lang = localStorage.getItem('bkp_lang') || 'de';
+    const lang = this.langService.current;
 
     const order: Order = {
       items: this.cartItems
@@ -73,7 +75,7 @@ export class BankPaymentComponent implements OnInit {
         this.success = true;
         this.submitting = false;
         this.cartService.clearCart();
-        setTimeout(() => this.router.navigate(['/shop']), 6000);
+        setTimeout(() => this.router.navigate(['/shop'], { state: { orderSuccess: true } }), 6000);
       },
       error: (err) => {
         this.submitting = false;

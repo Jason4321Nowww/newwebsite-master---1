@@ -14,10 +14,10 @@
     <!-- Email Field -->
     <div class="input-group" [ngClass]="{ 'error': signupForm.get('email')?.invalid && signupForm.get('email')?.touched }">
       <mat-icon>email</mat-icon>
-      <input formControlName="email" type="email" placeholder="Email address" />
+      <input formControlName="email" type="email" [placeholder]="langService.t('signup.emailPlaceholder')" />
     </div>
     <div class="error-msg" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
-      Please enter a valid email address.
+      {{ langService.t('signup.emailRequired') }}
     </div>
 
     <!-- Password Field -->
@@ -27,6 +27,26 @@
     </div>
     <div class="error-msg" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
       {{ langService.t('signup.passwordRequired') }}
+    </div>
+
+    <!-- Registration Key -->
+    <div class="input-group"
+         [class.error]="keyValid === false"
+         [class.success]="keyValid === true">
+      <mat-icon>vpn_key</mat-icon>
+      <input formControlName="registrationKey"
+             [placeholder]="langService.t('signup.regKeyPlaceholder')"
+             autocomplete="off" />
+      <mat-icon class="key-status-icon spinning" *ngIf="keyChecking">sync</mat-icon>
+      <mat-icon class="key-status-icon valid"    *ngIf="keyValid === true">check_circle</mat-icon>
+      <mat-icon class="key-status-icon invalid"  *ngIf="keyValid === false">cancel</mat-icon>
+    </div>
+    <div class="error-msg" *ngIf="keyValid === false">
+      {{ langService.t('signup.invalidRegKey') }}
+    </div>
+    <div class="error-msg"
+         *ngIf="keyValid === null && signupForm.get('registrationKey')?.touched && signupForm.get('registrationKey')?.invalid">
+      {{ langService.t('signup.regKeyRequired') }}
     </div>
 
     <!-- Kanton -->
@@ -60,7 +80,7 @@
     <div class="error-msg" *ngIf="serverError" style="margin-bottom:0.5rem;">{{ serverError }}</div>
 
     <!-- Submit Button -->
-    <button type="submit" [disabled]="signupForm.invalid || submitting">
+    <button type="submit" [disabled]="signupForm.invalid || submitting || keyValid !== true">
       {{ submitting ? '…' : langService.t('signup.register') }}
     </button>
 

@@ -35,7 +35,8 @@ const sendInvite = async (req, res) => {
       return res.status(403).json({ error: 'Only Superadmin, Vorsitzende or Vorstand can send invites.' });
     }
 
-    const { email, roleLevel, userLocation } = req.body;
+    const { email, roleLevel, userLocation, lang } = req.body;
+    const validLang = ['de', 'fr', 'it', 'en'].includes(lang) ? lang : 'de';
     if (!email) return res.status(400).json({ error: 'Email is required.' });
     if (roleLevel === undefined || Number(roleLevel) <= adminRoleLevel) {
       return res.status(400).json({ error: 'You can only invite someone with a role below your own.' });
@@ -57,6 +58,7 @@ const sendInvite = async (req, res) => {
       email,
       token,
       roleLevel: Number(roleLevel),
+      lang: validLang,
       userLocation: {
         kantonCode: userLocation?.kantonCode || '',
         kantonName: userLocation?.kantonName || '',
@@ -68,10 +70,12 @@ const sendInvite = async (req, res) => {
       expiresAt,
     });
 
+    const keyDoc    = await RegistrationKey.findOne();
+    const regKey    = keyDoc?.rawKey || null;
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:4200';
     const inviteUrl = `${clientUrl}/admin/accept-invite?token=${token}`;
     const roleName  = ROLE_LABELS[Number(roleLevel)] || `Role ${roleLevel}`;
-    const tpl       = adminInviteEmail(roleName, inviteUrl, INVITE_EXPIRY_HOURS);
+    const tpl       = adminInviteEmail(roleName, inviteUrl, INVITE_EXPIRY_HOURS, validLang, regKey);
 
     await createTransporter().sendMail({ from: process.env.GMAIL_USER, to: email, ...tpl });
 
@@ -99,6 +103,7 @@ const validateInviteToken = async (req, res) => {
       email:     invite.email,
       roleLevel: invite.roleLevel,
       roleName:  ROLE_LABELS[invite.roleLevel] || `Role ${invite.roleLevel}`,
+      lang:      invite.lang || 'de',
     });
   } catch (err) {
     console.error('validateInviteToken error:', err);
@@ -141,6 +146,7 @@ const acceptInvite = async (req, res) => {
       password:     hashedPassword,
       roleLevel:    invite.roleLevel,
       userLocation: invite.userLocation || {},
+      lang:         invite.lang || 'de',
       isActive:     false,
     });
 
@@ -192,7 +198,7 @@ const activateAdmin = async (req, res) => {
 
     // Notify the admin their account is now active
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:4200';
-    const tpl = accountActivatedEmail(target.name, `${clientUrl}/admin/admin-signin`);
+    const tpl = accountActivatedEmail(target.name, `${clientUrl}/admin/admin-signin`, target.lang || 'de');
     createTransporter().sendMail({ from: process.env.GMAIL_USER, to: target.email, ...tpl }).catch(() => {});
 
     res.status(200).json({ message: 'Admin activated successfully.' });

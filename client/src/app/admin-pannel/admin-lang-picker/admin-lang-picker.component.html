@@ -1,5 +1,5 @@
 <div class="lang-picker-row">
-  <span class="lang-label-text">Language:</span>
+  <span class="lang-label-text" *ngIf="showLabel">Language:</span>
   <div class="lang-custom-select" [class.open]="isOpen" (click)="isOpen = !isOpen">
     <div class="lang-selected">
       <img [src]="'assets/images/flags/' + current.flagFile" [alt]="current.label" class="flag-img" />

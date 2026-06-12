@@ -21,9 +21,17 @@ export class AdminUserComponent implements OnInit {
   keyPreview: string = '';
   copied: boolean = false;
 
+  // ── Share Key by Email ─────────────────────────────────────
+  shareKeyEmail     = '';
+  shareKeyLang      = 'de';
+  shareKeySending   = false;
+  shareKeyMessage   = '';
+  shareKeyError     = false;
+
   // ── Unified Invite section ─────────────────────────────────
   inviteEmail       = '';
   inviteRoleLevel:  number | null = null;
+  inviteLang        = 'de';
   inviting          = false;
   inviteMessage     = '';
   inviteError       = false;
@@ -141,6 +149,10 @@ export class AdminUserComponent implements OnInit {
     this.inviteRoleLevel = val === '' ? null : Number(val);
   }
 
+  onInviteLangChange(lang: string): void {
+    this.inviteLang = lang;
+  }
+
   onInviteKantonChange(kantonCode: string): void {
     const canton = this.cantons.find(c => c.kantonCode === kantonCode);
     this.inviteKantonCode = kantonCode;
@@ -181,6 +193,7 @@ export class AdminUserComponent implements OnInit {
   // ── Unified Send Invite ────────────────────────────────────
   sendInvite(): void {
     if (!this.inviteEmail || this.inviteRoleLevel === null) return;
+    const roleLevel = this.inviteRoleLevel;
     this.inviting      = true;
     this.inviteMessage = '';
     this.inviteError   = false;
@@ -193,9 +206,9 @@ export class AdminUserComponent implements OnInit {
     };
 
     // Roles 0-3 → admin invite endpoint; Roles 4-8 → user invite endpoint
-    const obs = this.inviteRoleLevel <= 3
-      ? this.adminuser.sendInvite(this.inviteEmail, this.inviteRoleLevel, userLocation)
-      : this.adminuser.sendUserInvite(this.inviteEmail, this.inviteRoleLevel, userLocation);
+    const obs = roleLevel <= 3
+      ? this.adminuser.sendInvite(this.inviteEmail, roleLevel, userLocation, this.inviteLang)
+      : this.adminuser.sendUserInvite(this.inviteEmail, roleLevel, userLocation, this.inviteLang);
 
     obs.subscribe({
       next: () => {
@@ -203,6 +216,7 @@ export class AdminUserComponent implements OnInit {
         this.inviteMessage = 'Invitation sent successfully.';
         this.inviteEmail     = '';
         this.inviteRoleLevel = null;
+        this.inviteLang      = 'de';
         this.resetInviteLocation();
         this.fetchUsers();
         this.fetchSentInvites();
@@ -318,6 +332,31 @@ export class AdminUserComponent implements OnInit {
     this.adminuser.getKeyInfo().subscribe({
       next: (res) => { this.keyPreview = res.key || ''; },
       error: () => { this.keyPreview = ''; }
+    });
+  }
+
+  // ── Share Key by Email ─────────────────────────────────────
+  onShareKeyLangChange(lang: string): void {
+    this.shareKeyLang = lang;
+  }
+
+  sendKeyByEmail(): void {
+    if (!this.shareKeyEmail || !this.keyPreview) return;
+    this.shareKeySending = true;
+    this.shareKeyMessage = '';
+    this.shareKeyError   = false;
+
+    this.adminuser.sendRegistrationKeyByEmail(this.shareKeyEmail, this.shareKeyLang).subscribe({
+      next: (res) => {
+        this.shareKeySending = false;
+        this.shareKeyMessage = res.message;
+        this.shareKeyEmail   = '';
+      },
+      error: (err) => {
+        this.shareKeySending = false;
+        this.shareKeyError   = true;
+        this.shareKeyMessage = err.error?.message || 'Failed to send email.';
+      },
     });
   }
 

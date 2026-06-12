@@ -1,12 +1,10 @@
 <div class="lang-dropdown" [class.open]="isOpen">
-  <!-- Trigger button showing current language -->
-  <button class="lang-trigger" (click)="toggle()" type="button">
-    <img [src]="'assets/images/flags/' + current.flagFile" [alt]="current.label" class="lang-flag-img" />
+  <button class="lang-trigger" (click)="toggle()" type="button" [attr.aria-label]="current.label">
+    <mat-icon class="lang-icon">translate</mat-icon>
     <span class="lang-code">{{ current.code | uppercase }}</span>
-    <span class="lang-arrow">▾</span>
+    <mat-icon class="lang-arrow-icon">expand_more</mat-icon>
   </button>
 
-  <!-- Dropdown menu -->
   <div class="lang-menu" *ngIf="isOpen">
     <button
       *ngFor="let l of langs"

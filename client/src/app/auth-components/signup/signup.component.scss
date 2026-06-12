@@ -80,6 +80,31 @@ form {
   border-color: #f44336;
 }
 
+.input-group.success {
+  border-color: #4caf50;
+}
+
+.key-status-icon {
+  flex-shrink: 0;
+  margin-left: 0.4rem;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+
+  &.valid   { color: #4caf50; }
+  &.invalid { color: #f44336; }
+  &.spinning {
+    color: var(--text-secondary);
+    animation: spin 0.9s linear infinite;
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 .error-msg {
   color: #f44336;
   font-size: 0.875rem;

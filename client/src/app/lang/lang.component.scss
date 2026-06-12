@@ -3,54 +3,50 @@
   display: inline-block;
 }
 
-.lang-flag-img {
-  width: 20px;
-  height: 14px;
-  object-fit: cover;
-  border-radius: var(--radius-sm);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  flex-shrink: 0;
-}
-
 .lang-trigger {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   background: transparent;
   border: 1.5px solid var(--border-color, #ddd);
-  color: var(--text-primary);
+  color: var(--text-secondary);
   border-radius: var(--radius-md);
-  padding: 5px 10px;
+  padding: 5px 9px;
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s, color 0.2s;
   white-space: nowrap;
 
-  .lang-arrow {
-    font-size: 0.65rem;
-    color: var(--text-secondary);
-    transition: transform 0.2s;
-  }
-
   &:hover {
     border-color: #009d63;
     color: #009d63;
     background: rgba(0, 157, 99, 0.05);
-
-    .lang-arrow { color: #009d63; }
   }
 }
 
-/* On mobile — show flag only, hide code text and arrow to save space */
-@media (max-width: 900px) {
-  .lang-trigger {
-    padding: 5px 7px;
-    gap: 0;
+.lang-icon {
+  font-size: 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  color: inherit;
+  line-height: 1;
+}
 
-    .lang-code  { display: none; }
-    .lang-arrow { display: none; }
-  }
+.lang-code {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: inherit;
+}
+
+.lang-arrow-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  color: inherit;
+  transition: transform 0.2s;
+  line-height: 1;
 }
 
 .lang-dropdown.open .lang-trigger {
@@ -58,12 +54,21 @@
   color: #009d63;
   background: rgba(0, 157, 99, 0.05);
 
-  .lang-arrow {
-    transform: rotate(180deg);
-    color: #009d63;
+  .lang-arrow-icon { transform: rotate(180deg); }
+}
+
+/* Mobile — show icon only */
+@media (max-width: 900px) {
+  .lang-trigger {
+    padding: 5px 7px;
+    gap: 0;
+
+    .lang-code      { display: none; }
+    .lang-arrow-icon { display: none; }
   }
 }
 
+// ── Dropdown menu ─────────────────────────────────────────────
 .lang-menu {
   position: absolute;
   top: calc(100% + 6px);
@@ -72,7 +77,7 @@
   border: 1px solid var(--border-color, #ddd);
   border-radius: var(--radius-lg);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  min-width: 140px;
+  min-width: 150px;
   z-index: 1000;
   overflow: hidden;
   animation: fadeSlide 0.15s ease;
@@ -81,6 +86,15 @@
 @keyframes fadeSlide {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.lang-flag-img {
+  width: 20px;
+  height: 14px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
 .lang-option {
@@ -97,9 +111,7 @@
   text-align: left;
   transition: background 0.15s;
 
-  &:hover {
-    background: var(--hover-bg, #f0f4ff);
-  }
+  &:hover { background: var(--hover-bg, #f0f4ff); }
 
   &.active {
     font-weight: 500;

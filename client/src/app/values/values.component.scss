@@ -1,6 +1,5 @@
 .values-container {
   margin-top: 2rem;
-  color: var(--text-primary) !important;
   transition: color 0.3s ease-in-out;
   .top-row {
     display: flex;
@@ -56,16 +55,18 @@
   }
 
   div {
-     padding: 20px;
+    padding: 20px;
     border-radius: var(--radius-lg);
     box-shadow: 3px 5px 10px -2px var(--card-shadow);
-    height: auto; // 👈 allow height to grow
-    max-width: 100%; // 👈 prevent content from overflowing horizontally
-    overflow-wrap: break-word; // 👈 break long words
+    height: auto;
+    max-width: 100%;
+    overflow-wrap: break-word;
     word-break: break-word;
-    box-sizing: border-box; // 👈 include padding in width calculation
-    color: var(--text-primary);
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.82);
     transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, color 0.3s ease-in-out;
+
+    h2 { color: inherit; }
   }
 
   .arbeit {
@@ -114,12 +115,16 @@
 
 :root.dark-mode .values {
   .arbeit {
-    background-color: rgba(240, 128, 128, 0.3); // Semi-transparent lightcoral
+    background-color: rgba(240, 128, 128, 0.25);
   }
   .technologie {
-    background-color: rgba(173, 216, 230, 0.3); // Semi-transparent lightblue
+    background-color: rgba(173, 216, 230, 0.25);
   }
   .umwelt {
-    background-color: rgba(144, 238, 144, 0.3); // Semi-transparent lightgreen
+    background-color: rgba(144, 238, 144, 0.25);
+  }
+
+  div {
+    color: rgba(255, 255, 255, 0.9);
   }
 }

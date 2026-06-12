@@ -2,66 +2,35 @@
   <h2 class="gallery-heading scroll-reveal">{{ langService.t('actions.gallery') }}</h2>
 
   <div class="gallery-grid stagger">
-    <div
-      class="gallery-card"
-      *ngFor="let action of allActions"
-      (click)="openPreview(action)"
-    >
-      <ng-container *ngIf="action.media?.length">
-        <img
-          *ngIf="isImage(action.media[0])"
-          [src]="'' + action.media[0]"
-          alt="Action Media"
-        />
-        <video
-          *ngIf="isVideo(action.media[0])"
-          [src]="'' + action.media[0]"
-        ></video>
-      </ng-container>
+    <div class="gallery-card" *ngFor="let action of allActions">
+
+      <lightgallery [settings]="settings" class="card-gallery" (onInit)="onGalleryInit($event)">
+        <a
+          *ngFor="let item of action.media; let i = index"
+          [class.gallery-hidden]="i > 0"
+          [attr.data-src]="isImage(item) ? item : null"
+          [attr.data-video]="isVideo(item) ? videoData(item) : null"
+          [attr.data-sub-html]="'<h4>' + langService.getField(action, 'title') + '</h4>'"
+        >
+          <!--
+            Always render <img> so lightgallery thumbnail strip can read it.
+            i=0 → visible card thumbnail; i>0 → hidden by parent but src still readable by lightgallery.
+          -->
+          <img
+            [src]="isImage(item) ? item : (videoThumbs.get(item) || videoPlaceholder)"
+            class="card-thumb"
+            alt=""
+          />
+          <!-- play icon overlay on card for first video item -->
+          <mat-icon *ngIf="isVideo(item) && i === 0" class="play-icon">play_circle</mat-icon>
+        </a>
+      </lightgallery>
 
       <div class="gallery-info">
         <h3>{{ langService.getField(action, 'title') }}</h3>
         <p>{{ (langService.getField(action, 'description') | slice: 0:100) }}...</p>
       </div>
-    </div>
-  </div>
 
-  <!-- Modal Preview -->
-  <div class="modal-overlay" *ngIf="previewAction" (click)="closePreview()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>{{ langService.getField(previewAction, 'title') }}</h2>
-     
-
-     <div class="modal-media-wrapper">
-  <!-- Large selected preview -->
-  <div class="main-media">
-    <img *ngIf="isImage(selectedMedia!)" [src]="'' + selectedMedia" />
-    <video *ngIf="isVideo(selectedMedia!)" [src]="'' + selectedMedia" controls></video>
-  </div>
-
-  <!-- Thumbnails -->
-  <div class="thumbnail-list">
-    <ng-container *ngFor="let item of previewAction.media">
-      <img
-        *ngIf="isImage(item)"
-        [src]="'' + item"
-        [class.selected]="item === selectedMedia"
-        (click)="selectMedia(item)"
-      />
-      <video
-        *ngIf="isVideo(item)"
-        [src]="'' + item"
-        [class.selected]="item === selectedMedia"
-        (click)="selectMedia(item)"
-        preload="metadata"
-        muted
-        ></video>
-    </ng-container>
-  </div>
-</div>
-
- <p>{{ langService.getField(previewAction, 'description') }}</p>
-      <button class="close-btn" (click)="closePreview()">{{ langService.t('actions.close') }}</button>
     </div>
   </div>
 </div>

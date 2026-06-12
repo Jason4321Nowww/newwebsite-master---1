@@ -16,12 +16,12 @@ export class SidebarComponent implements OnInit {
 
   menuItems = [
     { label: 'Articles', icon: 'article', key: 'admin-articles' },
-    { label: 'Inforbanner', icon: 'campaign', key: 'admin-infobanner' },
+    { label: 'Inforbanner', icon: 'description', key: 'admin-infobanner' },
     { label: 'Events', icon: 'event', key: 'admin-events' },
      { label: 'Actions', icon: 'flag', key: 'admin-action' },
     { label: 'Videos', icon: 'video_library', key: 'admin-videos' },
     { label: 'Emails', icon: 'email', key: 'admin-emails' },
-    { label: 'Press', icon: 'description', key: 'admin-press' },
+    { label: 'Press', icon: 'campaign', key: 'admin-press' },
     { label: 'Shop', icon: 'storefront', key: 'admin-shop' },
     { label: 'User', icon: 'manage_accounts', key: 'admin-user' },
     { label: 'Orders', icon: 'manage_accounts', key: 'admin-orders' },

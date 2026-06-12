@@ -123,10 +123,19 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   getTooltipText(event: Event): string {
     const repeatInterval = (event as any).repeatEveryWeeks;
-    const repeatLabel = repeatInterval > 0
-      ? `Every ${repeatInterval} week(s)`
-      : (event.repeat || 'One-time');
-    return `${event.title}\nRepeat: ${repeatLabel}\nDate: ${this.parseLocalDate(event.eventDate as any).toDateString()}`;
+    let repeatLabel: string;
+    if (repeatInterval > 0) {
+      repeatLabel = `${this.langService.t('calendar.every')} ${repeatInterval} ${this.langService.t('calendar.weeksUnit')}`;
+    } else if (!event.repeat || event.repeat === 'none') {
+      repeatLabel = this.langService.t('calendar.onetime');
+    } else {
+      repeatLabel = this.langService.t(`events.repeat.${event.repeat}`) || event.repeat;
+    }
+    const d = this.parseLocalDate(event.eventDate as any);
+    const dateStr = d.toLocaleDateString(this.langService.current === 'de' ? 'de-CH'
+                                        : this.langService.current === 'fr' ? 'fr-CH'
+                                        : this.langService.current === 'it' ? 'it-CH' : 'en-GB');
+    return `${this.langService.getField(event, 'title')}\n${this.langService.t('calendar.repeat')}: ${repeatLabel}\n${this.langService.t('calendar.date')}: ${dateStr}`;
   }
 
   isRepeating(event: Event): boolean {

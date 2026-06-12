@@ -26,9 +26,16 @@ const sendOtpEmail = async (email, otp, lang = 'de') => {
 const UNVERIFIED_DELETE_HOURS = 48;
 
 const signup = async (req, res) => {
-  const { username, email, password, userLocation, lang } = req.body;
+  const { username, email, password, userLocation, lang, registrationKey } = req.body;
   try {
     if (!email) return res.status(400).json({ message: 'Email is required.' });
+
+    // Validate registration key before doing anything else
+    if (!registrationKey) return res.status(400).json({ message: 'Registration key is required.', code: 'INVALID_KEY' });
+    const keyDoc = await RegistrationKey.findOne();
+    if (!keyDoc) return res.status(500).json({ message: 'Registration key not configured. Contact admin.' });
+    const isValidKey = await argon2.verify(keyDoc.hashedKey, registrationKey);
+    if (!isValidKey) return res.status(401).json({ message: 'Invalid registration key.', code: 'INVALID_KEY' });
 
     // Check uniqueness
     if (await User.findOne({ username })) {
@@ -79,7 +86,7 @@ const signup = async (req, res) => {
 // ── POST /api/auth/verify-email-otp ──────────────────────────────────────────
 // Validates OTP + registration key. On success: sets emailVerified, clears deleteAt.
 const verifyEmailOtp = async (req, res) => {
-  const { userId, otp, registrationKey } = req.body;
+  const { userId, otp } = req.body;
   try {
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ message: 'User not found.' });
@@ -95,13 +102,6 @@ const verifyEmailOtp = async (req, res) => {
     if (user.emailOtp !== String(otp).trim()) {
       return res.status(400).json({ message: 'Incorrect code. Please try again.' });
     }
-
-    // Validate registration key
-    if (!registrationKey) return res.status(400).json({ message: 'Registration key is required.' });
-    const keyDoc = await RegistrationKey.findOne();
-    if (!keyDoc) return res.status(500).json({ message: 'Registration key not configured. Contact admin.' });
-    const isValidKey = await argon2.verify(keyDoc.hashedKey, registrationKey);
-    if (!isValidKey) return res.status(401).json({ message: 'Invalid registration key.', code: 'INVALID_KEY' });
 
     // Mark verified and cancel the auto-delete
     user.emailVerified   = true;
@@ -150,7 +150,9 @@ const resendEmailOtp = async (req, res) => {
 const signin = async (req, res) => {
   const { username, password } = req.body;
   try {
-    const user = await User.findOne({ username });
+    const user = await User.findOne({
+      $or: [{ username }, { email: username?.toLowerCase() }]
+    });
     if (!user) return res.status(401).json({ message: 'Invalid credentials' });
 
     const valid = await argon2.verify(user.password, password);
@@ -166,6 +168,10 @@ const signin = async (req, res) => {
 
     if (!user.isActive) {
       return res.status(403).json({ message: 'Your account is not yet activated. Please contact an administrator.' });
+    }
+
+    if (user.roleLevel >= 8) {
+      return res.status(403).json({ message: 'Your account does not have sufficient membership to sign in. Please contact an administrator.', code: 'ROLE_TOO_LOW' });
     }
 
     const token = jwt.sign(
@@ -356,13 +362,19 @@ const updateUser = async (req, res) => {
       return res.status(403).json({ message: 'You cannot assign a role equal to or above your own.' });
     }
 
+    const wasInactive = !record.isActive;
+
     for (const key in updates) {
       if (!forbidden.includes(key) && key in record) {
         record.set(key, updates[key]);
       }
     }
 
-    const wasInactive = !record.isActive;
+    // When admin activates a user, also mark email as verified
+    if (!isAdminRecord && wasInactive && record.isActive) {
+      record.emailVerified = true;
+    }
+
     await record.save();
 
     // Send activation email if account was just activated
@@ -384,4 +396,17 @@ const updateUser = async (req, res) => {
 
 
 
-module.exports = { signup, signin, logout, getUser, getAllUsers, updateUser, deleteUser, verifyEmailOtp, resendEmailOtp }
+const validateRegistrationKey = async (req, res) => {
+  const { registrationKey } = req.body;
+  if (!registrationKey) return res.status(200).json({ valid: false });
+  try {
+    const keyDoc = await RegistrationKey.findOne();
+    if (!keyDoc) return res.status(200).json({ valid: false });
+    const isValid = await argon2.verify(keyDoc.hashedKey, registrationKey);
+    return res.status(200).json({ valid: isValid });
+  } catch {
+    return res.status(200).json({ valid: false });
+  }
+};
+
+module.exports = { signup, signin, logout, getUser, getAllUsers, updateUser, deleteUser, verifyEmailOtp, resendEmailOtp, validateRegistrationKey }

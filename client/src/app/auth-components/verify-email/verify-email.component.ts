@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { AuthService } from 'src/app/services/auth.service';
+import { LanguageService } from 'src/app/services/language.service';
 
 @Component({
   selector: 'app-verify-email',
@@ -9,9 +9,8 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrl: './verify-email.component.scss'
 })
 export class VerifyEmailComponent implements OnInit, OnDestroy {
-  userId          = '';
-  otp             = '';
-  private regKey  = '';
+  userId = '';
+  otp    = '';
 
   submitting  = false;
   verified    = false;
@@ -27,18 +26,16 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
     private route:       ActivatedRoute,
     private router:      Router,
     private authService: AuthService,
-    private http:        HttpClient,
+    public  langService: LanguageService,
   ) {}
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.queryParamMap.get('uid') || '';
-    if (!this.userId) {
-      this.error = 'No user ID found. Please sign up again.';
-      return;
+
+    const urlLang = this.route.snapshot.queryParamMap.get('lang') as any;
+    if (['de', 'fr', 'it', 'en'].includes(urlLang)) {
+      this.langService.setLang(urlLang);
     }
-    // Silently fetch the registration key — never shown to the user
-    this.http.get<{ key: string }>(`/api/auth/signup-key?userId=${this.userId}`)
-      .subscribe({ next: (res) => { this.regKey = res.key; }, error: () => {} });
   }
 
   ngOnDestroy(): void {
@@ -55,7 +52,7 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
     this.error      = '';
     this.expiredOtp = false;
 
-    this.authService.verifyEmailOtp(this.userId, this.otp.trim(), this.regKey).subscribe({
+    this.authService.verifyEmailOtp(this.userId, this.otp.trim()).subscribe({
       next: () => {
         this.submitting = false;
         this.verified   = true;
@@ -64,8 +61,12 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
         this.submitting = false;
         if (err.status === 410) {
           this.expiredOtp = true;
+        } else if (err.status === 400 && err.error?.message?.toLowerCase().includes('already verified')) {
+          this.error = this.langService.t('verify.errAlreadyVerified');
+        } else if (err.status === 400) {
+          this.error = this.langService.t('verify.errIncorrect');
         } else {
-          this.error = err.error?.message || 'Verification failed. Please try again.';
+          this.error = this.langService.t('verify.errGeneral');
         }
       },
     });
@@ -79,14 +80,14 @@ export class VerifyEmailComponent implements OnInit, OnDestroy {
     this.expiredOtp    = false;
 
     this.authService.resendEmailOtp(this.userId).subscribe({
-      next: (res) => {
+      next: () => {
         this.resending     = false;
-        this.resendMessage = res.message;
+        this.resendMessage = this.langService.t('verify.resendSuccess');
         this.startCooldown(60);
       },
-      error: (err) => {
+      error: () => {
         this.resending = false;
-        this.error     = err.error?.message || 'Failed to resend code. Please try again.';
+        this.error     = this.langService.t('verify.errResend');
       },
     });
   }

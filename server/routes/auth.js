@@ -10,9 +10,10 @@ const {
   deleteUser,
   verifyEmailOtp,
   resendEmailOtp,
+  validateRegistrationKey,
 } = require('../controllers/authController');
 
-const {createOrUpdateKey, getKeyInfo, getKeyForInvite, getKeyForSignup} = require('../controllers/registrationKeyController');
+const {createOrUpdateKey, getKeyInfo, getKeyForInvite, sendRegistrationKeyByEmail} = require('../controllers/registrationKeyController');
 const { authMiddleware, adminMiddleware } = require('../middlewares/authMiddleware');
 const {
   sendUserInvite,
@@ -23,6 +24,7 @@ const {
 
 // Auth Routes
 router.post('/signup', signup);
+router.post('/validate-registration-key', validateRegistrationKey);  // public — inline key check
 router.post('/verify-email-otp', verifyEmailOtp);   // public — OTP verification
 router.post('/resend-email-otp', resendEmailOtp);   // public — resend OTP
 router.post('/signin', signin);
@@ -36,8 +38,8 @@ router.delete('/users/:userId', adminMiddleware, deleteUser);
 // Registration key routes
 router.post('/users/registration-key', adminMiddleware, createOrUpdateKey);
 router.get('/users/registration-key', adminMiddleware, getKeyInfo);
+router.post('/users/send-registration-key', adminMiddleware, sendRegistrationKeyByEmail);
 router.get('/invite-key', getKeyForInvite);   // public — gated by valid invite token
-router.get('/signup-key', getKeyForSignup);   // public — gated by valid unverified userId
 
 // User invite routes
 router.post('/invite-user', adminMiddleware, sendUserInvite);

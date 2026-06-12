@@ -4,6 +4,7 @@ import { Product } from '../../_models/product';
 import { CartService } from '../../services/cart.service';
 import { LanguageService } from '../../services/language.service';
 import { Subscription } from 'rxjs';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-shop',
@@ -23,6 +24,19 @@ export class ShopComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
+
+    // Show success alert if redirected here after a completed order
+    if (window.history.state?.orderSuccess) {
+      history.replaceState({}, ''); // clear so refresh doesn't re-show
+      Swal.fire({
+        icon: 'success',
+        title: this.langService.t('shop.orderSuccessTitle'),
+        text:  this.langService.t('shop.orderSuccessMsg'),
+        confirmButtonColor: '#009d63',
+        confirmButtonText: this.langService.t('shop.orderSuccessBtn'),
+      });
+    }
+
     this.productService.getAllProducts().subscribe({
       next: (data) => {
         this.products = data.map(p => ({ ...p, stockWarning: false }));

@@ -77,11 +77,17 @@ h2 {
 }
 
 .otp-field input {
-  font-size: 1.4rem;
   letter-spacing: 0.3em;
   text-align: center;
   font-weight: 600;
   color: #1565c0;
+
+  &::placeholder {
+    font-size: 0.85rem;
+    letter-spacing: normal;
+    font-weight: 400;
+    color: #aaa;
+  }
 }
 
 .otp-hint {
@@ -158,4 +164,42 @@ button[type="submit"] {
 .loading-text {
   color: #888;
   font-size: 0.95rem;
+}
+
+.key-field {
+  .key-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input {
+      flex: 1;
+      padding-right: 2.2rem;
+
+      &.error   { border-color: #f44336; }
+      &.success { border-color: #4caf50; }
+    }
+  }
+
+  .key-status-icon {
+    position: absolute;
+    right: 0.6rem;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    pointer-events: none;
+
+    &.valid   { color: #4caf50; }
+    &.invalid { color: #f44336; }
+    &.spinning {
+      color: #888;
+      animation: spin 0.9s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }

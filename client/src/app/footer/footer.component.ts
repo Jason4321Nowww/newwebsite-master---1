@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { filter } from 'rxjs';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-footer',
@@ -10,12 +10,11 @@ import { filter } from 'rxjs';
 export class FooterComponent {
   webseitenTitel: string = 'Büezer und KMU Partei (BKP)';
   currentYear: number = new Date().getFullYear();
-  constructor(private router: Router) {
-  }
+
+  constructor(private router: Router, public langService: LanguageService) {}
+
   scrollTo(fragment: string) {
-    // Navigate to home first if not on home page
     this.router.navigate(['/'], { fragment }).then(() => {
-      // Wait a tick to ensure Angular renders the DOM
       setTimeout(() => {
         const element = document.getElementById(fragment);
         if (element) {
@@ -24,11 +23,4 @@ export class FooterComponent {
       }, 50);
     });
   }
-
-
-
-
 }
-
-
-

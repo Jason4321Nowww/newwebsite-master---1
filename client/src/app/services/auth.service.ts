@@ -46,6 +46,10 @@ export class AuthService {
     return this.http.post<{ message: string; userId: string }>(`${this.baseUrl}/signup`, data);
   }
 
+  validateRegistrationKey(key: string): Observable<{ valid: boolean }> {
+    return this.http.post<{ valid: boolean }>(`${this.baseUrl}/validate-registration-key`, { registrationKey: key });
+  }
+
   verifyEmailOtp(userId: string, otp: string, registrationKey = ''): Observable<{ message: string }> {
     return this.http.post<{ message: string }>(`${this.baseUrl}/verify-email-otp`, { userId, otp, registrationKey });
   }
@@ -82,6 +86,12 @@ isLoggedIn(): boolean {
 
 private clearSession(): void {
   ['token', 'tokenExpiry', 'username', 'id', 'roleLevel', 'userLocation'].forEach(k => localStorage.removeItem(k));
+  this._userName.next(null);
+}
+
+clearAllSessions(): void {
+  ['token', 'tokenExpiry', 'username', 'id', 'roleLevel', 'userLocation', 'adminToken'].forEach(k => localStorage.removeItem(k));
+  sessionStorage.clear();
   this._userName.next(null);
 }
 

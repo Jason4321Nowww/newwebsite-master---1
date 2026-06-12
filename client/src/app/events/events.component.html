@@ -9,11 +9,11 @@
 
   <app-calendar [events]="events"></app-calendar>
 
-  <div *ngFor="let event of events" class="event-card scroll-reveal" [class.expanded]="isExpanded(event.id)">
+  <div *ngFor="let event of events" class="event-card" [class.expanded]="isExpanded(event.id)">
 
     <!-- Date Badge -->
     <div class="date-badge">
-      {{ event.eventDate | date: 'd. MMMM yyyy' }}
+      {{ event.eventDate | date: 'dd-MM-yyyy' }}
     </div>
 
     <!-- Card Body -->
@@ -34,7 +34,7 @@
           <span *ngIf="event.isMandatory" class="badge-mandatory">{{ langService.t('events.mandatory') }}</span>
           <mat-icon *ngIf="event.repeat && event.repeat !== 'none'"
                     class="repeat-icon"
-                    [title]="event.repeatEndDate ? 'Repeats until ' + (event.repeatEndDate | date: 'dd-MM-yyyy') : 'Repeating event'">autorenew</mat-icon>
+                    [title]="event.repeatEndDate ? langService.t('events.repeatsUntil') + ' ' + (event.repeatEndDate | date: 'dd.MM.yyyy') : langService.t('events.repeatingEvent')">autorenew</mat-icon>
         </div>
 
         <!-- Description -->

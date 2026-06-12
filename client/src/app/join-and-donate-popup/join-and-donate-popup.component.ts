@@ -1,5 +1,6 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-join-and-donate-popup',
@@ -8,10 +9,10 @@ import { Router } from '@angular/router';
 })
 export class JoinAndDonatePopupComponent {
   popup: Boolean = true;
-  
+
   @ViewChild('popupRef') popupRef!: ElementRef;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, public langService: LanguageService) {}
 
   closePopup(): void {
     this.popup = false;

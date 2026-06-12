@@ -7,18 +7,22 @@
     >
       <ng-container *ngIf="item.type === 'video'; else imageTemplate">
         <video
+          #videoEl
           class="media"
           autoplay
-           [muted]="true"
+          muted
+          loop
           playsinline
+          preload="auto"
           [src]="item.src"
-          (loadedmetadata)="setVideoDuration($event)"
         ></video>
       </ng-container>
-      <ng-template #imageTemplate id="image-template">
+      <ng-template #imageTemplate>
         <div class="image-wrapper">
-          <img class="media" [src]="item.src" />
-          <div class="caption"><span>{{ item.caption }}</span></div>
+          <img class="media" [src]="item.src" alt="" />
+          <div class="caption" *ngIf="item.captionKey">
+            <span>{{ langService.t(item.captionKey) }}</span>
+          </div>
         </div>
       </ng-template>
     </div>

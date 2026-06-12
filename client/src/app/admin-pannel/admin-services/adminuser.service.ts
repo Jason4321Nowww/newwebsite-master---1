@@ -57,12 +57,16 @@ getAllUsers(): Observable<any[]> {
     });
   }
 
+  sendRegistrationKeyByEmail(email: string, lang: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/send-registration-key`, { email, lang }, this.adminHeaders());
+  }
+
   private adminHeaders() {
     return { headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` } };
   }
 
-  sendInvite(email: string, roleLevel: number, userLocation?: any): Observable<any> {
-    return this.http.post(`${this.adminApi}/invite`, { email, roleLevel, userLocation }, this.adminHeaders());
+  sendInvite(email: string, roleLevel: number, userLocation?: any, lang: string = 'de'): Observable<any> {
+    return this.http.post(`${this.adminApi}/invite`, { email, roleLevel, userLocation, lang }, this.adminHeaders());
   }
 
   getInvites(): Observable<any[]> {
@@ -89,8 +93,8 @@ getAllUsers(): Observable<any[]> {
   // ── User invite (sends invite to regular users) ──
   private authApi = '/api/auth';
 
-  sendUserInvite(email: string, roleLevel: number, userLocation: any): Observable<any> {
-    return this.http.post(`${this.authApi}/invite-user`, { email, roleLevel, userLocation }, this.adminHeaders());
+  sendUserInvite(email: string, roleLevel: number, userLocation: any, lang: string = 'de'): Observable<any> {
+    return this.http.post(`${this.authApi}/invite-user`, { email, roleLevel, userLocation, lang }, this.adminHeaders());
   }
 
   getUserInvites(): Observable<any[]> {

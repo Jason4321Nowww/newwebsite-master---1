@@ -1,3 +1,4 @@
+import { LightgalleryModule } from 'lightgallery/angular';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
@@ -43,6 +44,7 @@ import { SpecialMemberPageComponent } from './special-member-page/special-member
 import { AcceptUserInviteComponent } from './accept-user-invite/accept-user-invite.component';
 import { VerifyEmailComponent } from './auth-components/verify-email/verify-email.component';
 import { BankPaymentComponent } from './shop-components/bank-payment/bank-payment.component';
+import { FeaturedProductsComponent } from './shop-components/featured-products/featured-products.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -75,6 +77,7 @@ import { BankPaymentComponent } from './shop-components/bank-payment/bank-paymen
     AcceptUserInviteComponent,
     VerifyEmailComponent,
     BankPaymentComponent,
+    FeaturedProductsComponent,
   ],
   imports: [
     //only modules
@@ -92,6 +95,7 @@ import { BankPaymentComponent } from './shop-components/bank-payment/bank-paymen
     ReactiveFormsModule,
     MatTooltipModule,
     MatSnackBarModule,
+    LightgalleryModule,
 ],
   providers: [
     provideAnimationsAsync(),

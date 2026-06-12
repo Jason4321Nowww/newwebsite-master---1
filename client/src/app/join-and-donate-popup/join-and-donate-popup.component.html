@@ -1,21 +1,19 @@
-<!-- <div id="join-and-donate-popup"> -->
 <div class="container" id="popup" #popupRef [ngClass]="popup ? '' : 'hide'">
   <div class="close" title="schliessen">
     <img src="assets/CloseIcon.svg" (click)="closePopup()" />
   </div>
 
   <div class="head">
-    <h4>Ist dir vernünftige Politik wichtig? Uns auch!</h4>
-    <p>In diesem kapitalisischen System kostet jedoch alles. Wir sind auf Geld und Mitglieder angewiesen, um unsere Positionen schweizweit zu vertreten.</p>
-    <p>Könen wir auf deine Unterstützung zählen?</p>
+    <h4>{{ langService.t('popup.heading') }}</h4>
+    <p>{{ langService.t('popup.body1') }}</p>
+    <p>{{ langService.t('popup.body2') }}</p>
   </div>
   <div class="selection">
-    <!-- <button value="false" class="" onclick="window.location.href='#kontakt-anchor';">Aktiv werden</button> -->
-   <button value="false" class="" onclick="window.location.href='https://bkps.ch/HTML/mitgliedschaft/formular.php'">
-  Aktiv werden
-</button>
-    <button value="true" class="" onclick="window.location.href='https://bkps.ch/HTML/spenderschaft/formular.php'">Jetzt Spenden</button>
-
-    <!-- <button value="true" class="" (click)="openDonationWindow()">Jetzt Spenden</button> -->
+    <button value="false" class="" onclick="window.location.href='https://bkps.ch/HTML/mitgliedschaft/formular.php'">
+      {{ langService.t('popup.joinBtn') }}
+    </button>
+    <button value="true" class="" onclick="window.location.href='https://bkps.ch/HTML/spenderschaft/formular.php'">
+      {{ langService.t('popup.donateBtn') }}
+    </button>
   </div>
 </div>

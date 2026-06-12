@@ -1,32 +1,35 @@
 <div class="container">
   <form [formGroup]="signinForm" (ngSubmit)="signin()">
-    <h2 class="form-title">Welcome Back</h2>
+    <h2 class="form-title">{{ langService.t('signin.welcomeBack') }}</h2>
 
     <!-- Username Field -->
     <div class="input-group" [ngClass]="{ 'error': signinForm.get('username')?.invalid && signinForm.get('username')?.touched }">
       <mat-icon>person</mat-icon>
-      <input formControlName="username" placeholder="Username" />
+      <input formControlName="username" [placeholder]="langService.t('signin.usernamePlaceholder')" />
     </div>
     <div class="error-msg" *ngIf="signinForm.get('username')?.invalid && signinForm.get('username')?.touched">
-      Username is required.
+      {{ langService.t('signin.usernameRequired') }}
     </div>
 
     <!-- Password Field -->
     <div class="input-group" [ngClass]="{ 'error': signinForm.get('password')?.invalid && signinForm.get('password')?.touched }">
       <mat-icon>lock</mat-icon>
-      <input formControlName="password" type="password" placeholder="Password" />
+      <input formControlName="password" type="password" [placeholder]="langService.t('signin.passwordPlaceholder')" />
     </div>
     <div class="error-msg" *ngIf="signinForm.get('password')?.invalid && signinForm.get('password')?.touched">
-      Password is required.
+      {{ langService.t('signin.passwordRequired') }}
     </div>
 
+    <!-- Server error -->
+    <div class="error-msg" *ngIf="serverError" style="margin-bottom:0.5rem;">{{ serverError }}</div>
+
     <!-- Submit Button -->
-    <button type="submit" [disabled]="signinForm.invalid">Login</button>
+    <button type="submit" [disabled]="signinForm.invalid">{{ langService.t('signin.loginBtn') }}</button>
 
     <!-- Register Link -->
     <p class="register-link">
-      Don't have an account?
-      <a routerLink="/signup">Register</a>
+      {{ langService.t('signin.noAccount') }}
+      <a routerLink="/signup">{{ langService.t('signin.register') }}</a>
     </p>
   </form>
 </div>

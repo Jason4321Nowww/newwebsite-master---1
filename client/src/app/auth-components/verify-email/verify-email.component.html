@@ -6,43 +6,40 @@
     <!-- ── Missing userId ─────────────────────────────────── -->
     <ng-container *ngIf="!userId">
       <mat-icon class="status-icon error">error_outline</mat-icon>
-      <h2>Invalid Link</h2>
-      <p class="status-msg">No user ID found. Please <a routerLink="/signup">sign up again</a>.</p>
+      <h2>{{ langService.t('verify.invalidLink') }}</h2>
+      <p class="status-msg">
+        {{ langService.t('verify.invalidLinkMsg') }}
+        <a routerLink="/signup">{{ langService.t('signup.register') }}</a>.
+      </p>
     </ng-container>
 
     <!-- ── Verified ───────────────────────────────────────── -->
     <ng-container *ngIf="verified">
       <mat-icon class="status-icon success">check_circle_outline</mat-icon>
-      <h2>Email Verified!</h2>
+      <h2>{{ langService.t('verify.successTitle') }}</h2>
       <div class="approval-banner">
         <mat-icon>hourglass_top</mat-icon>
-        <p>
-          Your email has been confirmed. Your account is now pending admin approval.<br/>
-          You will be able to sign in once an administrator activates your account.
-        </p>
+        <p>{{ langService.t('verify.successMsg') }}</p>
       </div>
-      <button class="btn-home" (click)="goHome()">Go to Home Page</button>
+      <button class="btn-home" (click)="goHome()">{{ langService.t('verify.goHome') }}</button>
     </ng-container>
 
     <!-- ── OTP Form ───────────────────────────────────────── -->
     <ng-container *ngIf="userId && !verified">
       <mat-icon class="status-icon info">mark_email_unread</mat-icon>
-      <h2>Verify your email</h2>
-      <p class="hint">
-        We sent a 6-digit code to your email address.<br/>
-        Enter it below to verify your account.
-      </p>
+      <h2>{{ langService.t('verify.title') }}</h2>
+      <p class="hint">{{ langService.t('verify.hint') }}</p>
 
       <!-- Expired OTP banner -->
       <div class="expired-banner" *ngIf="expiredOtp">
         <mat-icon>schedule</mat-icon>
-        <span>Your code has expired. Click <strong>Resend code</strong> to get a new one.</span>
+        <span>{{ langService.t('verify.expired') }}</span>
       </div>
 
       <!-- OTP input -->
       <div class="field-group">
         <label class="field-label">
-          <mat-icon>pin</mat-icon> One-Time Code
+          <mat-icon>pin</mat-icon> {{ langService.t('verify.otpLabel') }}
         </label>
         <div class="otp-row">
           <input
@@ -56,7 +53,7 @@
             (keyup.enter)="verify()"
           />
           <button class="btn-verify" (click)="verify()" [disabled]="!canSubmit">
-            {{ submitting ? 'Verifying…' : 'Verify' }}
+            {{ submitting ? langService.t('verify.verifying') : langService.t('verify.verifyBtn') }}
           </button>
         </div>
       </div>
@@ -65,10 +62,12 @@
 
       <!-- Resend -->
       <div class="resend-row">
-        <span>Didn't receive the code?</span>
+        <span>{{ langService.t('verify.noCode') }}</span>
         <button class="btn-resend" (click)="resend()"
                 [disabled]="resending || resendCooldown > 0">
-          {{ resendCooldown > 0 ? 'Resend in ' + resendCooldown + 's' : (resending ? 'Sending…' : 'Resend code') }}
+          {{ resendCooldown > 0
+              ? langService.t('verify.resendIn') + ' ' + resendCooldown + 's'
+              : (resending ? langService.t('verify.sending') : langService.t('verify.resend')) }}
         </button>
       </div>
       <p class="resend-msg" *ngIf="resendMessage">{{ resendMessage }}</p>

@@ -7,6 +7,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, Output } from
 })
 export class AdminLangPickerComponent {
   @Input() activeLang: string = 'de';
+  @Input() showLabel: boolean = true;
   @Output() langChange = new EventEmitter<string>();
 
   isOpen = false;

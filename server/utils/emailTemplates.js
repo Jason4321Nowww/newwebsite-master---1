@@ -7,20 +7,34 @@ const logoBlock = `
     </div>
   </div>`;
 
-const footer = `
-  <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#aaa;font-size:0.78rem;font-family:sans-serif;">
-    Bundesverband Kulturelle Partnerschaft · <a href="${CLIENT_URL}" style="color:#009d63;text-decoration:none;">bkp.ch</a><br/>
-    Bitte nicht auf diese E-Mail antworten.
-  </div>`;
+const footerI18n = {
+  de: 'Bitte nicht auf diese E-Mail antworten.',
+  fr: 'Merci de ne pas répondre à cet e-mail.',
+  it: 'Si prega di non rispondere a questa e-mail.',
+  en: 'Please do not reply to this email.',
+};
 
-const wrap = (content) => `
+const footerOrgI18n = {
+  de: 'Büezer und KMU Partei (BKP)',
+  fr: 'Parti des Travailleurs et des PME (BKP)',
+  it: 'Partito dei Lavoratori e delle PMI (BKP)',
+  en: 'Workers and SME Party (BKP)',
+};
+
+const wrap = (content, lang = 'de') => {
+  const noReply = footerI18n[lang] || footerI18n.de;
+  return `
   <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:0;border:1px solid #e0e0e0;border-radius:12px;overflow:hidden;">
     ${logoBlock}
     <div style="padding:0 2rem 2rem;">
       ${content}
-      ${footer}
+      <div style="margin-top:32px;padding-top:16px;border-top:1px solid #e0e0e0;text-align:center;color:#aaa;font-size:0.78rem;font-family:sans-serif;">
+        ${footerOrgI18n[lang] || footerOrgI18n.de} · <a href="${CLIENT_URL}" style="color:#009d63;text-decoration:none;">bkp.ch</a><br/>
+        ${noReply}
+      </div>
     </div>
   </div>`;
+};
 
 // ── Auth email translations ──────────────────────────────────────────────────
 const authI18n = {
@@ -111,7 +125,7 @@ const otpEmail = (otp, expiryMinutes, lang = 'de') => {
       <div style="font-size:2.2rem;font-weight:700;letter-spacing:0.3em;color:#1565c0;background:#e3f2fd;padding:16px 28px;border-radius:8px;display:inline-block;margin:12px 0;">
         ${otp}
       </div>
-      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.otp_ignore}</p>`),
+      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.otp_ignore}</p>`, lang),
   };
 };
 
@@ -130,54 +144,195 @@ const welcomeEmail = (username, lang = 'de') => {
           ${t.welcome_btn}
         </a>
       </div>
-      <p style="color:#888;font-size:0.82rem;">${t.welcome_ignore}</p>`),
+      <p style="color:#888;font-size:0.82rem;">${t.welcome_ignore}</p>`, lang),
   };
 };
 
+// ── Invite email translations ────────────────────────────────────────────────
+const inviteI18n = {
+  de: {
+    admin_subject:    'Einladung zur BKP-Administrationskonsole',
+    admin_title:      'Admin-Einladung',
+    admin_body:       (role) => `Sie wurden eingeladen, der <strong>BKP-Administrationskonsole</strong> als <strong>${role}</strong> beizutreten.`,
+    admin_expire:     (h) => `Klicken Sie auf die Schaltfläche unten, um die Einladung anzunehmen. Der Link läuft in <strong>${h} Stunden</strong> ab.`,
+    admin_btn:        'Einladung annehmen',
+    admin_ignore:     'Falls Sie diese Einladung nicht erwartet haben, können Sie diese E-Mail ignorieren.',
+    user_subject:     'Einladung zur BKP-Mitgliedschaft',
+    user_title:       'BKP-Mitgliedschaftseinladung',
+    user_body:        (role) => `Sie wurden eingeladen, <strong>BKP</strong> als <strong>${role}</strong> beizutreten.`,
+    user_otp_label:   'Ihr Einmalcode (OTP) für die Registrierung:',
+    user_key_label:   'Ihr Registrierungsschlüssel:',
+    user_expire:      (h) => `Klicken Sie auf die Schaltfläche unten, um Ihre Registrierung abzuschließen.<br/>Der Link läuft in <strong>${h} Stunden</strong> ab.`,
+    user_btn:         'Registrierung abschließen',
+    user_ignore:      'Falls Sie diese Einladung nicht erwartet haben, können Sie diese E-Mail ignorieren.',
+    key_label:        'Registrierungsschlüssel',
+    key_note:         'Bewahren Sie diesen Schlüssel sicher auf. Er wird während der Registrierung benötigt.',
+  },
+  fr: {
+    admin_subject:    'Invitation à rejoindre l\'administration BKP',
+    admin_title:      'Invitation administrateur',
+    admin_body:       (role) => `Vous avez été invité à rejoindre le <strong>panneau d\'administration BKP</strong> en tant que <strong>${role}</strong>.`,
+    admin_expire:     (h) => `Cliquez sur le bouton ci-dessous pour accepter. Le lien expire dans <strong>${h} heures</strong>.`,
+    admin_btn:        'Accepter l\'invitation',
+    admin_ignore:     'Si vous n\'attendiez pas cette invitation, vous pouvez ignorer cet e-mail.',
+    user_subject:     'Invitation à rejoindre BKP',
+    user_title:       'Invitation à l\'adhésion BKP',
+    user_body:        (role) => `Vous avez été invité à rejoindre <strong>BKP</strong> en tant que <strong>${role}</strong>.`,
+    user_otp_label:   'Votre code unique (OTP) pour l\'inscription :',
+    user_key_label:   'Votre clé d\'inscription :',
+    user_expire:      (h) => `Cliquez sur le bouton ci-dessous pour finaliser votre inscription.<br/>Le lien expire dans <strong>${h} heures</strong>.`,
+    user_btn:         'Finaliser l\'inscription',
+    user_ignore:      'Si vous n\'attendiez pas cette invitation, vous pouvez ignorer cet e-mail.',
+    key_label:        'Clé d\'inscription',
+    key_note:         'Conservez cette clé en lieu sûr. Elle sera nécessaire lors de l\'inscription.',
+  },
+  it: {
+    admin_subject:    'Invito al pannello di amministrazione BKP',
+    admin_title:      'Invito amministratore',
+    admin_body:       (role) => `Sei stato invitato a unirti al <strong>pannello di amministrazione BKP</strong> come <strong>${role}</strong>.`,
+    admin_expire:     (h) => `Clicca il pulsante qui sotto per accettare. Il link scade tra <strong>${h} ore</strong>.`,
+    admin_btn:        'Accetta l\'invito',
+    admin_ignore:     'Se non ti aspettavi questo invito, puoi ignorare questa e-mail.',
+    user_subject:     'Invito all\'adesione BKP',
+    user_title:       'Invito all\'adesione BKP',
+    user_body:        (role) => `Sei stato invitato a unirti a <strong>BKP</strong> come <strong>${role}</strong>.`,
+    user_otp_label:   'Il tuo codice unico (OTP) per la registrazione:',
+    user_key_label:   'La tua chiave di registrazione:',
+    user_expire:      (h) => `Clicca il pulsante qui sotto per completare la registrazione.<br/>Il link scade tra <strong>${h} ore</strong>.`,
+    user_btn:         'Completa la registrazione',
+    user_ignore:      'Se non ti aspettavi questo invito, puoi ignorare questa e-mail.',
+    key_label:        'Chiave di registrazione',
+    key_note:         'Conserva questa chiave al sicuro. Sarà necessaria durante la registrazione.',
+  },
+  en: {
+    admin_subject:    'Invitation to join the BKP Admin Panel',
+    admin_title:      'Admin Invitation',
+    admin_body:       (role) => `You have been invited to join the <strong>BKP Admin Panel</strong> as <strong>${role}</strong>.`,
+    admin_expire:     (h) => `Click the button below to accept. The link expires in <strong>${h} hours</strong>.`,
+    admin_btn:        'Accept Invitation',
+    admin_ignore:     'If you did not expect this invitation, you can safely ignore this email.',
+    user_subject:     'Invitation to join BKP',
+    user_title:       'BKP Membership Invitation',
+    user_body:        (role) => `You have been invited to join <strong>BKP</strong> as <strong>${role}</strong>.`,
+    user_otp_label:   'Your one-time code (OTP) for registration:',
+    user_key_label:   'Your registration key:',
+    user_expire:      (h) => `Click the button below to complete your registration.<br/>The link expires in <strong>${h} hours</strong>.`,
+    user_btn:         'Complete Registration',
+    user_ignore:      'If you did not expect this invitation, you can safely ignore this email.',
+    key_label:        'Registration Key',
+    key_note:         'Keep this key safe. You will need it during registration.',
+  },
+};
+
+const getI = (lang) => inviteI18n[lang] || inviteI18n.de;
+
+const regKeyBlock = (key, label, note) => `
+  <div style="background:#f0faf5;border-left:4px solid #009d63;padding:16px 20px;border-radius:0 8px 8px 0;margin:16px 0;">
+    <p style="margin:0 0 6px;color:#555;font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;">${label}</p>
+    <p style="margin:0 0 8px;font-size:1.4rem;font-weight:700;font-family:monospace;color:#009d63;letter-spacing:.12em;">${key}</p>
+    <p style="margin:0;color:#888;font-size:0.8rem;">${note}</p>
+  </div>`;
+
 // ── Admin invite email ───────────────────────────────────────────────────────
-const adminInviteEmail = (roleName, inviteUrl, expiryHours) => ({
-  subject: 'Invitation to join the BKP Admin Panel',
-  html: wrap(`
-    <h2 style="color:#009d63;margin:0 0 0.5rem;">Admin Invitation</h2>
-    <p style="color:#444;">
-      You have been invited to join the <strong>BKP Admin Panel</strong> as <strong>${roleName}</strong>.
-    </p>
-    <p style="color:#444;">Click the button below to accept. The link expires in <strong>${expiryHours} hours</strong>.</p>
-    <div style="text-align:center;margin:24px 0;">
-      <a href="${inviteUrl}"
-         style="display:inline-block;padding:12px 28px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">
-        Accept Invitation
-      </a>
-    </div>
-    <p style="color:#888;font-size:0.82rem;margin-top:20px;">
-      If you did not expect this, you can safely ignore this email.
-    </p>`),
-});
+const adminInviteEmail = (roleName, inviteUrl, expiryHours, lang = 'de', registrationKey = null) => {
+  const t = getI(lang);
+  return {
+    subject: t.admin_subject,
+    html: wrap(`
+      <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.admin_title}</h2>
+      <p style="color:#444;">${t.admin_body(roleName)}</p>
+      <p style="color:#444;">${t.admin_expire(expiryHours)}</p>
+      ${registrationKey ? regKeyBlock(registrationKey, t.key_label, t.key_note) : ''}
+      <div style="text-align:center;margin:24px 0;">
+        <a href="${inviteUrl}"
+           style="display:inline-block;padding:12px 28px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">
+          ${t.admin_btn}
+        </a>
+      </div>
+      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.admin_ignore}</p>`, lang),
+  };
+};
 
 // ── User invite email ────────────────────────────────────────────────────────
-const userInviteEmail = (roleName, otp, inviteUrl, expiryHours) => ({
-  subject: 'Invitation to join BKP',
-  html: wrap(`
-    <h2 style="color:#009d63;margin:0 0 0.5rem;">BKP Membership Invitation</h2>
-    <p style="color:#444;">
-      You have been invited to join <strong>BKP</strong> as <strong>${roleName}</strong>.
-    </p>
-    <p style="color:#444;">Use this one-time code when you register:</p>
-    <div style="font-size:2rem;font-weight:700;letter-spacing:0.25em;color:#1565c0;background:#e3f2fd;padding:14px 28px;border-radius:8px;display:inline-block;margin:10px 0;">
-      ${otp}
-    </div>
-    <p style="color:#444;">Click the button below to complete your registration.<br/>
-       The link expires in <strong>${expiryHours} hours</strong>.</p>
-    <div style="text-align:center;margin:24px 0;">
-      <a href="${inviteUrl}"
-         style="display:inline-block;padding:12px 28px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">
-        Complete Registration
-      </a>
-    </div>
-    <p style="color:#888;font-size:0.82rem;margin-top:20px;">
-      If you did not expect this invitation, you can safely ignore this email.
-    </p>`),
-});
+const userInviteEmail = (roleName, otp, inviteUrl, expiryHours, lang = 'de', registrationKey = null) => {
+  const t = getI(lang);
+  return {
+    subject: t.user_subject,
+    html: wrap(`
+      <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.user_title}</h2>
+      <p style="color:#444;">${t.user_body(roleName)}</p>
+      <p style="color:#444;">${t.user_otp_label}</p>
+      <div style="font-size:2rem;font-weight:700;letter-spacing:0.25em;color:#1565c0;background:#e3f2fd;padding:14px 28px;border-radius:8px;display:inline-block;margin:10px 0;">
+        ${otp}
+      </div>
+      ${registrationKey ? regKeyBlock(registrationKey, t.key_label, t.key_note) : ''}
+      <p style="color:#444;">${t.user_expire(expiryHours)}</p>
+      <div style="text-align:center;margin:24px 0;">
+        <a href="${inviteUrl}"
+           style="display:inline-block;padding:12px 28px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;">
+          ${t.user_btn}
+        </a>
+      </div>
+      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.user_ignore}</p>`, lang),
+  };
+};
+
+// ── Registration key email ───────────────────────────────────────────────────
+const regKeyI18n = {
+  de: {
+    subject:  'BKP — Ihr Registrierungsschlüssel',
+    title:    'BKP Registrierungsschlüssel',
+    body:     'Sie wurden eingeladen, sich auf der BKP-Website zu registrieren. Verwenden Sie den folgenden Schlüssel beim Erstellen Ihres Kontos.',
+    label:    'Registrierungsschlüssel',
+    btn:      'Jetzt registrieren',
+    footer:   'Bewahren Sie diesen Schlüssel sicher auf und teilen Sie ihn nicht mit anderen.',
+  },
+  fr: {
+    subject:  'BKP — Votre clé d\'inscription',
+    title:    'Clé d\'inscription BKP',
+    body:     'Vous avez été invité à vous inscrire sur le site BKP. Utilisez la clé ci-dessous lors de la création de votre compte.',
+    label:    'Clé d\'inscription',
+    btn:      'S\'inscrire maintenant',
+    footer:   'Conservez cette clé en lieu sûr et ne la partagez pas avec d\'autres personnes.',
+  },
+  it: {
+    subject:  'BKP — La tua chiave di registrazione',
+    title:    'Chiave di registrazione BKP',
+    body:     'Sei stato invitato a registrarti sul sito BKP. Usa la chiave seguente durante la creazione del tuo account.',
+    label:    'Chiave di registrazione',
+    btn:      'Registrati ora',
+    footer:   'Conserva questa chiave in un luogo sicuro e non condividerla con altri.',
+  },
+  en: {
+    subject:  'BKP — Your Registration Key',
+    title:    'BKP Registration Key',
+    body:     'You have been invited to register on the BKP website. Use the key below when creating your account.',
+    label:    'Registration Key',
+    btn:      'Register Now',
+    footer:   'Keep this key safe and do not share it with others.',
+  },
+};
+
+const registrationKeyEmail = (key, lang = 'de') => {
+  const t = regKeyI18n[lang] || regKeyI18n.de;
+  return {
+    subject: t.subject,
+    html: wrap(`
+      <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.title}</h2>
+      <p style="color:#444;">${t.body}</p>
+      <div style="background:#f0faf5;border-left:4px solid #009d63;padding:16px 20px;border-radius:0 8px 8px 0;margin:20px 0;">
+        <p style="margin:0 0 6px;color:#555;font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;">${t.label}</p>
+        <p style="margin:0;font-size:1.4rem;font-weight:700;font-family:monospace;color:#009d63;letter-spacing:.12em;">${key}</p>
+      </div>
+      <div style="text-align:center;margin:24px 0;">
+        <a href="${CLIENT_URL}/signup?lang=${lang}"
+           style="display:inline-block;padding:12px 32px;background:#009d63;color:#fff;text-decoration:none;border-radius:6px;font-weight:600;font-size:1rem;">
+          ${t.btn}
+        </a>
+      </div>
+      <p style="color:#888;font-size:0.82rem;">${t.footer}</p>`, lang),
+  };
+};
 
 // ── Account activated email ──────────────────────────────────────────────────
 const accountActivatedEmail = (name, signinUrl, lang = 'de') => {
@@ -194,7 +349,7 @@ const accountActivatedEmail = (name, signinUrl, lang = 'de') => {
           ${t.activated_btn}
         </a>
       </div>
-      <p style="color:#888;font-size:0.82rem;">${t.activated_footer}</p>`),
+      <p style="color:#888;font-size:0.82rem;">${t.activated_footer}</p>`, lang),
   };
 };
 
@@ -347,7 +502,7 @@ const orderConfirmationEmail = (customerName, invoiceNumber, paymentNumber, item
         <p style="margin:2px 0;"><strong>${t.bank_amount}:</strong> <strong>CHF ${total.toFixed(2)}</strong></p>
       </div>
 
-      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.confirmed_note}</p>`),
+      <p style="color:#888;font-size:0.82rem;margin-top:20px;">${t.confirmed_note}</p>`, lang),
   };
 };
 
@@ -359,7 +514,7 @@ const orderShippedEmail = (customerName, invoiceNumber, lang = 'de') => {
     html: wrap(`
       <h2 style="color:#009d63;margin:0 0 0.5rem;">${t.shipped_title}</h2>
       <p style="color:#444;">${t.shipped_body(customerName, invoiceNumber)}</p>
-      <p style="color:#444;">${t.shipped_thanks}</p>`),
+      <p style="color:#444;">${t.shipped_thanks}</p>`, lang),
   };
 };
 
@@ -370,11 +525,12 @@ const orderCancelledEmail = (customerName, invoiceNumber, lang = 'de') => {
     subject: t.cancelled_subject(invoiceNumber),
     html: wrap(`
       <h2 style="color:#c0392b;margin:0 0 0.5rem;">${t.cancelled_title}</h2>
-      <p style="color:#444;">${t.cancelled_body(customerName, invoiceNumber)}</p>`),
+      <p style="color:#444;">${t.cancelled_body(customerName, invoiceNumber)}</p>`, lang),
   };
 };
 
 module.exports = {
   otpEmail, welcomeEmail, adminInviteEmail, userInviteEmail,
-  accountActivatedEmail, orderConfirmationEmail, orderShippedEmail, orderCancelledEmail,
+  accountActivatedEmail, registrationKeyEmail,
+  orderConfirmationEmail, orderShippedEmail, orderCancelledEmail,
 };

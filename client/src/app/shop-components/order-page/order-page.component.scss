@@ -77,6 +77,12 @@
     flex-direction: column;
     gap: 1rem;
 
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
     input {
       padding: 0.75rem 1rem;
       border: 2px solid var(--input-border);
@@ -91,10 +97,21 @@
         opacity: 0.7;
       }
 
-      &:focus {
-        border-color: var(--input-focus-border);
-        outline: none;
-      }
+      &:focus { border-color: var(--input-focus-border); outline: none; }
+      &.invalid { border-color: #e74c3c !important; }
+    }
+
+    .error-msg {
+      color: #e74c3c;
+      font-size: 0.78rem;
+      margin: 3px 0 4px;
+    }
+
+    .btn-disabled,
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none !important;
     }
 
     .total-display {

@@ -54,6 +54,16 @@
 /* ------------------------------
    NO EVENTS MESSAGE
 ------------------------------ */
+.state-msg {
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 2rem;
+  font-size: 1rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.error-msg { color: #e74c3c; }
+
 .no-events {
   color: var(--text-secondary);
   text-align: center;

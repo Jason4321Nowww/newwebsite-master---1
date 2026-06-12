@@ -1,26 +1,66 @@
-<div  id="kontakt-anchor"></div>
-<br />
+<div id="kontakt-anchor"></div>
 <div class="contact">
-  <form class="contact-form scroll-reveal-scale" (ngSubmit)="onSubmit()">
+  <form class="contact-form scroll-reveal-scale" #contactForm="ngForm" (ngSubmit)="onSubmit()">
     <h3>{{ langService.t('contact.title') }}</h3>
 
+    <!-- Name -->
     <div class="form-ele">
-      <input type="text" id="name" [placeholder]="langService.t('contact.namePlaceholder')" [(ngModel)]="name" name="name" required />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        [placeholder]="langService.t('contact.namePlaceholder')"
+        [(ngModel)]="name"
+        #nameField="ngModel"
+        required
+        minlength="2"
+        [class.invalid]="nameField.invalid && nameField.touched"
+      />
+      <span class="error-msg" *ngIf="nameField.touched && nameField.errors?.['required']">
+        {{ langService.t('contact.nameRequired') }}
+      </span>
+      <span class="error-msg" *ngIf="nameField.touched && nameField.errors?.['minlength']">
+        {{ langService.t('contact.nameMinLength') }}
+      </span>
     </div>
 
+    <!-- Email -->
     <div class="form-ele">
-      <input type="email" id="email" [placeholder]="langService.t('contact.emailPlaceholder')" [(ngModel)]="email" name="email" required />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        [placeholder]="langService.t('contact.emailPlaceholder')"
+        [(ngModel)]="email"
+        #emailField="ngModel"
+        required
+        pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+        [class.invalid]="emailField.invalid && emailField.touched"
+      />
+      <span class="error-msg" *ngIf="emailField.touched && emailField.errors?.['required']">
+        {{ langService.t('contact.emailRequired') }}
+      </span>
+      <span class="error-msg" *ngIf="emailField.touched && emailField.errors?.['pattern']">
+        {{ langService.t('contact.emailInvalid') }}
+      </span>
     </div>
 
+    <!-- Participation -->
     <div class="form-ele">
       <label for="participation">{{ langService.t('contact.participationLabel') }}</label>
-      <select id="country" name="country" [(ngModel)]="participation" required>
+      <select id="participation" name="participation" [(ngModel)]="participation" required>
         <option value="member">{{ langService.t('contact.member') }}</option>
         <option value="donor">{{ langService.t('contact.donor') }}</option>
         <option value="simp">{{ langService.t('contact.sympathizer') }}</option>
       </select>
     </div>
 
-    <input type="submit" [value]="langService.t('contact.send')" />
+    <button
+      type="submit"
+      [disabled]="contactForm.invalid"
+      [class.btn-disabled]="contactForm.invalid"
+    >
+      {{ langService.t('contact.send') }}
+    </button>
   </form>
 </div>

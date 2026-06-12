@@ -1,30 +1,26 @@
 <footer class="scroll-reveal">
   <div class="foot">
     <div class="description">
-         <h5><a  href="#" (click)="scrollTo('home-anchor')">Home</a></h5>
+      <h5><a href="#" (click)="scrollTo('home-anchor')">{{ langService.t('nav.home') }}</a></h5>
 
-      <p>
-        Die Büezer und KMU Partei (BKP) ist eine schweizweite Partei. Ihre
-        Themen sind Arbeit, Technologie und Umwelt.
-      </p>
-      <h5><a href="#" (click)="scrollTo('werte-anchor')">Werte</a></h5>
-      <h5><a  [routerLink]="['/contact-form']" >Kontakt</a></h5>
-      <h5><a [routerLink]="['/faq']">FAQ</a></h5>
-      <h5><a [routerLink]="['/admin']">Adminpannel</a></h5>
+      <p>{{ langService.t('footer.description') }}</p>
+
+      <h5><a href="#" (click)="scrollTo('werte-anchor')">{{ langService.t('nav.values') }}</a></h5>
+      <h5><a [routerLink]="['/contact-form']">{{ langService.t('footer.contact') }}</a></h5>
+      <h5><a [routerLink]="['/faq']">{{ langService.t('footer.faq') }}</a></h5>
+      <h5><a [routerLink]="['/admin']">{{ langService.t('footer.adminPanel') }}</a></h5>
     </div>
 
     <div class="links">
-         <h5> <a [routerLink]="['/about']">Über</a> </h5>
-         <h5> <a [routerLink]="['/article-list']">Alle Artikel</a> </h5>
-      <!-- <h5><a href="#" (click)="scrollTo('impressum-anchor')" >Impressum</a></h5> -->
-      <h5><a [routerLink]="['/impressum']">Impressum</a></h5>
-       <h5><a [routerLink]="['/signup']">Register</a></h5>
-      <h5><a [routerLink]="['/signin']">Login</a></h5>
-     
+      <h5><a [routerLink]="['/about']">{{ langService.t('footer.about') }}</a></h5>
+      <h5><a [routerLink]="['/article-list']">{{ langService.t('footer.allArticles') }}</a></h5>
+      <h5><a [routerLink]="['/impressum']">{{ langService.t('footer.impressum') }}</a></h5>
+      <h5><a [routerLink]="['/signup']">{{ langService.t('footer.register') }}</a></h5>
+      <h5><a [routerLink]="['/signin']">{{ langService.t('footer.login') }}</a></h5>
     </div>
 
     <div class="social-media">
-      <h5>Folgen Sie uns</h5>
+      <h5>{{ langService.t('footer.followUs') }}</h5>
       <div class="icons">
         <a href="https://www.tiktok.com" target="_blank" rel="noopener">
           <img src="/assets/images/tiktoklogo.webp" alt="TikTok" />

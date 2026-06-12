@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CartService, CartItem } from '../../services/cart.service';
+import { LanguageService } from '../../services/language.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -12,7 +13,11 @@ export class CartDetailsComponent implements OnInit {
   cartItems: CartItem[] = [];
   total = 0;
 
-  constructor(private cartService: CartService, private router: Router) {}
+  constructor(
+    private cartService: CartService,
+    private router: Router,
+    public langService: LanguageService,
+  ) {}
 
   ngOnInit(): void {
     this.cartService.cart$.subscribe(items => {
@@ -48,10 +53,10 @@ export class CartDetailsComponent implements OnInit {
     if (this.isEmpty) {
       Swal.fire({
         icon: 'warning',
-        title: 'Cart is empty',
-        text: 'Please add at least one item to your cart before proceeding to checkout.',
+        title: this.langService.t('cart.emptyTitle'),
+        text: this.langService.t('cart.emptyWarning'),
         confirmButtonColor: '#009d63',
-        confirmButtonText: 'Go to Shop',
+        confirmButtonText: this.langService.t('cart.browse'),
       }).then(result => {
         if (result.isConfirmed) {
           this.router.navigate(['/shop']);

@@ -1,8 +1,9 @@
-const crypto      = require('crypto');
-const argon2      = require('argon2');
-const nodemailer  = require('nodemailer');
-const UserInvite  = require('../models/UserInvite');
-const User        = require('../models/User');
+const crypto          = require('crypto');
+const argon2          = require('argon2');
+const nodemailer      = require('nodemailer');
+const UserInvite      = require('../models/UserInvite');
+const User            = require('../models/User');
+const RegistrationKey = require('../models/RegistrationKey');
 const { userInviteEmail } = require('../utils/emailTemplates');
 
 const INVITE_EXPIRY_HOURS = 24;
@@ -30,7 +31,8 @@ const createTransporter = () =>
 const sendUserInvite = async (req, res) => {
   try {
     const adminRoleLevel = req.admin.roleLevel ?? 0;
-    const { email, roleLevel, userLocation } = req.body;
+    const { email, roleLevel, userLocation, lang } = req.body;
+    const validLang = ['de', 'fr', 'it', 'en'].includes(lang) ? lang : 'de';
 
     if (!email) return res.status(400).json({ error: 'Email is required.' });
 
@@ -57,6 +59,7 @@ const sendUserInvite = async (req, res) => {
       token,
       otp,
       roleLevel: rl,
+      lang: validLang,
       userLocation: {
         kantonCode: userLocation?.kantonCode || '',
         kantonName: userLocation?.kantonName || '',
@@ -68,10 +71,12 @@ const sendUserInvite = async (req, res) => {
       expiresAt,
     });
 
+    const keyDoc    = await RegistrationKey.findOne();
+    const regKey    = keyDoc?.rawKey || null;
     const clientUrl = process.env.CLIENT_URL || 'http://localhost:4200';
     const inviteUrl = `${clientUrl}/accept-user-invite?token=${token}`;
     const roleName  = ROLE_LABELS[rl] || `Role ${rl}`;
-    const tpl       = userInviteEmail(roleName, otp, inviteUrl, INVITE_EXPIRY_HOURS);
+    const tpl       = userInviteEmail(roleName, otp, inviteUrl, INVITE_EXPIRY_HOURS, validLang, regKey);
 
     await createTransporter().sendMail({ from: process.env.GMAIL_USER, to: email, ...tpl });
 
@@ -99,6 +104,7 @@ const validateUserInviteToken = async (req, res) => {
       email:     invite.email,
       roleLevel: invite.roleLevel,
       roleName:  ROLE_LABELS[invite.roleLevel] || `Role ${invite.roleLevel}`,
+      lang:      invite.lang || 'de',
     });
   } catch (err) {
     console.error('validateUserInviteToken error:', err);
@@ -108,8 +114,6 @@ const validateUserInviteToken = async (req, res) => {
 
 // ── POST /api/auth/user-invite/:token/accept ──────────────────────────────────
 // Public — user sets username + password, submits OTP. Creates User with isActive: false.
-const RegistrationKey = require('../models/RegistrationKey');
-const argon2_reg      = require('argon2');
 
 const acceptUserInvite = async (req, res) => {
   try {
@@ -125,7 +129,7 @@ const acceptUserInvite = async (req, res) => {
     // Validate registration key
     const keyDoc = await RegistrationKey.findOne();
     if (!keyDoc) return res.status(500).json({ error: 'Registration key not configured. Contact admin.' });
-    const isValidKey = await argon2_reg.verify(keyDoc.hashedKey, registrationKey);
+    const isValidKey = await argon2.verify(keyDoc.hashedKey, registrationKey);
     if (!isValidKey) return res.status(401).json({ error: 'Invalid registration key.' });
 
     const invite = await UserInvite.findOne({ token: req.params.token, status: 'pending' });
@@ -151,12 +155,14 @@ const acceptUserInvite = async (req, res) => {
     const hashedPassword = await argon2.hash(password, { type: argon2.argon2id });
 
     await User.create({
-      username:     username.trim(),
-      email:        invite.email,
-      password:     hashedPassword,
-      roleLevel:    invite.roleLevel,
-      userLocation: invite.userLocation || {},
-      isActive:     false,
+      username:      username.trim(),
+      email:         invite.email,
+      password:      hashedPassword,
+      roleLevel:     invite.roleLevel,
+      userLocation:  invite.userLocation || {},
+      lang:          invite.lang || 'de',
+      isActive:      false,
+      emailVerified: true,  // OTP was verified above — email ownership is proven
     });
 
     invite.status = 'accepted';

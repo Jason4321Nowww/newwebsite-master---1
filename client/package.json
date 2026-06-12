@@ -27,6 +27,7 @@
     "html2canvas": "^1.4.1",
     "html2pdf.js": "^0.10.3",
     "jspdf": "^3.0.1",
+    "lightgallery": "^2.9.0",
     "node": "18.13",
     "rxjs": "~7.8.1",
     "sweetalert2": "^11.26.3",

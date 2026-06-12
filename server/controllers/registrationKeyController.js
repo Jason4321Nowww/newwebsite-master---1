@@ -1,5 +1,13 @@
 const argon2 = require('argon2');
+const nodemailer = require('nodemailer');
 const RegistrationKey = require('../models/RegistrationKey');
+const { registrationKeyEmail } = require('../utils/emailTemplates');
+
+const createTransporter = () =>
+  nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_PASS },
+  });
 
 const createOrUpdateKey = async (req, res) => {
   // Only Superadmin (roleLevel 0) may create or update the registration key
@@ -95,23 +103,25 @@ const getKeyForInvite = async (req, res) => {
   }
 };
 
-// Returns the plain key for the signup flow — gated by a valid pending userId
-const getKeyForSignup = async (req, res) => {
-  const { userId } = req.query;
-  if (!userId) return res.status(400).json({ message: 'userId required.' });
+const sendRegistrationKeyByEmail = async (req, res) => {
+  const { email, lang } = req.body;
+  if (!email) return res.status(400).json({ message: 'Email is required.' });
+
+  const validLang = ['de', 'fr', 'it', 'en'].includes(lang) ? lang : 'de';
+  console.log(`[send-registration-key] lang received: "${lang}" → using: "${validLang}"`);
 
   try {
-    const User = require('../models/User');
-    const user = await User.findById(userId);
-    if (!user || user.emailVerified) {
-      return res.status(403).json({ message: 'Invalid request.' });
-    }
     const keyDoc = await RegistrationKey.findOne();
-    if (!keyDoc) return res.status(500).json({ message: 'Registration key not configured.' });
-    return res.status(200).json({ key: keyDoc.rawKey });
+    if (!keyDoc) return res.status(404).json({ message: 'No registration key configured. Set one first.' });
+
+    const tpl = registrationKeyEmail(keyDoc.rawKey, validLang);
+    await createTransporter().sendMail({ from: process.env.GMAIL_USER, to: email, ...tpl });
+
+    return res.status(200).json({ message: `Registration key sent to ${email}.` });
   } catch (err) {
-    return res.status(500).json({ message: 'Server error.' });
+    console.error('Error sending registration key email:', err);
+    return res.status(500).json({ message: 'Failed to send email. Please try again.' });
   }
 };
 
-module.exports = { createOrUpdateKey, getKeyInfo, getKeyForInvite, getKeyForSignup };
+module.exports = { createOrUpdateKey, getKeyInfo, getKeyForInvite, sendRegistrationKeyByEmail };

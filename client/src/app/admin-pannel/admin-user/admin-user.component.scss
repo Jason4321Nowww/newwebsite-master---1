@@ -156,6 +156,65 @@
   &.error { color: #c62828; }
 }
 
+// ── Share Key Section ─────────────────────────────────────────
+.share-key-section {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #b2dfcc;
+}
+
+.share-key-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 0.7rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #1565c0;
+
+  mat-icon { font-size: 18px; width: 18px; height: 18px; }
+}
+
+.share-key-row {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.share-key-input {
+  padding: 0.5rem 0.8rem;
+  border: 1px solid #90caf9;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  width: 240px;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+
+  &:focus { border-color: #009d63; }
+}
+
+.btn-share-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 1.1rem;
+  background: #009d63;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+
+  mat-icon { font-size: 16px; width: 16px; height: 16px; }
+  &:hover    { background: #1565c0; }
+  &:disabled { background: #bbb; cursor: not-allowed; }
+}
+
 // ── Invite Admin Box ──────────────────────────────────────────
 .invite-box {
   background: #f0f4ff;

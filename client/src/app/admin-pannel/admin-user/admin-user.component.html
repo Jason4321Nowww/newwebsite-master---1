@@ -52,6 +52,32 @@
     <p *ngIf="!isSuperAdmin" class="key-message" style="margin-top:0.25rem;color:#888;font-size:0.85rem;">
       Only Superadmin can set or update the registration key.
     </p>
+
+    <!-- Share key by email (visible to all admins once a key exists) -->
+    <div class="share-key-section" *ngIf="keyPreview">
+      <h4 class="share-key-title"><mat-icon>forward_to_inbox</mat-icon> Share Key via Email</h4>
+      <div class="share-key-row">
+        <app-admin-lang-picker
+          [activeLang]="shareKeyLang"
+          [showLabel]="false"
+          (langChange)="onShareKeyLangChange($event)">
+        </app-admin-lang-picker>
+        <input
+          type="email"
+          [(ngModel)]="shareKeyEmail"
+          placeholder="Recipient email address"
+          class="share-key-input"
+        />
+        <button
+          class="btn-share-key"
+          (click)="sendKeyByEmail()"
+          [disabled]="!shareKeyEmail || shareKeySending">
+          <mat-icon>send</mat-icon>
+          {{ shareKeySending ? 'Sending…' : 'Send' }}
+        </button>
+      </div>
+      <p *ngIf="shareKeyMessage" class="key-message" [class.error]="shareKeyError">{{ shareKeyMessage }}</p>
+    </div>
   </div>
 
   <!-- ── Invite Section ── -->
@@ -67,6 +93,11 @@
         <option [ngValue]="null" disabled>Select role</option>
         <option *ngFor="let r of inviteOptions" [ngValue]="r.value">{{ r.label }}</option>
       </select>
+      <app-admin-lang-picker
+        [activeLang]="inviteLang"
+        [showLabel]="false"
+        (langChange)="onInviteLangChange($event)">
+      </app-admin-lang-picker>
     </div>
 
     <div class="invite-form-row location-row">

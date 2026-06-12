@@ -1,22 +1,95 @@
 <div class="order-page">
-  <h2>Shipping Information</h2>
+  <h2>{{ langService.t('order.title') }}</h2>
 
   <form (ngSubmit)="proceedToPayment()" #orderForm="ngForm">
-    <input type="text"  placeholder="Full Name"     [(ngModel)]="customer.name"             name="name"       required />
-    <input type="email" placeholder="Email"          [(ngModel)]="customer.email"            name="email"      required />
-    <input type="text"  placeholder="Street Address" [(ngModel)]="customer.address.street"   name="street"     required />
-    <input type="text"  placeholder="Postal Code"    [(ngModel)]="customer.address.postalCode" name="postalCode" required />
-    <input type="text"  placeholder="City"           [(ngModel)]="customer.address.city"     name="city"       required />
-    <input type="text"  placeholder="Country"        [(ngModel)]="customer.address.country"  name="country"    required />
 
-    <div class="total-display">
-      💰 <strong>Total: CHF {{ total.toFixed(2) }}</strong>
+    <!-- Full Name -->
+    <div class="field-group">
+      <input type="text"
+             [placeholder]="langService.t('order.name')"
+             [(ngModel)]="customer.name"
+             name="name"
+             #nameField="ngModel"
+             required minlength="2"
+             [class.invalid]="nameField.invalid && nameField.touched" />
+      <span class="error-msg" *ngIf="nameField.touched && nameField.errors?.['required']">{{ langService.t('contact.nameRequired') }}</span>
+      <span class="error-msg" *ngIf="nameField.touched && nameField.errors?.['minlength']">{{ langService.t('contact.nameMinLength') }}</span>
     </div>
 
-    <p *ngIf="validationError" class="validation-error">{{ validationError }}</p>
+    <!-- Email -->
+    <div class="field-group">
+      <input type="email"
+             [placeholder]="langService.t('order.email')"
+             [(ngModel)]="customer.email"
+             name="email"
+             #emailField="ngModel"
+             required
+             pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$"
+             [class.invalid]="emailField.invalid && emailField.touched" />
+      <span class="error-msg" *ngIf="emailField.touched && emailField.errors?.['required']">{{ langService.t('contact.emailRequired') }}</span>
+      <span class="error-msg" *ngIf="emailField.touched && emailField.errors?.['pattern']">{{ langService.t('contact.emailInvalid') }}</span>
+    </div>
 
-    <button type="submit" class="btn">Continue to Payment →</button>
+    <!-- Street -->
+    <div class="field-group">
+      <input type="text"
+             [placeholder]="langService.t('order.street')"
+             [(ngModel)]="customer.address.street"
+             name="street"
+             #streetField="ngModel"
+             required minlength="3"
+             [class.invalid]="streetField.invalid && streetField.touched" />
+      <span class="error-msg" *ngIf="streetField.touched && streetField.errors?.['required']">{{ langService.t('order.fieldRequired') }}</span>
+    </div>
+
+    <!-- Postal Code -->
+    <div class="field-group">
+      <input type="text"
+             [placeholder]="langService.t('order.postalCode')"
+             [(ngModel)]="customer.address.postalCode"
+             name="postalCode"
+             #postalField="ngModel"
+             required
+             pattern="[0-9]{3,10}"
+             [class.invalid]="postalField.invalid && postalField.touched" />
+      <span class="error-msg" *ngIf="postalField.touched && postalField.errors?.['required']">{{ langService.t('order.fieldRequired') }}</span>
+      <span class="error-msg" *ngIf="postalField.touched && postalField.errors?.['pattern']">{{ langService.t('order.postalInvalid') }}</span>
+    </div>
+
+    <!-- City -->
+    <div class="field-group">
+      <input type="text"
+             [placeholder]="langService.t('order.city')"
+             [(ngModel)]="customer.address.city"
+             name="city"
+             #cityField="ngModel"
+             required
+             [class.invalid]="cityField.invalid && cityField.touched" />
+      <span class="error-msg" *ngIf="cityField.touched && cityField.errors?.['required']">{{ langService.t('order.fieldRequired') }}</span>
+    </div>
+
+    <!-- Country -->
+    <div class="field-group">
+      <input type="text"
+             [placeholder]="langService.t('order.country')"
+             [(ngModel)]="customer.address.country"
+             name="country"
+             #countryField="ngModel"
+             required
+             [class.invalid]="countryField.invalid && countryField.touched" />
+      <span class="error-msg" *ngIf="countryField.touched && countryField.errors?.['required']">{{ langService.t('order.fieldRequired') }}</span>
+    </div>
+
+    <div class="total-display">
+      💰 <strong>{{ langService.t('order.total') }} CHF {{ total.toFixed(2) }}</strong>
+    </div>
+
+    <button type="submit" class="btn"
+            [disabled]="orderForm.invalid"
+            [class.btn-disabled]="orderForm.invalid">
+      {{ langService.t('order.continue') }}
+    </button>
   </form>
 
-  <button type="button" class="btn secondary" routerLink="/shop">← Back to Shop</button>
+  <button type="button" class="btn secondary" routerLink="/shop">{{ langService.t('order.backToShop') }}</button>
 </div>
