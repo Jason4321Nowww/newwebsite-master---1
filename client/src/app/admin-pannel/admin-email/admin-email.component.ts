@@ -7,44 +7,158 @@ import { AdminemailService } from '../admin-services/adminemail.service';
   styleUrls: ['./admin-email.component.scss']
 })
 export class AdminEmailComponent implements OnInit {
-  name = '';
-  email = '';
-  listName = '';
-
-  emails: any[] = [];
+  // Lists
   lists: string[] = [];
+  selectedList = '';
 
-  selectedId: string | null = null;
+  // New list inline form
+  showNewListInput = false;
+  newListName = '';
 
+  // Rename list inline form
+  editingListName = '';
+  editListValue = '';
+
+  // Emails in selected list
+  listEmails: any[] = [];
+
+  // Add email inline form
+  showEmailForm = false;
+  emailName = '';
+  emailAddress = '';
+
+  // Inline edit for email rows
+  editingEmailId: string | null = null;
+  editEmailName = '';
+  editEmailAddress = '';
 
   constructor(private emailService: AdminemailService) {}
 
   ngOnInit() {
-    this.load();
+    this.loadLists();
+    this.loadListEmails();
   }
 
-  load() {
-    this.emailService.getAllEmails().subscribe((data: any) => this.emails = data);
-    this.emailService.getLists().subscribe((lists: any) => this.lists = lists);
+  loadLists() {
+    this.emailService.getLists().subscribe((lists: string[]) => {
+      this.lists = lists;
+      if (this.selectedList && !lists.includes(this.selectedList)) {
+        this.selectedList = '';
+        this.loadListEmails();
+      }
+    });
   }
+
+  onListChange() {
+    this.showEmailForm = false;
+    this.editingEmailId = null;
+    this.editingListName = '';
+    this.loadListEmails();
+  }
+
+  loadListEmails() {
+    if (!this.selectedList) {
+      this.emailService.getAllEmails().subscribe(data => { this.listEmails = data; });
+    } else {
+      this.emailService.getEmailsByList(this.selectedList).subscribe(data => { this.listEmails = data; });
+    }
+  }
+
+  // ─── List CRUD ─────────────────────────────────────────────────────────────
+
+  createList() {
+    const name = this.newListName.trim();
+    if (!name) return;
+    this.emailService.createList(name).subscribe({
+      next: () => {
+        this.newListName = '';
+        this.showNewListInput = false;
+        this.loadLists();
+      },
+      error: err => alert(err.error?.error || 'Failed to create list')
+    });
+  }
+
+  startEditList() {
+    this.editingListName = this.selectedList;
+    this.editListValue = this.selectedList;
+  }
+
+  saveEditList() {
+    const newName = this.editListValue.trim();
+    if (!newName || newName === this.editingListName) {
+      this.editingListName = '';
+      return;
+    }
+    this.emailService.renameList(this.editingListName, newName).subscribe({
+      next: () => {
+        this.selectedList = newName;
+        this.editingListName = '';
+        this.loadLists();
+        this.loadListEmails();
+      },
+      error: err => alert(err.error?.error || 'Failed to rename list')
+    });
+  }
+
+  cancelEditList() {
+    this.editingListName = '';
+  }
+
+  deleteList() {
+    if (!this.selectedList) return;
+    if (!confirm(`Delete list "${this.selectedList}" and remove it from all emails?`)) return;
+    this.emailService.deleteList(this.selectedList).subscribe(() => {
+      this.selectedList = '';
+      this.listEmails = [];
+      this.loadLists();
+    });
+  }
+
+  // ─── Email CRUD ─────────────────────────────────────────────────────────────
 
   createEmail() {
-    this.emailService.createEmail({ name: this.name, email: this.email })
-      .subscribe(() => this.load());
+    const name = this.emailName.trim();
+    const email = this.emailAddress.trim();
+    if (!name || !email) return;
+    this.emailService.createEmail({ name, email }).subscribe((created: any) => {
+      const finish = () => {
+        this.emailName = '';
+        this.emailAddress = '';
+        this.showEmailForm = false;
+        this.loadListEmails();
+      };
+      if (this.selectedList) {
+        this.emailService.addToList(created._id, this.selectedList).subscribe(finish);
+      } else {
+        finish();
+      }
+    });
+  }
+
+  startEditEmail(e: any) {
+    this.editingEmailId = e._id;
+    this.editEmailName = e.name;
+    this.editEmailAddress = e.email;
+  }
+
+  saveEditEmail() {
+    if (!this.editingEmailId) return;
+    this.emailService.updateEmail(this.editingEmailId, {
+      name: this.editEmailName.trim(),
+      email: this.editEmailAddress.trim()
+    }).subscribe(() => {
+      this.editingEmailId = null;
+      this.loadListEmails();
+    });
+  }
+
+  cancelEditEmail() {
+    this.editingEmailId = null;
   }
 
   deleteEmail(id: string) {
-    this.emailService.deleteEmail(id).subscribe(() => this.load());
-  }
-
-  addToList(emailId: string) {
-    this.emailService.addToList(emailId, this.listName)
-      .subscribe(() => this.load());
-  }
-
-  removeFromList(emailId: string) {
-    this.emailService.removeFromList(emailId, this.listName)
-      .subscribe(() => this.load());
+    if (!confirm('Delete this email entry?')) return;
+    this.emailService.deleteEmail(id).subscribe(() => this.loadListEmails());
   }
 }
-

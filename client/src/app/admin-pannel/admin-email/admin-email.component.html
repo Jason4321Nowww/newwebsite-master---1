@@ -1,40 +1,111 @@
-<div class="controls admin-card">
-  <div class="control-group">
-    <input [(ngModel)]="name" placeholder="Name" />
-    <input [(ngModel)]="email" placeholder="Email" />
-    <div class="btn-row">
-      <button (click)="createEmail()">Create</button>
-      <button (click)="selectedId && deleteEmail(selectedId)">Remove</button>
-    </div>
+<!-- ── List ──────────────────────────────────────────────────────────────── -->
+<div class="admin-card lists-card">
+  <div class="section-header">
+    <h3>List</h3>
+    <button class="btn-icon add-email-btn" (click)="showNewListInput = !showNewListInput; editingListName = ''" title="New list">
+      <mat-icon>add</mat-icon> New List
+    </button>
   </div>
-  <div class="control-group">
-    <input [(ngModel)]="listName" placeholder="List name" />
-    <div class="btn-row">
-      <button (click)="selectedId && addToList(selectedId)">Add to list</button>
-      <button (click)="selectedId && removeFromList(selectedId)">Remove from list</button>
-    </div>
+
+  <!-- Create list inline form -->
+  <div class="inline-form" *ngIf="showNewListInput">
+    <input [(ngModel)]="newListName" placeholder="List name" (keyup.enter)="createList()" autofocus />
+    <button class="btn-primary" (click)="createList()">Create</button>
+    <button class="btn-cancel" (click)="showNewListInput = false; newListName = ''">Cancel</button>
+  </div>
+
+  <!-- Dropdown + actions -->
+  <div class="list-selector-row" *ngIf="!editingListName">
+    <select [(ngModel)]="selectedList" (change)="onListChange()">
+      <option value="">All</option>
+      <option *ngFor="let l of lists" [value]="l">{{ l }}</option>
+    </select>
+    <ng-container *ngIf="selectedList">
+      <button class="btn-icon edit-btn" (click)="startEditList()" title="Rename list">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button class="btn-icon delete-btn" (click)="deleteList()" title="Delete list">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-container>
+  </div>
+
+  <!-- Rename list inline form -->
+  <div class="inline-form" *ngIf="editingListName">
+    <input [(ngModel)]="editListValue" placeholder="New name" (keyup.enter)="saveEditList()" />
+    <button class="btn-primary" (click)="saveEditList()">Save</button>
+    <button class="btn-cancel" (click)="cancelEditList()">Cancel</button>
   </div>
 </div>
 
-<div class="email-list admin-card">
-  <h3>Emails</h3>
-  <div class="table-wrap">
+<!-- ── Emails ─────────────────────────────────────────────────────────────── -->
+<div class="admin-card emails-card">
+  <div class="section-header">
+    <h3>
+      {{ selectedList || 'All' }}
+      <span class="count">({{ listEmails.length }})</span>
+    </h3>
+    <button class="btn-icon add-email-btn" (click)="showEmailForm = !showEmailForm" title="Add email">
+      <mat-icon>person_add</mat-icon> Add Email
+    </button>
+  </div>
+
+  <!-- Add email inline form -->
+  <div class="inline-form" *ngIf="showEmailForm">
+    <input [(ngModel)]="emailName" placeholder="Name" />
+    <input [(ngModel)]="emailAddress" placeholder="Email address" type="email" />
+    <button class="btn-primary" (click)="createEmail()">Add</button>
+    <button class="btn-cancel" (click)="showEmailForm = false">Cancel</button>
+  </div>
+
+  <!-- Emails table -->
+  <div class="table-wrap" *ngIf="listEmails.length > 0">
     <table>
       <thead>
         <tr>
           <th>Name</th>
           <th>Email</th>
-          <th>List Name</th>
+          <th class="actions-th">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of emails" (click)="selectedId = e._id"
-            [class.active-row]="selectedId === e._id">
-          <td data-label="Name">{{ e.name }}</td>
-          <td data-label="Email">{{ e.email }}</td>
-          <td data-label="Lists">{{ e.lists.join(', ') }}</td>
+        <tr *ngFor="let e of listEmails">
+          <!-- View mode -->
+          <ng-container *ngIf="editingEmailId !== e._id">
+            <td data-label="Name">{{ e.name }}</td>
+            <td data-label="Email">{{ e.email }}</td>
+            <td data-label="Actions" class="actions-cell">
+              <button class="btn-icon edit-btn" (click)="startEditEmail(e)" title="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="btn-icon delete-btn" (click)="deleteEmail(e._id)" title="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          <!-- Edit mode -->
+          <ng-container *ngIf="editingEmailId === e._id">
+            <td data-label="Name">
+              <input class="inline-input" [(ngModel)]="editEmailName" (keyup.enter)="saveEditEmail()" />
+            </td>
+            <td data-label="Email">
+              <input class="inline-input" [(ngModel)]="editEmailAddress" type="email" (keyup.enter)="saveEditEmail()" />
+            </td>
+            <td data-label="Actions" class="actions-cell">
+              <button class="btn-icon save-btn" (click)="saveEditEmail()" title="Save">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button class="btn-icon cancel-btn" (click)="cancelEditEmail()" title="Cancel">
+                <mat-icon>close</mat-icon>
+              </button>
+            </td>
+          </ng-container>
         </tr>
       </tbody>
     </table>
   </div>
+
+  <p class="empty-hint" *ngIf="listEmails.length === 0 && !showEmailForm">
+    No emails yet. Click <strong>+ Add Email</strong> to add one.
+  </p>
 </div>

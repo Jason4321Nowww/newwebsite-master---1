@@ -1,146 +1,302 @@
-/* Controls card */
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.lists-card,
+.emails-card {
+  margin-bottom: 1.5rem;
 }
 
-.control-group {
+// ─── Section header ───────────────────────────────────────────────────────────
+.section-header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
   gap: 0.5rem;
-}
 
-.controls input {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  width: 100%;
-  box-sizing: border-box;
-  transition: 0.2s;
+  h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+  }
 
-  &:focus {
-    border-color: #009d63;
-    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
-    outline: none;
+  .count {
+    font-weight: 400;
+    font-size: 0.82rem;
+    color: #888;
+    margin-left: 0.3rem;
   }
 }
 
-.btn-row {
+// ─── Inline form (create list / add email / rename) ───────────────────────────
+.inline-form {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
   flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  background: #f4f6f8;
+  border-radius: var(--radius-md);
+  border: 1px solid #e5e7eb;
+
+  input {
+    flex: 1;
+    min-width: 130px;
+    padding: 7px 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    background: #fff;
+    color: #222;
+
+    &:focus {
+      border-color: #009d63;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(0, 157, 99, 0.12);
+    }
+  }
 }
 
-.controls button {
-  background: #009d63;
+// ─── List selector dropdown row ───────────────────────────────────────────────
+.list-selector-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    background: #fff;
+    color: #222;
+    cursor: pointer;
+
+    &:focus {
+      border-color: #009d63;
+      outline: none;
+    }
+  }
+}
+
+// ─── Shared button base ───────────────────────────────────────────────────────
+%btn-base {
   border: none;
-  color: white;
-  padding: 8px 14px;
-  font-size: 14px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: 0.2s;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   white-space: nowrap;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
+  letter-spacing: 0.3px;
 
-  &:hover   { background: #007a4d; }
-  &:disabled { background: #aaa; cursor: not-allowed; }
-  &.cancel  { background: #dc3545; }
-  &.cancel:hover { background: #b02a37; }
+  mat-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    flex-shrink: 0;
+  }
 }
 
-/* Table */
+// Primary — Create / Add / Save (green → blue on hover)
+.btn-primary {
+  @extend %btn-base;
+  background: #009d63;
+  color: #fff;
+  padding: 7px 16px;
+
+  &:hover {
+    background: #2563eb;
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+  }
+}
+
+// Cancel / secondary — gray
+.btn-cancel {
+  @extend %btn-base;
+  background: #6b7280;
+  color: #fff;
+  padding: 7px 14px;
+
+  &:hover {
+    background: #4b5563;
+    box-shadow: 0 0 8px rgba(107, 114, 128, 0.35);
+  }
+}
+
+// ─── Compact icon buttons (table + dropdown row) ──────────────────────────────
+.btn-icon {
+  @extend %btn-base;
+  padding: 5px 9px;
+  font-size: 0.78rem;
+
+  // Edit — emerald
+  &.edit-btn {
+    background: #10b981;
+    color: #fff;
+    &:hover {
+      background: #059669;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+  }
+
+  // Delete — red
+  &.delete-btn {
+    background: #ef4444;
+    color: #fff;
+    &:hover {
+      background: #dc2626;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.35);
+    }
+  }
+
+  // Save (inline row) — green → blue
+  &.save-btn {
+    background: #009d63;
+    color: #fff;
+    &:hover {
+      background: #2563eb;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+    }
+  }
+
+  // Cancel (inline row) — gray
+  &.cancel-btn {
+    background: #6b7280;
+    color: #fff;
+    &:hover {
+      background: #4b5563;
+      box-shadow: 0 0 8px rgba(107, 114, 128, 0.35);
+    }
+  }
+
+  // New List / Add Email header buttons — green → blue
+  &.add-email-btn {
+    background: #009d63;
+    color: #fff;
+    padding: 6px 12px;
+    &:hover {
+      background: #2563eb;
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
+    }
+  }
+}
+
+// ─── Table ────────────────────────────────────────────────────────────────────
 .table-wrap {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  margin-top: 0.25rem;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 0.75rem;
-  font-size: 14px;
-}
-
-th, td {
-  padding: 10px 12px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
+  font-size: 0.875rem;
 }
 
 th {
+  padding: 9px 12px;
+  border-bottom: 2px solid #e5e7eb;
+  text-align: left;
   font-weight: 600;
-  color: #555;
+  color: #6b7280;
   background: #f9fafb;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
-table tr {
-  cursor: pointer;
-  transition: background 0.15s;
-  &:hover { background: #e6f5ef; }
-}
-
-table tr.active-row {
-  background: #b3e5d2 !important;
-  border-left: 4px solid #007a4d;
-}
-
-h3 {
-  margin: 0 0 0.5rem;
+td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
   color: #333;
-  font-weight: 500;
+  vertical-align: middle;
 }
 
-/* ── Card layout on mobile ──────────────────────────────── */
-@media (max-width: 768px) {
+tbody tr:hover { background: #f9fafb; }
+
+.actions-th { width: 100px; text-align: center; }
+
+.actions-cell {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+// ─── Inline edit input inside table cell ─────────────────────────────────────
+.inline-input {
+  width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #009d63;
+  border-radius: var(--radius-sm);
+  font-size: 0.875rem;
+  background: #fff;
+  color: #222;
+  box-shadow: 0 0 0 2px rgba(0, 157, 99, 0.1);
+
+  &:focus { outline: none; }
+}
+
+// ─── Empty state ──────────────────────────────────────────────────────────────
+.empty-hint {
+  color: #9ca3af;
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 1.5rem 0 0.5rem;
+  margin: 0;
+}
+
+// ─── Mobile card layout ───────────────────────────────────────────────────────
+@media (max-width: 640px) {
   .table-wrap { overflow-x: visible; }
 
   table { display: block; }
   thead { display: none; }
   tbody { display: block; }
 
-  tr {
+  tbody tr {
     display: block;
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
     margin-bottom: 10px;
     padding: 10px 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-    cursor: pointer;
-
-    &.active-row {
-      background: #d1fae5 !important;
-      border-left: 4px solid #007a4d;
-    }
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   }
 
   td {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
     padding: 6px 0;
     border: none;
     border-bottom: 1px solid #f3f4f6;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     word-break: break-word;
 
     &:last-child { border-bottom: none; }
 
     &::before {
       content: attr(data-label);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
       color: #9ca3af;
-      min-width: 48px;
+      min-width: 52px;
       flex-shrink: 0;
-      padding-top: 2px;
     }
+  }
+
+  .actions-cell {
+    justify-content: flex-start;
+
+    &::before { display: none; }
   }
 }

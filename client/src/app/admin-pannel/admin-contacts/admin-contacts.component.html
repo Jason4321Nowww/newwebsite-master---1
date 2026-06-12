@@ -1,4 +1,26 @@
 <div class="admin-contact-list admin-card">
+
+  <!-- Header -->
+  <div class="section-header">
+    <h3>Contacts <span class="count">({{ contacts.length }})</span></h3>
+    <button class="btn-primary" (click)="showAddForm = !showAddForm">
+      <mat-icon>person_add</mat-icon> Add Contact
+    </button>
+  </div>
+
+  <!-- Add Contact Form -->
+  <div class="inline-form" *ngIf="showAddForm">
+    <input [(ngModel)]="newName" placeholder="Name" />
+    <input [(ngModel)]="newEmail" placeholder="Email" type="email" />
+    <select [(ngModel)]="newParticipation">
+      <option value="" disabled>Participation</option>
+      <option *ngFor="let p of participationOptions" [value]="p">{{ p }}</option>
+    </select>
+    <button class="btn-primary" (click)="createContact()">Create</button>
+    <button class="btn-cancel" (click)="showAddForm = false">Cancel</button>
+  </div>
+
+  <!-- Table -->
   <div class="table-wrap">
     <table>
       <thead>
@@ -7,16 +29,58 @@
           <th>Email</th>
           <th>Participation</th>
           <th>Created</th>
+          <th class="actions-th">Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let contact of contacts">
-          <td data-label="Name">{{ contact.name }}</td>
-          <td data-label="Email">{{ contact.email }}</td>
-          <td data-label="Participation">{{ contact.participation }}</td>
-          <td data-label="Created">{{ contact.createdAt | date: 'short' }}</td>
+        <tr *ngFor="let c of contacts">
+
+          <!-- View mode -->
+          <ng-container *ngIf="editingId !== c._id">
+            <td data-label="Name">{{ c.name }}</td>
+            <td data-label="Email">{{ c.email }}</td>
+            <td data-label="Participation">
+              <span class="badge" [class]="'badge-' + c.participation">{{ c.participation }}</span>
+            </td>
+            <td data-label="Created">{{ c.createdAt | date: 'short' }}</td>
+            <td data-label="Actions" class="actions-cell">
+              <button class="btn-icon edit-btn" (click)="startEdit(c)" title="Edit">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button class="btn-icon delete-btn" (click)="deleteContact(c._id!)" title="Delete">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <!-- Edit mode -->
+          <ng-container *ngIf="editingId === c._id">
+            <td data-label="Name">
+              <input class="inline-input" [(ngModel)]="editName" (keyup.enter)="saveEdit()" />
+            </td>
+            <td data-label="Email">
+              <input class="inline-input" [(ngModel)]="editEmail" type="email" (keyup.enter)="saveEdit()" />
+            </td>
+            <td data-label="Participation">
+              <select class="inline-input" [(ngModel)]="editParticipation">
+                <option *ngFor="let p of participationOptions" [value]="p">{{ p }}</option>
+              </select>
+            </td>
+            <td data-label="Created">{{ c.createdAt | date: 'short' }}</td>
+            <td data-label="Actions" class="actions-cell">
+              <button class="btn-icon save-btn" (click)="saveEdit()" title="Save">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button class="btn-icon cancel-btn" (click)="cancelEdit()" title="Cancel">
+                <mat-icon>close</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
         </tr>
       </tbody>
     </table>
   </div>
+
+  <p class="empty-hint" *ngIf="contacts.length === 0">No contacts yet.</p>
 </div>

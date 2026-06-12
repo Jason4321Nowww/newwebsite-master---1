@@ -6,10 +6,6 @@ const createBanner = async (req, res) => {
   try {
     const { statement, statement_it, statement_fr, statement_en, link, isActive } = req.body;
 
-    if (isActive) {
-      await Banner.updateMany({}, { isActive: false });
-    }
-
     const banner = await Banner.create({ statement, statement_it, statement_fr, statement_en, link, isActive });
     res.status(201).json(banner);
   } catch (error) {
@@ -33,10 +29,6 @@ const getBanners = async (req, res) => {
 const updateBanner = async (req, res) => {
   try {
     const { statement, statement_it, statement_fr, statement_en, link, isActive } = req.body;
-
-    if (isActive) {
-      await Banner.updateMany({ _id: { $ne: req.params.id } }, { isActive: false });
-    }
 
     const updated = await Banner.findByIdAndUpdate(
       req.params.id,
