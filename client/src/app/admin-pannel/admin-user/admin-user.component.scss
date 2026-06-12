@@ -1,6 +1,9 @@
 .admin-users {
   padding: 20px;
 
+  @media (max-width: 600px) {
+    padding: 0.75rem;
+  }
 }
 
 // ── Registration Key Box ──────────────────────────────────────
@@ -18,12 +21,15 @@
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 0.9rem;
+  min-width: 0;
+  max-width: 100%;
 
   h3 {
     margin: 0;
     font-size: 1.05rem;
     font-weight: 500;
     color: #1565c0;
+    flex-shrink: 0;
   }
 
   .key-preview {
@@ -35,6 +41,17 @@
     background: rgba(255,255,255,0.6);
     padding: 0.2rem 0.6rem;
     border-radius: var(--radius-md);
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+
+    strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+      word-break: break-all;
+    }
 
     &.no-key {
       color: #b71c1c;
@@ -45,8 +62,19 @@
       font-size: 16px;
       width: 16px;
       height: 16px;
+      flex-shrink: 0;
 
       &.warn { color: #b71c1c; }
+    }
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .key-preview {
+      width: 100%;
+      box-sizing: border-box;
     }
   }
 }
@@ -80,6 +108,13 @@
   gap: 0.4rem;
 }
 
+.key-btn-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .key-input-row {
   display: flex;
   gap: 0.75rem;
@@ -97,6 +132,8 @@
     transition: border-color 0.2s;
 
     &:focus { border-color: #009d63; }
+
+    @media (max-width: 600px) { width: 100%; }
   }
 
   button {
@@ -193,6 +230,8 @@
   transition: border-color 0.2s;
 
   &:focus { border-color: #009d63; }
+
+  @media (max-width: 600px) { width: 100%; }
 }
 
 .btn-share-key {
@@ -252,6 +291,8 @@
   background: #fff;
   outline: none;
   &:focus { border-color: #1565c0; }
+
+  @media (max-width: 600px) { width: 100%; }
 }
 
 .invite-select {
@@ -263,6 +304,8 @@
   outline: none;
   cursor: pointer;
   min-width: 160px;
+
+  @media (max-width: 600px) { min-width: 0; width: 100%; }
 }
 
 .btn-invite {
@@ -374,7 +417,10 @@
   margin-top: 0.5rem;
   align-items: flex-start;
 
-  .invite-select { min-width: 180px; }
+  .invite-select {
+    min-width: 180px;
+    @media (max-width: 600px) { min-width: 0; width: 100%; }
+  }
 }
 
 // ── User Table ────────────────────────────────────────────────
@@ -382,6 +428,71 @@
   text-align: center;
   color: var(--text-secondary, #666);
   padding: 2rem;
+}
+
+.user-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .user-table-wrap { overflow-x: visible; }
+
+  .user-table {
+    display: block;
+
+    thead { display: none; }
+    tbody { display: block; }
+
+    tr {
+      display: block;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+
+      &.editing { background: #fff8e1; }
+      &.row-pending { opacity: 0.8; }
+    }
+
+    td {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      border: none;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.9rem;
+      word-break: break-word;
+
+      &:last-child { border-bottom: none; }
+
+      &::before {
+        content: attr(data-label);
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #9ca3af;
+        min-width: 68px;
+        flex-shrink: 0;
+        padding-top: 3px;
+      }
+    }
+
+    .action-cell {
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .edit-select {
+      width: 100%;
+      min-width: 0;
+    }
+  }
 }
 
 .user-table {
@@ -396,6 +507,11 @@
     padding: 0.8rem 1rem;
     vertical-align: middle;
     font-size: 0.9rem;
+
+    @media (max-width: 600px) {
+      padding: 0.5rem 0.6rem;
+      font-size: 0.8rem;
+    }
   }
 
   th {

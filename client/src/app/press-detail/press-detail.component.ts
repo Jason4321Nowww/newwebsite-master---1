@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PressService } from '../services/press.service';
 import { PressRelease } from '../_models/press';
@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 export class PressDetailComponent implements OnInit, OnDestroy {
 
   release?: PressRelease;
+  lightboxSrc: string | null = null;
   private langSub!: Subscription;
 
   constructor(
@@ -36,5 +37,18 @@ export class PressDetailComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.langSub?.unsubscribe();
+  }
+
+  openLightbox(src: string): void {
+    this.lightboxSrc = src;
+  }
+
+  closeLightbox(): void {
+    this.lightboxSrc = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.lightboxSrc = null;
   }
 }

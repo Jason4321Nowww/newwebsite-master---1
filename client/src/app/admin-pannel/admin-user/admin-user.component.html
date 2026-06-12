@@ -32,12 +32,14 @@
               required
               placeholder="Exactly 20 chars — letters, numbers &amp; symbols"
             />
-            <button type="button" class="btn-generate" (click)="generateKey()">
-              <mat-icon>refresh</mat-icon> Generate
-            </button>
-            <button type="submit" [disabled]="keyForm.invalid || registrationKey.trim().length !== 20">
-              {{ keyPreview ? 'Update Key' : 'Set Key' }}
-            </button>
+            <div class="key-btn-row">
+              <button type="button" class="btn-generate" (click)="generateKey()">
+                <mat-icon>refresh</mat-icon> Generate
+              </button>
+              <button type="submit" [disabled]="keyForm.invalid || registrationKey.trim().length !== 20">
+                {{ keyPreview ? 'Update Key' : 'Set Key' }}
+              </button>
+            </div>
           </div>
           <div class="key-errors" *ngIf="keyInput.invalid && (keyInput.touched || keyInput.dirty)">
             <span *ngIf="keyInput.errors?.['required']">Key is required.</span>
@@ -127,6 +129,7 @@
   <!-- ── Users Table (all members: pending / inactive / active) ── -->
   <div *ngIf="loading" class="loading-text">Loading users...</div>
 
+  <div class="user-table-wrap">
   <table *ngIf="!loading" class="user-table">
     <thead>
       <tr>
@@ -141,13 +144,13 @@
       <tr *ngFor="let user of users" [class.editing]="editingUserId === user.id" [class.row-pending]="user._status === 'pending'">
 
         <!-- Username / Email -->
-        <td class="username-cell">
+        <td class="username-cell" data-label="User">
           <span *ngIf="user.username">{{ user.username }}</span>
           <span *ngIf="!user.username" class="email-pending">{{ user.email }}</span>
         </td>
 
         <!-- Role -->
-        <td>
+        <td data-label="Role">
           <ng-container *ngIf="editingUserId === user.id; else roleView">
             <select [(ngModel)]="editRoleLevel" class="edit-select">
               <option *ngFor="let role of roleOptions" [ngValue]="role.value">{{ role.label }}</option>
@@ -159,7 +162,7 @@
         </td>
 
         <!-- Location -->
-        <td>
+        <td data-label="Location">
           <ng-container *ngIf="editingUserId === user.id; else locationView">
             <select [value]="editKantonCode" (change)="onEditKantonChange($any($event.target).value)" class="edit-select">
               <option value="">— Kanton —</option>
@@ -181,14 +184,14 @@
         </td>
 
         <!-- Status -->
-        <td>
+        <td data-label="Status">
           <span class="status-badge" [class.active]="user._status === 'active'" [class.pending]="user._status === 'pending'">
             {{ getStatusLabel(user) }}
           </span>
         </td>
 
         <!-- Actions -->
-        <td class="action-cell">
+        <td class="action-cell" data-label="Actions">
           <ng-container *ngIf="isSelf(user)">
             <span class="no-action-label">You</span>
           </ng-container>
@@ -228,4 +231,5 @@
       </tr>
     </tbody>
   </table>
+  </div>
 </div>

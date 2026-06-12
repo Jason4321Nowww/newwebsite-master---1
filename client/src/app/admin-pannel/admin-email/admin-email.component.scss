@@ -1,26 +1,38 @@
-/* Wrapper */
+/* Controls card */
 .controls {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-/* Inputs */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 .controls input {
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: var(--radius-md);
   font-size: 14px;
-  flex: 1 1 200px;
+  width: 100%;
+  box-sizing: border-box;
   transition: 0.2s;
+
+  &:focus {
+    border-color: #009d63;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.2);
+    outline: none;
+  }
 }
 
-.controls input:focus {
-  border-color: #009d63;
-  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+.btn-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-/* Buttons */
 .controls button {
   background: #009d63;
   border: none;
@@ -30,59 +42,105 @@
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: 0.2s;
-}
+  white-space: nowrap;
 
-.controls button:hover {
-  background: #007a4d;
-}
-
-.controls button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
-}
-
-.controls button.cancel,
-.controls .cancel {
-  background: #dc3545;
-}
-
-.controls button.cancel:hover {
-  background: #b02a37;
+  &:hover   { background: #007a4d; }
+  &:disabled { background: #aaa; cursor: not-allowed; }
+  &.cancel  { background: #dc3545; }
+  &.cancel:hover { background: #b02a37; }
 }
 
 /* Table */
+.table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 15px;
+  margin-top: 0.75rem;
   font-size: 14px;
 }
 
-table th,
-table td {
-  padding: 12px;
+th, td {
+  padding: 10px 12px;
   border-bottom: 1px solid #ddd;
+  text-align: left;
+}
+
+th {
+  font-weight: 600;
+  color: #555;
+  background: #f9fafb;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 table tr {
   cursor: pointer;
-  transition: 0.2s;
+  transition: background 0.15s;
+  &:hover { background: #e6f5ef; }
 }
 
-table tr:hover {
-  background: #e6f5ef;
-}
-
-/* Active row highlight */
 table tr.active-row {
   background: #b3e5d2 !important;
   border-left: 4px solid #007a4d;
 }
 
-/* Heading */
 h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
+  margin: 0 0 0.5rem;
   color: #333;
   font-weight: 500;
+}
+
+/* ── Card layout on mobile ──────────────────────────────── */
+@media (max-width: 768px) {
+  .table-wrap { overflow-x: visible; }
+
+  table { display: block; }
+  thead { display: none; }
+  tbody { display: block; }
+
+  tr {
+    display: block;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    cursor: pointer;
+
+    &.active-row {
+      background: #d1fae5 !important;
+      border-left: 4px solid #007a4d;
+    }
+  }
+
+  td {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.9rem;
+    word-break: break-word;
+
+    &:last-child { border-bottom: none; }
+
+    &::before {
+      content: attr(data-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #9ca3af;
+      min-width: 48px;
+      flex-shrink: 0;
+      padding-top: 2px;
+    }
+  }
 }

@@ -3,10 +3,12 @@
 
     <h1 class="article-title">{{ langService.getField(article, 'title') }}</h1>
 
-    <!-- Show first image from body as hero image -->
+    <!-- Hero image -->
     <img *ngIf="getHeroImage()"
          [src]="'' + getHeroImage()"
-         class="article-image" />
+         class="article-image"
+         (click)="openLightbox(getHeroImage())"
+         title="Click to enlarge" />
 
     <div class="article-body">
 
@@ -15,10 +17,12 @@
         <ng-container *ngFor="let block of article.body">
           <img *ngIf="block.type === 'image' && block.url !== getHeroImage()"
                [src]="'' + block.url"
-               class="body-image" />
+               class="body-image"
+               (click)="openLightbox(block.url)" />
           <div *ngIf="block.type === 'text'"
                [innerHTML]="convertToParagraphs(block.value)"
-               class="body-text"></div>
+               class="body-text"
+               (click)="onBodyClick($event)"></div>
         </ng-container>
       </ng-container>
 
@@ -26,15 +30,18 @@
       <ng-container *ngIf="currentLang !== 'de'">
         <div *ngIf="getTranslatedBody()"
              [innerHTML]="getTranslatedBody()"
-             class="body-text"></div>
+             class="body-text"
+             (click)="onBodyClick($event)"></div>
         <ng-container *ngIf="!getTranslatedBody()">
           <ng-container *ngFor="let block of article.body">
             <img *ngIf="block.type === 'image' && block.url !== getHeroImage()"
                  [src]="'' + block.url"
-                 class="body-image" />
+                 class="body-image"
+                 (click)="openLightbox(block.url)" />
             <div *ngIf="block.type === 'text'"
                  [innerHTML]="convertToParagraphs(block.value)"
-                 class="body-text"></div>
+                 class="body-text"
+                 (click)="onBodyClick($event)"></div>
           </ng-container>
         </ng-container>
       </ng-container>
@@ -47,4 +54,10 @@
     </div>
 
   </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-backdrop" *ngIf="lightboxSrc" (click)="closeLightbox()">
+  <button class="lightbox-close" (click)="closeLightbox()">✕</button>
+  <img [src]="lightboxSrc" class="lightbox-img" (click)="$event.stopPropagation()" />
 </div>

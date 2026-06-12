@@ -125,12 +125,17 @@ export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
     ).subscribe(() => {
       const fragment = this.router.parseUrl(this.router.url).fragment;
       if (fragment) {
-        const element = document.getElementById(fragment);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        setTimeout(() => {
+          const element = document.getElementById(fragment);
+          if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Use setTimeout to fire after Angular finishes rendering the new route
+        setTimeout(() => {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' as ScrollBehavior });
+          document.documentElement.scrollTop = 0;
+          document.body.scrollTop = 0;
+        }, 0);
       }
     });
   }

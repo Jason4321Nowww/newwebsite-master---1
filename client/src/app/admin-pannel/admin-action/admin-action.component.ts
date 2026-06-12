@@ -1,5 +1,7 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpEventType } from '@angular/common/http';
+import { timeout } from 'rxjs/operators';
 import { Action } from 'src/app/_models/action';
 import { AdminactionService } from '../admin-services/adminaction.service';
 
@@ -33,9 +35,21 @@ export class AdminActionComponent implements OnInit {
     this.showLangDropdown = false;
   }
 
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
   selectedMedia: File[] = [];
   previewUrls: string[] = [];
   existingMedia: string[] = [];
+
+  uploadProgress: number | null = null;
+  uploadDone = false;
+  isUploading = false;
+  uploadError: string | null = null;
+  successMessage: string | null = null;
+
+  private readonly MAX_FILE_MB = 10;
+  private readonly MAX_FILE_BYTES = this.MAX_FILE_MB * 1024 * 1024;
+  private readonly MAX_FILE_COUNT = 20;
 
   constructor(private adminAction: AdminactionService, private fb: FormBuilder) {}
 
@@ -81,6 +95,26 @@ export class AdminActionComponent implements OnInit {
 
   onMediaSelected(event: any) {
     const files: FileList = event.target.files;
+    this.uploadError = null;
+
+    if (files.length > this.MAX_FILE_COUNT) {
+      this.uploadError = `Too many files. Maximum is ${this.MAX_FILE_COUNT} files at once (you selected ${files.length}).`;
+      (event.target as HTMLInputElement).value = '';
+      this.selectedMedia = [];
+      this.previewUrls = [];
+      return;
+    }
+
+    const oversized = Array.from(files).filter(f => f.size > this.MAX_FILE_BYTES);
+    if (oversized.length > 0) {
+      const names = oversized.map(f => `${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)`).join(', ');
+      this.uploadError = `File(s) exceed the ${this.MAX_FILE_MB} MB limit: ${names}`;
+      (event.target as HTMLInputElement).value = '';
+      this.selectedMedia = [];
+      this.previewUrls = [];
+      return;
+    }
+
     this.selectedMedia = Array.from(files);
     this.previewUrls = [];
 
@@ -92,28 +126,84 @@ export class AdminActionComponent implements OnInit {
   }
 
   submitForm() {
-    if (this.actionForm.invalid) return;
+    this.actionForm.markAllAsTouched();
+    const title = (this.actionForm.value.title || '').trim();
+    const description = (this.actionForm.value.description || '').trim();
+    if (!title || !description) {
+      this.uploadError = 'Title and description are required.';
+      return;
+    }
+    if (!this.isEditing && this.selectedMedia.length === 0) {
+      this.uploadError = 'Please select at least one image or video.';
+      return;
+    }
+    this.uploadError = null;
 
     const formData = new FormData();
-    formData.append('title', this.actionForm.value.title);
-    formData.append('title_it', this.actionForm.value.title_it || '');
-    formData.append('title_fr', this.actionForm.value.title_fr || '');
-    formData.append('title_en', this.actionForm.value.title_en || '');
-    formData.append('description', this.actionForm.value.description);
-    formData.append('description_it', this.actionForm.value.description_it || '');
-    formData.append('description_fr', this.actionForm.value.description_fr || '');
+    formData.append('title', title);
+    formData.append('title_it', (this.actionForm.value.title_it || '').trim());
+    formData.append('title_fr', (this.actionForm.value.title_fr || '').trim());
+    formData.append('title_en', (this.actionForm.value.title_en || '').trim());
+    formData.append('description', description);
+    formData.append('description_it', (this.actionForm.value.description_it || '').trim());
+    formData.append('description_fr', (this.actionForm.value.description_fr || '').trim());
     formData.append('description_en', this.actionForm.value.description_en || '');
     this.selectedMedia.forEach(file =>{
       console.log('Uploading:', file.name, file.type)
       formData.append('media', file)}); // field name should match multer array name
 
+    this.isUploading = true;
+    this.uploadProgress = 0;
+    this.uploadDone = false;
+    this.uploadError = null;
+    this.successMessage = null;
+
     const request = this.isEditing && this.selectedId
       ? this.adminAction.updateAction(this.selectedId, formData)
       : this.adminAction.createAction(formData);
 
-    request.subscribe(() => {
-      this.resetForm();
-      this.loadActions();
+    request.pipe(timeout(120000)).subscribe({
+      next: (event) => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.uploadProgress = event.total
+            ? Math.round(100 * event.loaded / event.total)
+            : 0;
+        } else if (event.type === HttpEventType.Response) {
+          this.uploadProgress = 100;
+          this.uploadDone = true;
+          this.isUploading = false;
+          const label = this.isEditing ? 'updated' : 'created';
+          setTimeout(() => {
+            this.uploadProgress = null;
+            this.uploadDone = false;
+            this.successMessage = `Action ${label} successfully!`;
+            this.resetForm();
+            this.loadActions();
+            setTimeout(() => { this.successMessage = null; }, 4000);
+          }, 1000);
+        }
+      },
+      error: (err) => {
+        this.isUploading = false;
+        this.uploadProgress = null;
+        this.uploadDone = false;
+        console.error('Upload error:', err);
+        if (err?.name === 'TimeoutError') {
+          this.uploadError = 'Upload timed out. The server did not respond. Please try again.';
+        } else if (err?.error?.message) {
+          this.uploadError = err.error.message;
+        } else if (err?.error?.error) {
+          this.uploadError = err.error.error;
+        } else if (typeof err?.error === 'string' && err.error.length) {
+          this.uploadError = err.error;
+        } else if (err?.message) {
+          this.uploadError = err.message;
+        } else if (err?.statusText) {
+          this.uploadError = `Server error: ${err.statusText}`;
+        } else {
+          this.uploadError = 'Upload failed. Please try again.';
+        }
+      }
     });
   }
 
@@ -160,6 +250,7 @@ export class AdminActionComponent implements OnInit {
     this.existingMedia = [];
     this.activeLang = 'de';
     this.selectedLangs = ['de'];
+    if (this.fileInput) this.fileInput.nativeElement.value = '';
   }
 
   isImage(fileUrl: string): boolean {

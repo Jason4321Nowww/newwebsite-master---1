@@ -2,25 +2,24 @@
 
   <form [formGroup]="eventForm" (ngSubmit)="editingEventId ? updateEventSubmit() : createEvent()" class="event-form admin-card">
 
-    <!-- Language picker + chips -->
+    <!-- Form header + language tabs on one row -->
     <div class="full-width form-header">
       <span class="form-section-title">{{ editingEventId ? 'Edit Event' : 'New Event' }}</span>
-    </div>
-
-    <div class="lang-tabs full-width">
-      <div *ngFor="let l of selectedLangs"
-           class="lang-tab"
-           [class.active]="activeLang === l"
-           (click)="onLangChange(l)">
-        <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
-        <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
-      </div>
-      <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
-        <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
-        <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
-          <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
-            <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
-            <span>{{ langMeta[l].label }}</span>
+      <div class="lang-tabs">
+        <div *ngFor="let l of selectedLangs"
+             class="lang-tab"
+             [class.active]="activeLang === l"
+             (click)="onLangChange(l)">
+          <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" /><span class="lang-tab-label">{{ langMeta[l].label }}</span>
+          <span *ngIf="l !== 'de'" class="lang-tab-remove" (click)="$event.stopPropagation(); removeLang(l)" title="Remove language">×</span>
+        </div>
+        <div class="lang-add-wrapper" *ngIf="availableLangs.length > 0" (click)="$event.stopPropagation()">
+          <button type="button" class="lang-add-btn" (click)="showLangDropdown = !showLangDropdown" title="Add language">+</button>
+          <div class="lang-add-dropdown" *ngIf="showLangDropdown && availableLangs.length > 0">
+            <div *ngFor="let l of availableLangs" class="lang-add-option" (click)="onLangChange(l); showLangDropdown = false">
+              <img [src]="langMeta[l].flag" [alt]="langMeta[l].label" class="lang-flag" />
+              <span>{{ langMeta[l].label }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -159,16 +158,16 @@
         </thead>
         <tbody>
           <tr *ngFor="let event of filteredEvents">
-            <td>{{ event.title }}</td>
-            <td>{{ event.eventDate | date: 'dd-MM-yyyy' }}</td>
-            <td>
+            <td data-label="Title">{{ event.title }}</td>
+            <td data-label="Date">{{ event.eventDate | date: 'dd-MM-yyyy' }}</td>
+            <td data-label="Attendees">
               <span class="attendees-badge" (click)="openAttendeesModal(event)" [class.has-attendees]="event.attendees.length > 0">
                 {{ event.attendees.length || 0 }}
               </span>
             </td>
-            <td>{{ getEventTypeLabel(event.eventType || '') }}</td>
-            <td>{{ getEventLocationLabel(event.eventLocation) }}</td>
-            <td>
+            <td data-label="Type">{{ getEventTypeLabel(event.eventType || '') }}</td>
+            <td data-label="Location">{{ getEventLocationLabel(event.eventLocation) }}</td>
+            <td data-label="Actions">
               <mat-icon class="text-primary" (click)="editEvent(event)">edit</mat-icon>
               <mat-icon class="text-danger" (click)="deleteEvent(event.id!)">delete</mat-icon>
             </td>

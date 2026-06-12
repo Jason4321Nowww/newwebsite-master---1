@@ -57,6 +57,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     { label: 'Lokalversammlung',    value: 'lokalversammlung' },
     { label: 'RV-Zusammenkunft',    value: 'rv_zusammenkunft' },
     { label: 'LV-Zusammenkunft',    value: 'lv_zusammenkunft' },
+    { label: 'Intern',              value: 'intern' },
     { label: 'Öffentlich',          value: 'oeffentlich' },
   ];
 

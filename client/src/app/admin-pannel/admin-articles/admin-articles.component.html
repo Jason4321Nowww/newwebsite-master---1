@@ -55,8 +55,8 @@
       <input formControlName="author" placeholder="Author name" />
     </div>
     </div>
-    <!-- DE tab: FormArray blocks -->
-    <div class="blocks" *ngIf="activeLang === 'de'">
+    <!-- DE tab: FormArray blocks — [hidden] keeps DOM alive so file inputs survive tab switches -->
+    <div class="blocks" [hidden]="activeLang !== 'de'">
       <div class="block-controls">
         <button type="button" (click)="addTextBlock()">+ Text</button>
         <button type="button" (click)="addImageBlock()">+ Image</button>
@@ -88,38 +88,40 @@
       </div>
     </div>
 
-    <!-- IT/FR/EN tabs: same block UI using plain arrays -->
-    <div class="blocks" *ngIf="activeLang !== 'de'">
-      <div class="block-controls">
-        <button type="button" (click)="addLangTextBlock(activeLang)">+ Text</button>
-        <button type="button" (click)="addLangImageBlock(activeLang)">+ Image</button>
-        <button type="button" (click)="addLangSample(activeLang)">Sample</button>
-      </div>
-      <div class="block-list">
-        <div *ngFor="let block of langBlocks[activeLang]; let i = index" class="block">
-          <div *ngIf="block.type === 'text'">
-            <label>Text</label>
-            <textarea [(ngModel)]="block.value" [ngModelOptions]="{standalone: true}"
-              placeholder="Paragraph text" (input)="autoGrow($event)"></textarea>
-          </div>
-          <div *ngIf="block.type === 'image'">
-            <label>Image</label>
-            <div class="image-input">
-              <input type="file" accept="image/*" (change)="onLangFileSelected($event, activeLang, i)" />
-              <div class="preview" *ngIf="langFilePreviews[activeLang].get(i)">
-                <img [src]="langFilePreviews[activeLang].get(i)" alt="preview" />
-              </div>
-              <div class="preview" *ngIf="!langFilePreviews[activeLang].get(i) && block.url">
-                <img [src]="'' + block.url" alt="current" />
+    <!-- IT blocks — [hidden] keeps DOM alive so file inputs survive tab switches -->
+    <ng-container *ngFor="let lang of ['it','fr','en']">
+      <div class="blocks" [hidden]="activeLang !== lang">
+        <div class="block-controls">
+          <button type="button" (click)="addLangTextBlock(lang)">+ Text</button>
+          <button type="button" (click)="addLangImageBlock(lang)">+ Image</button>
+          <button type="button" (click)="addLangSample(lang)">Sample</button>
+        </div>
+        <div class="block-list">
+          <div *ngFor="let block of langBlocks[lang]; let i = index" class="block">
+            <div *ngIf="block.type === 'text'">
+              <label>Text</label>
+              <textarea [(ngModel)]="block.value" [ngModelOptions]="{standalone: true}"
+                placeholder="Paragraph text" (input)="autoGrow($event)"></textarea>
+            </div>
+            <div *ngIf="block.type === 'image'">
+              <label>Image</label>
+              <div class="image-input">
+                <input type="file" accept="image/*" (change)="onLangFileSelected($event, lang, i)" />
+                <div class="preview" *ngIf="langFilePreviews[lang].get(i)">
+                  <img [src]="langFilePreviews[lang].get(i)" alt="preview" />
+                </div>
+                <div class="preview" *ngIf="!langFilePreviews[lang].get(i) && block.url">
+                  <img [src]="'' + block.url" alt="current" />
+                </div>
               </div>
             </div>
-          </div>
-          <div class="block-actions">
-            <button type="button" (click)="removeLangBlock(activeLang, i)">Remove</button>
+            <div class="block-actions">
+              <button type="button" (click)="removeLangBlock(lang, i)">Remove</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </ng-container>
 
     <div class="form-actions">
       <button type="submit" class="btn-primary">{{ editingArticleId ? 'Update' : 'Create' }} Article</button>

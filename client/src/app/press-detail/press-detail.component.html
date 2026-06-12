@@ -5,7 +5,9 @@
 
     <img *ngIf="release.image"
          [src]="'' + release.image"
-         class="press-image" />
+         class="press-image"
+         (click)="openLightbox('' + release.image)"
+         title="Click to enlarge" />
 
     <div class="press-content"
          [innerHTML]="langService.getField(release, 'content')">
@@ -17,4 +19,10 @@
     </div>
 
   </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox-backdrop" *ngIf="lightboxSrc" (click)="closeLightbox()">
+  <button class="lightbox-close" (click)="closeLightbox()">✕</button>
+  <img [src]="lightboxSrc" class="lightbox-img" (click)="$event.stopPropagation()" />
 </div>

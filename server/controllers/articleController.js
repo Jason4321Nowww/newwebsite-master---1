@@ -4,29 +4,34 @@ const fs = require("fs");
 const path = require('path');
 
 function mapUploadedFilesToBlocks(bodyBlocks, files) {
-  // Find image blocks without url and assign uploaded files in order
   const imageIndexes = [];
   bodyBlocks.forEach((b, idx) => {
     if (b.type === 'image' && (!b.url || b.url.trim() === '')) imageIndexes.push(idx);
   });
-
-  if (files.length > imageIndexes.length) {
-    // more files than empty image placeholders: attach extras at end
-    // but we will still insert into the empty placeholders first
-  }
-
   files.forEach((file, i) => {
-    const idx = imageIndexes[i];
     const url = `/uploads/articles/${file.filename}`;
+    const idx = imageIndexes[i];
     if (typeof idx !== 'undefined') {
       bodyBlocks[idx].url = url;
     } else {
-      // append new image block
       bodyBlocks.push({ type: 'image', url });
     }
   });
-
   return bodyBlocks;
+}
+
+function blocksToHtml(blocks) {
+  return blocks.map(b => {
+    if (b.type === 'text') return `<p>${b.value || ''}</p>`;
+    if (b.type === 'image' && b.url) return `<img src="${b.url}" />`;
+    return '';
+  }).filter(s => s).join('');
+}
+
+function parseLangBlocks(raw) {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  try { return JSON.parse(raw); } catch { return []; }
 }
 
 const createArticle = async (req, res) => {
@@ -51,8 +56,15 @@ const createArticle = async (req, res) => {
       }
     }
 
-    const files = req.files?.images || [];
-    const mapped = mapUploadedFilesToBlocks(body, files);
+    const deFiles  = req.files?.images    || [];
+    const itFiles  = req.files?.images_it || [];
+    const frFiles  = req.files?.images_fr || [];
+    const enFiles  = req.files?.images_en || [];
+
+    const mapped   = mapUploadedFilesToBlocks(body, deFiles);
+    const mappedIt = mapUploadedFilesToBlocks(parseLangBlocks(body_it), itFiles);
+    const mappedFr = mapUploadedFilesToBlocks(parseLangBlocks(body_fr), frFiles);
+    const mappedEn = mapUploadedFilesToBlocks(parseLangBlocks(body_en), enFiles);
 
     const article = new Article({
       title: title.trim(),
@@ -60,9 +72,9 @@ const createArticle = async (req, res) => {
       title_fr: title_fr || '',
       title_en: title_en || '',
       body: mapped,
-      body_it: body_it || '',
-      body_fr: body_fr || '',
-      body_en: body_en || '',
+      body_it: blocksToHtml(mappedIt),
+      body_fr: blocksToHtml(mappedFr),
+      body_en: blocksToHtml(mappedEn),
       author: author ? author.trim() : undefined
     });
 
@@ -149,35 +161,42 @@ const updateArticle = async (req, res) => {
     const { title, title_it, title_fr, title_en, author, body, body_it, body_fr, body_en } = req.body;
     const parsedBody = JSON.parse(body);
 
-    const deFiles = req.files?.images || [];
-    let imageIndex = 0;
+    const deFiles = req.files?.images    || [];
+    const itFiles = req.files?.images_it || [];
+    const frFiles = req.files?.images_fr || [];
+    const enFiles = req.files?.images_en || [];
 
+    let imageIndex = 0;
     const updatedBody = parsedBody.map((block) => {
-      if (block.type === "image") {
+      if (block.type === 'image') {
         const uploadedFile = deFiles[imageIndex];
         if (uploadedFile) {
-          const newURL = "/uploads/articles/" + uploadedFile.filename;
+          const newURL = '/uploads/articles/' + uploadedFile.filename;
           if (block.url) {
-            const oldPath = path.join(__dirname, "..", block.url);
+            const oldPath = path.join(__dirname, '..', block.url);
             if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
           }
           imageIndex++;
-          return { type: "image", url: newURL };
+          return { type: 'image', url: newURL };
         }
-        return { type: "image", url: block.url || "" };
+        return { type: 'image', url: block.url || '' };
       }
       return block;
     });
 
-    article.title = title;
+    const mappedIt = mapUploadedFilesToBlocks(parseLangBlocks(body_it), itFiles);
+    const mappedFr = mapUploadedFilesToBlocks(parseLangBlocks(body_fr), frFiles);
+    const mappedEn = mapUploadedFilesToBlocks(parseLangBlocks(body_en), enFiles);
+
+    article.title    = title;
     article.title_it = title_it || '';
     article.title_fr = title_fr || '';
     article.title_en = title_en || '';
-    article.author = author;
-    article.body = updatedBody;
-    article.body_it = body_it || '';
-    article.body_fr = body_fr || '';
-    article.body_en = body_en || '';
+    article.author   = author;
+    article.body     = updatedBody;
+    article.body_it  = blocksToHtml(mappedIt);
+    article.body_fr  = blocksToHtml(mappedFr);
+    article.body_en  = blocksToHtml(mappedEn);
 
     await article.save();
 

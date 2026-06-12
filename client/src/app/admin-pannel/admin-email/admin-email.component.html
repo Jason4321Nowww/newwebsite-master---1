@@ -1,30 +1,40 @@
 <div class="controls admin-card">
-  <input [(ngModel)]="name" placeholder="Name" />
-  <input [(ngModel)]="email" placeholder="Email" />
-
-  <button (click)="createEmail()">Create</button>
-
-  <button (click)="selectedId && deleteEmail(selectedId)">Remove</button>
-
-  <input [(ngModel)]="listName" placeholder="Listname" />
-
-  <button (click)="selectedId && addToList(selectedId)">Add to:</button>
-  <button (click)="selectedId && removeFromList(selectedId)">Remove from:</button>
+  <div class="control-group">
+    <input [(ngModel)]="name" placeholder="Name" />
+    <input [(ngModel)]="email" placeholder="Email" />
+    <div class="btn-row">
+      <button (click)="createEmail()">Create</button>
+      <button (click)="selectedId && deleteEmail(selectedId)">Remove</button>
+    </div>
+  </div>
+  <div class="control-group">
+    <input [(ngModel)]="listName" placeholder="List name" />
+    <div class="btn-row">
+      <button (click)="selectedId && addToList(selectedId)">Add to list</button>
+      <button (click)="selectedId && removeFromList(selectedId)">Remove from list</button>
+    </div>
+  </div>
 </div>
 
 <div class="email-list admin-card">
   <h3>Emails</h3>
-  <table>
-    <tr>
-      <th>Name</th>
-      <th>Email</th>
-      <th>List Name</th>
-    </tr>
-    <tr *ngFor="let e of emails" (click)="selectedId = e._id"
-        [class.active-row]="selectedId === e._id">
-      <td>{{ e.name }}</td>
-      <td>{{ e.email }}</td>
-      <td>{{ e.lists.join(', ') }}</td>
-    </tr>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>List Name</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of emails" (click)="selectedId = e._id"
+            [class.active-row]="selectedId === e._id">
+          <td data-label="Name">{{ e.name }}</td>
+          <td data-label="Email">{{ e.email }}</td>
+          <td data-label="Lists">{{ e.lists.join(', ') }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

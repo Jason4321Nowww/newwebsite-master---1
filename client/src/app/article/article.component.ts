@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, HostListener } from '@angular/core';
 import { Article } from '../_models/article';
 import { ActivatedRoute } from '@angular/router';
 import { ArticlesService } from '../services/articles.service';
@@ -14,6 +14,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   article?: Article;
   currentLang: string = 'de';
+  lightboxSrc: string | null = null;
   private langSub!: Subscription;
 
   constructor(
@@ -47,10 +48,30 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.langSub?.unsubscribe();
   }
 
+  openLightbox(src: string | null | undefined): void {
+    if (src) this.lightboxSrc = src;
+  }
+
+  closeLightbox(): void {
+    this.lightboxSrc = null;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    this.lightboxSrc = null;
+  }
+
+  onBodyClick(event: MouseEvent): void {
+    const target = event.target as HTMLElement;
+    if (target.tagName === 'IMG') {
+      const src = (target as HTMLImageElement).src;
+      if (src) this.lightboxSrc = src;
+    }
+  }
+
   getTranslatedBody(): string {
     if (!this.article) return '';
     if (this.currentLang === 'de') return '';
-    // Return translation if available, empty string triggers DE fallback in template
     return (this.article as any)[`body_${this.currentLang}`] || '';
   }
 

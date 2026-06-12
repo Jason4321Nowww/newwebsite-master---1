@@ -90,12 +90,13 @@ const emailSendLimiter = rateLimit({
   handler: onLimitReached,
 });
 
-/** General API — max 300 per 15 min */
+/** General API — max 1000 per 15 min (admin panel routes skipped in server.js) */
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 300,
+  max: 1000,
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => req.path.startsWith('/api/admin') || req.path.startsWith('/api/actions'),
   handler: onLimitReached,
 });
 

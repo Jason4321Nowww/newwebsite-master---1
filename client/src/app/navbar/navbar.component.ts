@@ -1,10 +1,11 @@
 import { Component, ElementRef, HostListener, OnInit, OnDestroy, NgZone, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CartService } from '../services/cart.service';
 import { ThemeService } from '../services/theme.service';
 import { LanguageService } from '../services/language.service';
 import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-navbar',
@@ -23,6 +24,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   isProfileOpen = false;
   private themeSubscription?: Subscription;
   private userNameSub?: Subscription;
+  private routerSub?: Subscription;
 
   constructor(
     private router: Router,
@@ -76,6 +78,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
       this.userName = name;
       this.cdr.detectChanges();
     });
+
+    this.routerSub = this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe(() => { this.isMenuOpen = false; });
   
   
    // ✅ Subscribe to cart item count
@@ -107,5 +113,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     window.removeEventListener('scroll', this.scrollHandler);
     this.themeSubscription?.unsubscribe();
     this.userNameSub?.unsubscribe();
+    this.routerSub?.unsubscribe();
   }
 }

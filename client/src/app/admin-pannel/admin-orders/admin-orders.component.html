@@ -28,15 +28,15 @@
       </thead>
       <tbody>
         <tr *ngFor="let order of orders">
-          <td class="invoice-num">{{ order.invoiceNumber || '—' }}</td>
-          <td class="payment-num">{{ order.paymentNumber || '—' }}</td>
-          <td>{{ order.customerName }}</td>
-          <td>{{ order.customerEmail }}</td>
-          <td>CHF {{ order.totalAmount }}</td>
-          <td>
+          <td class="invoice-num" data-label="Invoice #">{{ order.invoiceNumber || '—' }}</td>
+          <td class="payment-num" data-label="Kaufnummer">{{ order.paymentNumber || '—' }}</td>
+          <td data-label="Customer">{{ order.customerName }}</td>
+          <td data-label="Email">{{ order.customerEmail }}</td>
+          <td data-label="Total">CHF {{ order.totalAmount }}</td>
+          <td data-label="Status">
             <span class="status-badge status-{{ order.status }}">{{ order.status | titlecase }}</span>
           </td>
-          <td class="actions-cell">
+          <td class="actions-cell" data-label="Actions">
             <button *ngIf="order.status === 'pending'" class="btn-paid" (click)="markAsPaid(order._id)">Mark Paid</button>
             <button *ngIf="order.status === 'paid'" class="btn-shipped" (click)="markAsShipped(order._id)">Mark Shipped</button>
             <button *ngIf="order.status !== 'cancelled' && order.status !== 'shipped'" class="btn-cancel" (click)="cancelOrder(order._id)">Cancel</button>

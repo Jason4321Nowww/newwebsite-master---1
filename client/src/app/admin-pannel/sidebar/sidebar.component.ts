@@ -24,7 +24,7 @@ export class SidebarComponent implements OnInit {
     { label: 'Press', icon: 'campaign', key: 'admin-press' },
     { label: 'Shop', icon: 'storefront', key: 'admin-shop' },
     { label: 'User', icon: 'manage_accounts', key: 'admin-user' },
-    { label: 'Orders', icon: 'manage_accounts', key: 'admin-orders' },
+    { label: 'Orders', icon: 'shopping_bag', key: 'admin-orders' },
     { label: 'Contacts', icon: 'manage_contacts', key: 'admin-contacts' },
     { label: 'Logout', icon: 'logout', key: 'logout', danger: true }
   ];
@@ -40,21 +40,26 @@ export class SidebarComponent implements OnInit {
   private snackBar: MatSnackBar // optional
 ) {}
 
+  isMobile = false;
+
   ngOnInit(): void {
-    this.breakpointObserver.observe([Breakpoints.Handset])
+    this.breakpointObserver.observe([Breakpoints.Handset, Breakpoints.TabletPortrait])
       .subscribe(result => {
+        this.isMobile = result.matches;
         this.sidebarCollapsed = result.matches;
       });
   }
 
   selectItem(key: string) {
- if (key === 'logout') {
-    this.authAdmin.logoutAdmin();
-    return;
-  }
-
+    if (key === 'logout') {
+      this.authAdmin.logoutAdmin();
+      return;
+    }
     this.activeItem = key;
     this.itemSelected.emit(key);
+    if (this.isMobile) {
+      this.sidebarCollapsed = true;
+    }
   }
 
   toggleSidebar() {

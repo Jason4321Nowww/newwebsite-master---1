@@ -251,16 +251,10 @@ async confirmSend() {
 
 const pressImageHtml = release.image
   ? `
-    <div style="text-align:center; margin: 25px 0;">
-      <img 
-        src="${release.image}" 
-        style="
-          max-width: 350px;
-          width: 100%;
-          height: auto;
-          border-radius: 8px;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        "
+    <div style="text-align:center; margin: 20px 0;">
+      <img
+        src="${release.image}"
+        style="display:inline-block;width:auto;max-width:100%;max-height:320px;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.15);"
         crossOrigin="anonymous"
       />
     </div>
@@ -279,8 +273,8 @@ const pressImageHtml = release.image
         <img src="${rightFlag}" style="height: 50px;" crossOrigin="anonymous"/>
       </div>
       <hr style="border: none; border-top: 2px solid #aaa; margin: 20px 0;" />
-      <div style="font-size: 1rem; margin-bottom: 30px;">${langContent}</div>
        ${pressImageHtml}
+      <div style="font-size: 1rem; margin-bottom: 30px;">${langContent}</div>
 
       <div style="display: flex; align-items: center; font-size: 0.95rem; color: #555; font-style: italic; border-left: 4px solid #ccc; padding-left: 8px; max-width: 300px;">
         ${calendarIconSVG}<span>${releaseDate}</span>

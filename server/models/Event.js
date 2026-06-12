@@ -27,7 +27,8 @@ const eventSchema = new mongoose.Schema(
       type: String,
       enum: [
         'oeffentlich',        // public — everyone
-        'nationalversammlung', // roles everyone except regular memeber, non-mmber and public
+        'intern',             // all logged-in users (incl. non-members), NOT public
+        'nationalversammlung', // roles 0-6 (excl. regular member + non-member + public)
         'lokalversammlung',   // roles 4,5,6 + location
         'regionalversammlung',// roles 3,4,5,6 + location
         'rv_zusammenkunft',   // roles 1,2,3 (no location filter)

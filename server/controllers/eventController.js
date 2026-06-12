@@ -1,11 +1,12 @@
 const Event = require('../models/Event');
 
 // Strip tracking fields (ip, visitorId) from attendees before sending to client
-const sanitiseEvent = (eventObj, userId, visitorId, clientIp) => {
+const sanitiseEvent = (eventObj, userId, visitorId) => {
   const isAttending = eventObj.attendees.some(a =>
-    (userId    && a.user?.toString() === userId)    ||
-    (visitorId && a.visitorId === visitorId)        ||
-    (clientIp  && a.ip === clientIp)
+    (userId    && a.user?.toString() === userId) ||
+    (visitorId && a.visitorId === visitorId)
+    // IP intentionally excluded: shared NAT IPs would mark every user on the
+    // same network as attending whenever one person joins
   );
   return {
     ...eventObj,
@@ -26,7 +27,7 @@ const getPublicEvents = async (req, res) => {
     const events    = await Event.find({ visibilityLevel: 0, isActive: true })
       .populate('attendees.user', 'username roleLevel');
     return res.status(200).json(
-      events.map(e => sanitiseEvent(e.toObject({ virtuals: true }), null, visitorId, clientIp))
+      events.map(e => sanitiseEvent(e.toObject({ virtuals: true }), null, visitorId))
     );
   } catch (error) {
     console.error('Public events error:', error);
@@ -62,6 +63,7 @@ const getEvents = async (req, res) => {
         // Superadmin: sees all events
       } else {
         const conditions = [{ eventType: 'oeffentlich' }];
+        conditions.push({ eventType: 'intern' }); // all logged-in users (incl. roleLevel 7+8)
         if (roleLevel === 1) conditions.push({ eventType: 'vorsitzende' });
         if (roleLevel <= 3)  conditions.push({ eventType: 'vorstand' });
         if (roleLevel <= 6)  conditions.push({ eventType: 'nationalversammlung' });
@@ -96,7 +98,7 @@ const getEvents = async (req, res) => {
     const clientIp  = req.ip;
 
     const events = await Event.find(query);
-    res.json(events.map(e => sanitiseEvent(e.toObject({ virtuals: true }), userId, visitorId, clientIp)));
+    res.json(events.map(e => sanitiseEvent(e.toObject({ virtuals: true }), userId, visitorId)));
   } catch (err) {
     console.error('Events fetch error:', err);
     res.status(500).json({ message: 'Failed to fetch events' });
@@ -198,12 +200,13 @@ const toggleAttendance = async (req, res) => {
       if (userId) {
         condition = { _id: eventId, 'attendees.user': { $ne: userId } };
       } else {
-        // For guests block by visitorId OR IP
+        // For guests: block by visitorId OR by IP (but only against other anonymous records,
+        // not against logged-in users who happen to share the same NAT IP)
         condition = {
           _id: eventId,
           $nor: [
-            ...(visitorId ? [{ 'attendees.visitorId': visitorId }] : []),
-            { 'attendees.ip': clientIp },
+            ...(visitorId ? [{ attendees: { $elemMatch: { visitorId } } }] : []),
+            { attendees: { $elemMatch: { ip: clientIp, user: null } } },
           ],
         };
       }
@@ -231,7 +234,7 @@ const toggleAttendance = async (req, res) => {
       } else if (visitorId) {
         pullFilter = { visitorId };
       } else {
-        pullFilter = { ip: clientIp };
+        pullFilter = { ip: clientIp, user: null };
       }
 
       updated = await Event.findByIdAndUpdate(

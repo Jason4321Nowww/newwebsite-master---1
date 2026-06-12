@@ -61,7 +61,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width:60%;
+  width: 60%;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
 }
 
 .search-pill {
@@ -73,6 +77,12 @@
   padding: 0.35rem 0.35rem 0.35rem 0.8rem;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   border: 1px solid #ddd;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    padding: 0.25rem 0.25rem 0.25rem 0.6rem;
+  }
 }
 
 .search-pill .pill-icon {
@@ -112,6 +122,14 @@
   letter-spacing: 0.02em;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.82rem;
+    letter-spacing: 0;
+  }
 }
 
 .search-pill .pill-btn:hover {

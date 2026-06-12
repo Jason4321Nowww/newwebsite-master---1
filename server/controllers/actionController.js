@@ -6,6 +6,13 @@ const createAction = async (req, res) => {
     const mediaPaths = req.files?.map(file => `/uploads/actions/${file.filename}`) || [];
     const { title, title_it, title_fr, title_en, description, description_it, description_fr, description_en } = req.body;
 
+    if (!title?.trim() || !description?.trim()) {
+      return res.status(400).json({ message: 'Title and description are required.' });
+    }
+    if (!mediaPaths.length) {
+      return res.status(400).json({ message: 'At least one media file is required.' });
+    }
+
     const newAction = new Action({ title, title_it, title_fr, title_en, description, description_it, description_fr, description_en, media: mediaPaths });
     const saved = await newAction.save();
     res.status(201).json(saved);
@@ -40,6 +47,10 @@ const updateAction = async (req, res) => {
   try {
     const mediaPaths = req.files?.map(file => `/uploads/actions/${file.filename}`) || [];
     const { title, title_it, title_fr, title_en, description, description_it, description_fr, description_en } = req.body;
+
+    if (!title?.trim() || !description?.trim()) {
+      return res.status(400).json({ message: 'Title and description are required.' });
+    }
 
     const updateData = { title, title_it, title_fr, title_en, description, description_it, description_fr, description_en };
 

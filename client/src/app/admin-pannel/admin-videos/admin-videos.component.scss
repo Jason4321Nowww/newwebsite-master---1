@@ -217,13 +217,21 @@ li {
 
 /* Responsive Handling */
 @media (max-width: 1024px) {
-  li {
-    flex: 0 0 48%;
-  }
+  li { flex: 0 0 48%; }
 }
 
 @media (max-width: 600px) {
-  li {
+  li { flex: 0 0 100%; }
+
+  .video-input-preview-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .video-form,
+  .video-preview {
     flex: 0 0 100%;
+    min-width: 0;
+    width: 100%;
   }
 }

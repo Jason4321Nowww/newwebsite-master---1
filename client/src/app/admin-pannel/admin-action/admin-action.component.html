@@ -28,6 +28,7 @@
 
     <label *ngIf="activeLang === 'de'">Title (DE)
       <input formControlName="title" type="text" required />
+      <span class="field-error" *ngIf="actionForm.get('title')?.invalid && actionForm.get('title')?.touched">Title is required.</span>
     </label>
     <label *ngIf="activeLang === 'it'">Title (IT)
       <input formControlName="title_it" type="text" />
@@ -41,6 +42,7 @@
 
     <label *ngIf="activeLang === 'de'">Description (DE)
       <textarea formControlName="description" required></textarea>
+      <span class="field-error" *ngIf="actionForm.get('description')?.invalid && actionForm.get('description')?.touched">Description is required.</span>
     </label>
     <label *ngIf="activeLang === 'it'">Description (IT)
       <textarea formControlName="description_it"></textarea>
@@ -55,6 +57,7 @@
     <!-- Media Upload -->
     <label>Media (Images or Videos)
       <input
+  #fileInput
   type="file"
   multiple
   accept="image/*,video/*"
@@ -71,38 +74,63 @@
       </ng-container>
     </div>
     <div>
-    <button type="submit" class="btn btn-primary">{{ isEditing ? 'Update' : 'Create' }}</button>
-    <button type="button" (click)="resetForm()"  class="btn btn-secondary cancelEditBtn" *ngIf="isEditing">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isUploading">
+        {{ isUploading ? 'Uploading…' : (isEditing ? 'Update' : 'Create') }}
+      </button>
+      <button type="button" (click)="resetForm()" class="btn btn-secondary cancelEditBtn" *ngIf="isEditing && !isUploading">Cancel</button>
+    </div>
+
+    <!-- Success message -->
+    <div *ngIf="successMessage" class="upload-success-msg">
+      {{ successMessage }}
+    </div>
+
+    <!-- Upload error -->
+    <div *ngIf="uploadError" class="upload-error-msg">
+      {{ uploadError }}
+    </div>
+
+    <!-- Upload progress -->
+    <div *ngIf="uploadProgress !== null" class="upload-progress-wrap">
+      <div class="upload-progress-track">
+        <div class="upload-progress-bar" [style.width.%]="uploadProgress" [class.done]="uploadDone"></div>
+      </div>
+      <span class="upload-progress-label" [class.done]="uploadDone">
+        <ng-container *ngIf="uploadDone">✓ Uploaded successfully!</ng-container>
+        <ng-container *ngIf="!uploadDone">Uploading… {{ uploadProgress }}%</ng-container>
+      </span>
     </div>
   </form>
 
   <hr />
 
   <h2>All Actions</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Media</th>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let action of actions">
-        <td>
-          <ng-container *ngFor="let media of action.media">
-            <img *ngIf="isImage(media)" [src]="'' + media" class="thumb" />
-            <video *ngIf="isVideo(media)" controls [src]="'' + media" class="thumb"></video>
-          </ng-container>
-        </td>
-        <td>{{ action.title }}</td>
-        <td>{{ action.description }}</td>
-        <td>
-          <mat-icon class="text-success" (click)="editAction(action)">edit</mat-icon>
-          <mat-icon class="text-danger" (click)="deleteAction(action._id!)">delete</mat-icon>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Media</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let action of actions">
+          <td data-label="Media">
+            <ng-container *ngFor="let media of action.media">
+              <img *ngIf="isImage(media)" [src]="'' + media" class="thumb" />
+              <video *ngIf="isVideo(media)" controls [src]="'' + media" class="thumb"></video>
+            </ng-container>
+          </td>
+          <td data-label="Title">{{ action.title }}</td>
+          <td data-label="Description">{{ action.description }}</td>
+          <td data-label="Actions">
+            <mat-icon class="text-success" (click)="editAction(action)">edit</mat-icon>
+            <mat-icon class="text-danger" (click)="deleteAction(action._id!)">delete</mat-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

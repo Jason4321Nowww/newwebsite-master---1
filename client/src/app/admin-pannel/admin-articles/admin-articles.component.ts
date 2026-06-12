@@ -235,7 +235,14 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
   }
 
   submit() {
-    if (this.articleForm.invalid) { alert('Please fill title and text blocks.'); return; }
+    if (this.articleForm.invalid || !this.articleForm.get('title')?.value?.trim()) {
+      alert('Please fill in the German title (required).');
+      return;
+    }
+    if (this.blocks.length === 0) {
+      alert('Please add at least one text or image block for the German (DE) version.');
+      return;
+    }
 
     const payloadBlocks = this.blocks.controls.map(ctrl => {
       const val = ctrl.value;
@@ -251,9 +258,9 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
     formData.append('author', this.articleForm.get('author')?.value || '');
     formData.append('body', JSON.stringify(payloadBlocks));
 
-    // Convert translation blocks to HTML
+    // Send translation blocks as JSON — server maps uploaded images and converts to HTML
     ['it', 'fr', 'en'].forEach(lang => {
-      formData.append(`body_${lang}`, this.langBlocksToHtml(lang));
+      formData.append(`body_${lang}`, JSON.stringify(this.langBlocks[lang] || []));
     });
 
     // DE images
@@ -276,7 +283,11 @@ export class AdminArticlesComponent implements OnInit, AfterViewInit {
 
     obs.subscribe({
       next: () => { alert('Saved'); this.cancelEdit(); this.loadArticles(); },
-      error: err => { console.error(err); alert('Save failed'); }
+      error: err => {
+        console.error(err);
+        const msg = err?.error?.message || err?.message || 'Save failed. Please try again.';
+        alert(msg);
+      }
     });
   }
 

@@ -111,6 +111,7 @@
 
 <hr />
 
+<div class="table-wrap">
 <table>
   <thead>
     <tr>
@@ -126,27 +127,28 @@
   </thead>
   <tbody>
     <tr *ngFor="let p of products">
-      <td>
+      <td data-label="Image">
         <img [src]="'' + p.mediaUrl" alt="Product Image" class="product-thumb">
       </td>
-      <td>{{ p.name }}</td>
-      <td>{{ p.category }}</td>
-      <td>{{ p.price }}</td>
-      <td>{{ p.stock }}</td>
-      <td>
+      <td data-label="Name">{{ p.name }}</td>
+      <td data-label="Category">{{ p.category }}</td>
+      <td data-label="Price">{{ p.price }}</td>
+      <td data-label="Stock">{{ p.stock }}</td>
+      <td data-label="Featured">
         <mat-icon [ngStyle]="{ color: p.isFeatured ? '#4caf50' : '#f44336' }" (click)="toggleFeatured(p.id!)" [matTooltip]="p.isFeatured ? 'Deactivate' : 'Activate'">
           {{ p.isFeatured ? 'toggle_on' : 'toggle_off' }}
         </mat-icon>
       </td>
-      <td>
+      <td data-label="Status">
         <mat-icon [ngStyle]="{ color: p.isActive ? '#4caf50' : '#f44336' }" (click)="toggleActive(p.id!)" [matTooltip]="p.isActive ? 'Deactivate' : 'Activate'">
           {{ p.isActive ? 'toggle_on' : 'toggle_off' }}
         </mat-icon>
       </td>
-      <td>
+      <td data-label="Actions">
         <mat-icon color="primary" (click)="editProduct(p)" matTooltip="Edit">edit</mat-icon>
         <mat-icon color="warn" (click)="deleteProduct(p.id!)" matTooltip="Delete">delete</mat-icon>
       </td>
     </tr>
   </tbody>
 </table>
+</div>

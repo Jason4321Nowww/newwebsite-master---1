@@ -295,6 +295,14 @@ input, textarea, select {
   }
 }
 
+/* File inputs overflow their container by default — constrain globally */
+input[type="file"] {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /* Admin Panel - Force Light Mode (Exclude from theme) */
 app-admin-layout,
 [class*="admin-"]:not([class*="admin-pannel"]) {
@@ -464,6 +472,11 @@ router-outlet + [class*="admin-"] {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+
+  @media (max-width: 600px) {
+    padding: 1rem 0.875rem;
+    border-radius: var(--radius-md);
+  }
 }
 
 /* Language tabs — used in admin forms and lang switcher */
@@ -472,6 +485,7 @@ router-outlet + [class*="admin-"] {
   align-items: center;
   gap: 4px;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 
   button {
     background: transparent;
@@ -534,13 +548,13 @@ router-outlet + [class*="admin-"] {
 .lang-add-dropdown {
   position: absolute;
   top: calc(100% + 6px);
-  right: 0;
-  min-width: 180px;
+  left: 0;
+  min-width: 160px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: var(--radius-md);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  z-index: 200;
+  z-index: 500;
   overflow: hidden;
 }
 
@@ -578,7 +592,7 @@ router-outlet + [class*="admin-"] {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  padding: 0.45rem 1rem;
+  padding: 0.45rem 0.75rem;
   font-size: 0.82rem;
   font-weight: 500;
   color: #6b7280;
@@ -587,6 +601,7 @@ router-outlet + [class*="admin-"] {
   margin-bottom: -2px;
   transition: color 0.15s, border-color 0.15s, background 0.15s;
   user-select: none;
+  white-space: nowrap;
 
   &.active {
     color: #009d63;
@@ -609,6 +624,16 @@ router-outlet + [class*="admin-"] {
 
 .lang-tab-label {
   line-height: 1;
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .lang-tab {
+    padding: 0.45rem 0.5rem;
+  }
 }
 
 .lang-tab-remove {

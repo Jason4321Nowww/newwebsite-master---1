@@ -16,6 +16,9 @@
           preload="auto"
           [src]="item.src"
         ></video>
+        <div class="caption" *ngIf="item.captionKey">
+          <span>{{ langService.t(item.captionKey) }}</span>
+        </div>
       </ng-container>
       <ng-template #imageTemplate>
         <div class="image-wrapper">

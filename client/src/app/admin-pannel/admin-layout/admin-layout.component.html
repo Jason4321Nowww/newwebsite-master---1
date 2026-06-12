@@ -1,13 +1,17 @@
 <!-- admin-dashboard -->
 <div class="d-flex" id="wrapper">
-  <app-sidebar (itemSelected)="onItemSelected($event)"></app-sidebar>
+  <app-sidebar #sidebar (itemSelected)="onItemSelected($event)"></app-sidebar>
 
   <div id="page-content-wrapper" class="flex-grow-1">
 
     <!-- Consistent page header bar -->
-    <div class="admin-page-header" *ngIf="pageTitle">
+    <div class="admin-page-header">
       <div class="admin-page-header__inner">
-        <mat-icon class="admin-page-header__icon">{{ pageIcon }}</mat-icon>
+        <img src="assets/logo/starlinelessbigger.png" alt="BKP Logo" class="header-logo d-lg-none" />
+        <div class="header-separator d-lg-none"></div>
+        <button class="burger-btn d-lg-none" (click)="sidebar.toggleSidebar()">
+          <mat-icon>menu</mat-icon>
+        </button>
         <span class="admin-page-header__title">{{ pageTitle }}</span>
       </div>
     </div>

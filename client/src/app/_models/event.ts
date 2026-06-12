@@ -19,7 +19,7 @@ export interface Event {
   date: string;                   // Legacy or optional use
   repeat: 'none' | 'weekly' | 'biweekly' | 'monthly' | 'annually';
   repeatEndDate?: string;
-  eventType?: 'oeffentlich' | 'nationalversammlung' | 'lokalversammlung' | 'regionalversammlung' | 'rv_zusammenkunft' | 'lv_zusammenkunft' | 'vorstand' | 'vorsitzende' | 'admin';
+  eventType?: 'oeffentlich' | 'intern' | 'nationalversammlung' | 'lokalversammlung' | 'regionalversammlung' | 'rv_zusammenkunft' | 'lv_zusammenkunft' | 'vorstand' | 'vorsitzende' | 'admin';
   visibilityLevel?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
   eventLocation: { kantonCode: string; bezirk: string; gemeinde: string } | null;
   attendees: Attendee[];

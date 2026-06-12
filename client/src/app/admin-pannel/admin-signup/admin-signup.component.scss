@@ -37,6 +37,12 @@
     mat-icon {
       margin-right: 0.5rem;
       color: #666;
+      flex-shrink: 0;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      line-height: 20px;
+      align-self: center;
     }
 
     input {

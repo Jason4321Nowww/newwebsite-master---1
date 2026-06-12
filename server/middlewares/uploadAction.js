@@ -38,5 +38,9 @@ const fileFilter = (req, file, cb) => {
 
 module.exports = multer({
   storage,
-  fileFilter
+  fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024,  // 10 MB per file
+    files: 20,                    // max 20 files at once
+  }
 });

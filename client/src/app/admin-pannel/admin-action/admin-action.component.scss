@@ -102,13 +102,75 @@
 }
   }
 
+  .field-error {
+    display: block;
+    color: #b91c1c;
+    font-size: 0.8rem;
+    margin-top: 4px;
+  }
+
+  .upload-success-msg {
+    margin-top: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    border: 1px solid #86efac;
+  }
+
+  .upload-error-msg {
+    margin-top: 0.75rem;
+    padding: 0.6rem 1rem;
+    background: #fee2e2;
+    color: #b91c1c;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    border: 1px solid #fca5a5;
+  }
+
+  .upload-progress-wrap {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .upload-progress-track {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .upload-progress-bar {
+    height: 100%;
+    background: #009d63;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+
+    &.done { background: #22c55e; }
+  }
+
+  .upload-progress-label {
+    font-size: 0.82rem;
+    color: #555;
+    font-weight: 500;
+
+    &.done { color: #16a34a; }
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 2rem;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 2rem;
 
-    th,
-    td {
+    th, td {
       border: 1px solid #ccc;
       padding: 0.5rem;
       text-align: left;
@@ -121,8 +183,54 @@
       object-fit: cover;
     }
 
-    video.thumb {
-      height: 60px;
+    video.thumb { height: 60px; }
+  }
+
+  @media (max-width: 768px) {
+    .table-wrap { overflow-x: visible; }
+
+    table { display: block; }
+    thead { display: none; }
+    tbody { display: block; }
+
+    tr {
+      display: block;
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+    }
+
+    td {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 6px 0;
+      border: none;
+      border-bottom: 1px solid #f3f4f6;
+      font-size: 0.9rem;
+      word-break: break-word;
+
+      &:last-child { border-bottom: none; }
+
+      &::before {
+        content: attr(data-label);
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: #9ca3af;
+        min-width: 80px;
+        flex-shrink: 0;
+        padding-top: 2px;
+      }
+    }
+
+    .thumb {
+      width: 80px;
+      height: auto;
     }
   }
 }

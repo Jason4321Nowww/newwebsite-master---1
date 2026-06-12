@@ -1,22 +1,22 @@
 <div class="admin-contact-list admin-card">
-
-  <table >
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Participation </th>
-        <th>Created</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let contact of contacts">
-        <td>{{ contact.name }}</td>
-        <td>{{ contact.email }}</td>
-        <td>{{ contact.participation }}</td>
-        <td>{{ contact.createdAt | date: 'short' }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Participation</th>
+          <th>Created</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let contact of contacts">
+          <td data-label="Name">{{ contact.name }}</td>
+          <td data-label="Email">{{ contact.email }}</td>
+          <td data-label="Participation">{{ contact.participation }}</td>
+          <td data-label="Created">{{ contact.createdAt | date: 'short' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
-

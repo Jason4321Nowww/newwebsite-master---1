@@ -15,7 +15,7 @@ export class TitlescreenComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChildren('videoEl') videoEls!: QueryList<ElementRef<HTMLVideoElement>>;
 
   items = [
-    { id: 1, type: 'video', src: '/assets/videos/vone.mp4', captionKey: '' },
+    { id: 1, type: 'video', src: '/assets/videos/vone.mp4', captionKey: 'titlescreen.caption1' },
     { id: 2, type: 'image', src: '/assets/mountains.webp',  captionKey: 'titlescreen.caption1' },
     { id: 3, type: 'image', src: '/assets/industrie.webp',  captionKey: 'titlescreen.caption2' },
     { id: 4, type: 'image', src: 'https://bkps.ch/IMG/slider/gruppenfoto2.webp', captionKey: 'titlescreen.caption3' },
@@ -100,7 +100,7 @@ export class TitlescreenComponent implements OnInit, AfterViewInit, OnDestroy {
     this.syncVideoPlayback();
   }
 
-  trackByFn(index: number, item: any): number {
+  trackByFn(_index: number, item: any): number {
     return item.id;
   }
 }

@@ -2,7 +2,7 @@
 
   <div class="videotitle" [class.landscape]="isLandscape">{{ getTitle(langService.lang$ | async) }}</div>
 
-  <!-- Thumbnail + play button (shown until user clicks play) -->
+  <!-- Thumbnail shown until user clicks play -->
   <div *ngIf="!playing"
        class="thumbnail-wrap"
        [class.landscape]="isLandscape"
@@ -14,16 +14,36 @@
         <path class="play-btn-icon" d="M45 24 27 14v20z"/>
       </svg>
     </div>
+    <button class="fullscreen-btn" (click)="openFullscreen($event)" title="Fullscreen">
+      <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+      </svg>
+    </button>
   </div>
 
-  <!-- Iframe loaded only after user clicks play -->
-  <iframe
-    *ngIf="playing"
-    [ngClass]="{'short-video': true, 'landscape': isLandscape}"
-    [src]="videoUrl"
-    frameborder="0"
-    allow="autoplay; fullscreen"
-    allowfullscreen
-  ></iframe>
+  <!-- Iframe wrapper — this entire div goes fullscreen so close button stays visible -->
+  <div *ngIf="playing" class="iframe-wrap" [class.landscape]="isLandscape" #wrapEl>
+    <iframe
+      class="short-video"
+      [src]="videoUrl"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
+      allowfullscreen
+      webkitallowfullscreen
+      mozallowfullscreen
+    ></iframe>
+
+    <!-- Fullscreen button (shown when not fullscreen) -->
+    <button *ngIf="!isFullscreen" class="fullscreen-btn" (click)="openFullscreen($event)" title="Fullscreen">
+      <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+      </svg>
+    </button>
+
+    <!-- Close/exit fullscreen button (shown only when in fullscreen) -->
+    <button *ngIf="isFullscreen" class="close-fs-btn" (click)="exitFullscreen($event)" title="Exit fullscreen">
+      ✕
+    </button>
+  </div>
 
 </div>
