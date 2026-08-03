@@ -12,7 +12,7 @@ const seedLocations  = require('./seeders/seedLocations');
 
 const {
   ipBlocker, botDetection, mongoSanitize,
-  authLimiter, otpLimiter, contactLimiter,
+  authLimiter, signupLimiter, otpLimiter, contactLimiter,
   orderLimiter, emailSendLimiter, apiLimiter,
 } = require('./middlewares/security');
 
@@ -93,7 +93,7 @@ app.use('/uploads', (req, res, next) => {
 
 // Auth — tight limits on every endpoint; OTP endpoints even tighter
 app.use('/api/auth/signin',           authLimiter);
-app.use('/api/auth/signup',           authLimiter);
+app.use('/api/auth/signup',           signupLimiter);
 app.use('/api/auth/verify-email-otp', otpLimiter);
 app.use('/api/auth/resend-email-otp', otpLimiter);
 app.use('/api/auth',                  authRoutes);
@@ -105,7 +105,7 @@ app.use('/api/press-release/send',    emailSendLimiter);
 app.use('/api/press-release',         pressRoutes);
 
 // Contact form
-app.use('/api/contacts',              contactLimiter, contactRoutes);
+app.use('/api/contacts',              contactRoutes);
 
 // Orders — rate-limit creation
 app.use('/api/orders',                orderLimiter, orderRoutes);
