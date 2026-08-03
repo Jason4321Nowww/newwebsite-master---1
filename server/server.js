@@ -105,7 +105,7 @@ app.use('/api/press-release/send',    emailSendLimiter);
 app.use('/api/press-release',         pressRoutes);
 
 // Contact form
-app.use('/api/contacts',              contactLimiter, contactRoutes);
+app.use('/api/contacts',              contactRoutes);
 
 // Orders — rate-limit creation
 app.use('/api/orders',                orderLimiter, orderRoutes);
