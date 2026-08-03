@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api-bkp.vekon.studio'
+  apiUrl: 'https://api.bkp.vekon.studio'
 };
