@@ -160,6 +160,7 @@ export const en: Record<string, string> = {
   // ── Events – repeat labels ────────────────────────────────────
   'events.repeatsUntil':    'Repeats until',
   'events.repeatingEvent':  'Repeating event',
+  'events.startingFrom':   'Starting',
   'events.repeat.none':     'None',
   'events.repeat.weekly':   'Weekly',
   'events.repeat.biweekly': 'Every 2 weeks',
