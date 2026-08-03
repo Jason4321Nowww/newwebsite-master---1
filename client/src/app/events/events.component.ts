@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Event } from '../_models/event';
-import { AuthService } from '../services/auth.service';
-import { EventsService } from '../services/events.service';
-import { LanguageService } from '../services/language.service';
-import { Subscription } from 'rxjs';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Event} from '../_models/event';
+import {AuthService} from '../services/auth.service';
+import {EventsService} from '../services/events.service';
+import {LanguageService} from '../services/language.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-events',
@@ -23,33 +23,35 @@ export class EventsComponent implements OnInit, OnDestroy {
     private eventService: EventsService,
     public langService: LanguageService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+  }
 
-ngOnInit(): void {
-  this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
-  this.loading = true;
-  this.isLoggedIn = this.auth.isLoggedIn();
-  this.roleLevel = Number(localStorage.getItem('roleLevel') ?? 7);
-  // Server filters events by role+location; client just renders what it receives
-  this.eventService.getEvents().subscribe({
-    next: (events: any[]) => {
-      this.events = events.map(e => ({
-        ...e,
-        attendeesCount: e.attendeesCount ?? e.attendees?.length ?? 0,
-        isAttending: e.isAttending ?? false,
-      }));
-      this.loading = false;
-    },
-    error: (err) => {
-      console.error('Error fetching events:', err);
-      this.loading = false;
-    }
-  });
-}
+  ngOnInit(): void {
+    this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
+    this.loading = true;
+    this.isLoggedIn = this.auth.isLoggedIn();
+    this.roleLevel = Number(localStorage.getItem('roleLevel') ?? 7);
+    // Server filters events by role+location; client just renders what it receives
+    this.eventService.getEvents().subscribe({
+      next: (events: any[]) => {
+        this.events = events.map(e => ({
+          ...e,
+          attendeesCount: e.attendeesCount ?? e.attendees?.length ?? 0,
+          isAttending: e.isAttending ?? false,
+        }));
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching events:', err);
+        this.loading = false;
+      }
+    });
+  }
 
 
-
-  ngOnDestroy(): void { this.langSub?.unsubscribe(); }
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
 
   toggleReadMore(eventId: string): void {
     this.expandedEventIds.has(eventId)
@@ -70,7 +72,7 @@ ngOnInit(): void {
   }
 
   toggleAttendance(event: Event): void {
-    
+
     const attend = !event.isAttending;
 
     this.eventService.toggleAttendance(event.id, attend).subscribe({
@@ -84,29 +86,42 @@ ngOnInit(): void {
     });
   }
 
- 
 
-convertToParagraphs(text: string): string {
-  if (!text) return '';
+  convertToParagraphs(text: string): string {
+    if (!text) return '';
 
-  const isHTML = /<\/?[a-z][\s\S]*>/i.test(text); // detects basic HTML tags
+    const isHTML = /<\/?[a-z][\s\S]*>/i.test(text); // detects basic HTML tags
 
-  if (isHTML) {
-    // ✅ already has <p>, <br>, etc. → return as-is
-    return text;
+    if (isHTML) {
+      // ✅ already has <p>, <br>, etc. → return as-is
+      return text;
+    }
+
+    // Else treat as plain text and wrap into paragraphs
+    const paragraphs = text.includes('\n\n')
+      ? text.split(/\n{2,}/g)
+      : [text];
+
+    return paragraphs
+      .map(para => `<p>${para.trim().replace(/\n/g, '<br>')}</p>`)
+      .join('');
   }
 
-  // Else treat as plain text and wrap into paragraphs
-  const paragraphs = text.includes('\n\n')
-    ? text.split(/\n{2,}/g)
-    : [text];
 
-  return paragraphs
-    .map(para => `<p>${para.trim().replace(/\n/g, '<br>')}</p>`)
-    .join('');
-}
+  getDateLabel(event: Event): string {
+    if (!event.repeat || event.repeat === 'none') {
+      return this.formatDate(event.eventDate);
+    }
+    const start = this.formatDate(event.eventDate);
+    const end = event.repeatEndDate ? this.formatDate(event.repeatEndDate) : null;
+    return end ? `${start} – ${end}` : `${this.langService.t('events.startingFrom')} ${start}`;
+  }
 
-
-
-
+  private formatDate(d: string): string {
+    return new Date(d).toLocaleDateString('de-CH', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).replace(/\./g, '-');
+  }
 }

@@ -39,7 +39,8 @@ const getPublicEvents = async (req, res) => {
 const getAllEventsForAdmin = async (_req, res) => {
   try {
     const events = await Event.find({ isActive: true })
-      .populate('attendees.user', 'username roleLevel');
+        .populate('attendees.user', 'username roleLevel')
+        .sort({ eventDate: 1 });
     res.json(events);
   } catch (err) {
     console.error('Admin fetch error:', err);
