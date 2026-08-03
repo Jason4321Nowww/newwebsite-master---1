@@ -24,7 +24,7 @@ services:
     volumes:
       - server_uploads:/app/uploads
     ports:
-      - "127.0.0.1:5000:5000"
+      - "127.0.0.1:5306:5000"
     networks:
       - bkp_internal
 
@@ -34,7 +34,7 @@ services:
     depends_on:
       - server
     ports:
-      - "127.0.0.1:8080:80"
+      - "127.0.0.1:3306:80"
     networks:
       - bkp_internal
 
