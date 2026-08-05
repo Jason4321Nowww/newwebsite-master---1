@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { Event } from '../_models/event';
-import { LanguageService } from '../services/language.service';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Event} from '../_models/event';
+import {LanguageService} from '../services/language.service';
 
 @Component({
   selector: 'app-calendar',
@@ -12,11 +12,12 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   currentMonth = new Date();
   // Each cell: null = empty padding cell, otherwise has date + optional event
-  calendarDates: ({ date: Date; inCurrentMonth: boolean; event?: Event } | null)[] = [];
+  calendarDates: ({ date: Date; inCurrentMonth: boolean; events: Event[] } | null)[] = [];
   weekDayKeys = ['calendar.mo', 'calendar.tu', 'calendar.we', 'calendar.th', 'calendar.fr', 'calendar.sa', 'calendar.su'];
   isMobile = false;
 
-  constructor(public langService: LanguageService) {}
+  constructor(public langService: LanguageService) {
+  }
 
   ngOnInit() {
     this.isMobile = window.innerWidth <= 768;
@@ -27,11 +28,6 @@ export class CalendarComponent implements OnInit, OnChanges {
     if (changes['events']) {
       this.generateCalendar();
     }
-  }
-
-  truncateTitle(title: string): string {
-    const limit = this.isMobile ? 25 : 12;
-    return title.length > limit ? title.slice(0, limit) + '...' : title;
   }
 
   prevMonth() {
@@ -65,13 +61,13 @@ export class CalendarComponent implements OnInit, OnChanges {
     const padding: null[] = Array(firstDayOfWeek).fill(null);
 
     // Build day cells for current month
-    const dayCells: { date: Date; inCurrentMonth: boolean; event?: Event }[] = [];
+    const dayCells: { date: Date; inCurrentMonth: boolean; events: Event[] }[] = [];
     for (let day = 1; day <= daysInMonth; day++) {
-      dayCells.push({ date: new Date(year, month, day), inCurrentMonth: true });
+      dayCells.push({date: new Date(year, month, day), inCurrentMonth: true, events: []});
     }
 
     // Map events to dates (using local-date parsing to avoid UTC shift)
-    const eventDatesMap = new Map<string, Event>();
+    const eventDatesMap = new Map<string, Event[]>();
 
     this.events.forEach(event => {
       const eventDate = this.parseLocalDate(event.eventDate as any);
@@ -92,7 +88,10 @@ export class CalendarComponent implements OnInit, OnChanges {
         if (repeatEnd && current > repeatEnd) break;
 
         if (current >= startDate) {
-          eventDatesMap.set(current.toDateString(), event);
+          const key = current.toDateString();
+          const existing = eventDatesMap.get(key) ?? [];
+          existing.push(event);
+          eventDatesMap.set(key, existing);
         }
 
         if (!hasWeeklyRepeat && !hasOtherRepeat) break;
@@ -102,11 +101,21 @@ export class CalendarComponent implements OnInit, OnChanges {
           next.setDate(next.getDate() + repeatInterval * 7);
         } else {
           switch (event.repeat) {
-            case 'weekly':    next.setDate(next.getDate() + 7); break;
-            case 'biweekly':  next.setDate(next.getDate() + 14); break;
-            case 'monthly':   next.setMonth(next.getMonth() + 1); break;
-            case 'annually':  next.setFullYear(next.getFullYear() + 1); break;
-            default: current = new Date(endDate.getTime() + 1); break; // force exit
+            case 'weekly':
+              next.setDate(next.getDate() + 7);
+              break;
+            case 'biweekly':
+              next.setDate(next.getDate() + 14);
+              break;
+            case 'monthly':
+              next.setMonth(next.getMonth() + 1);
+              break;
+            case 'annually':
+              next.setFullYear(next.getFullYear() + 1);
+              break;
+            default:
+              current = new Date(endDate.getTime() + 1);
+              break; // force exit
           }
         }
         current = next;
@@ -115,7 +124,7 @@ export class CalendarComponent implements OnInit, OnChanges {
 
     const resolvedCells = dayCells.map(day => ({
       ...day,
-      event: eventDatesMap.get(day.date.toDateString())
+      events: eventDatesMap.get(day.date.toDateString()) ?? []
     }));
 
     this.calendarDates = [...padding, ...resolvedCells];
@@ -133,8 +142,8 @@ export class CalendarComponent implements OnInit, OnChanges {
     }
     const d = this.parseLocalDate(event.eventDate as any);
     const dateStr = d.toLocaleDateString(this.langService.current === 'de' ? 'de-CH'
-                                        : this.langService.current === 'fr' ? 'fr-CH'
-                                        : this.langService.current === 'it' ? 'it-CH' : 'en-GB');
+      : this.langService.current === 'fr' ? 'fr-CH'
+        : this.langService.current === 'it' ? 'it-CH' : 'en-GB');
     return `${this.langService.getField(event, 'title')}\n${this.langService.t('calendar.repeat')}: ${repeatLabel}\n${this.langService.t('calendar.date')}: ${dateStr}`;
   }
 
