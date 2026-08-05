@@ -2,10 +2,11 @@
   <h2 class="gallery-heading scroll-reveal">{{ langService.t('actions.gallery') }}</h2>
 
   <div class="gallery-grid stagger">
-    <div class="gallery-card" *ngFor="let action of allActions">
+    <div class="gallery-card" *ngFor="let action of allActions" (click)="openCard($event, cardGallery)">
 
-      <lightgallery [settings]="settings" class="card-gallery" (onInit)="onGalleryInit($event)">
-        <a
+      <lightgallery #cardGallery [settings]="settings" class="card-gallery" (onInit)="onGalleryInit($event)">
+
+      <a
           *ngFor="let item of action.media; let i = index"
           [class.gallery-hidden]="i > 0"
           [attr.data-src]="isImage(item) ? item : null"
