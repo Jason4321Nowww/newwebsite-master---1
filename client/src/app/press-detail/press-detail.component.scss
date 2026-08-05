@@ -43,15 +43,23 @@
   color: var(--text-secondary);
   transition: color 0.3s ease-in-out;
 
-  p { margin-bottom: 1rem; }
+  p {
+    margin-bottom: 1rem;
+  }
 
   a {
     color: #009d63;
     text-decoration: underline;
-    &:hover { color: #007a4d; }
+
+    &:hover {
+      color: #007a4d;
+    }
   }
 
-  strong, b { color: var(--text-primary); font-weight: 700; }
+  strong, b {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
 }
 
 .lightbox-backdrop {
@@ -92,7 +100,9 @@
   justify-content: center;
   transition: background 0.2s;
 
-  &:hover { background: rgba(255, 255, 255, 0.3); }
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
 }
 
 .press-date {
@@ -111,4 +121,13 @@
     width: 1rem;
     height: 1rem;
   }
+}
+
+.press-footer {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #009d63;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
