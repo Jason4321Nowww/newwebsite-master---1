@@ -114,7 +114,7 @@ export class TitlescreenComponent implements AfterViewInit, OnDestroy {
 
     if (current.type === 'video') {
       const videoRef = this.videoEls.find(ref =>
-        ref.nativeElement.closest('.slider-item')?.classList.contains('active')
+        ref.nativeElement.closest('.slider-item')?.classList.contains('active') ?? false
       );
       if (videoRef) {
         const video = videoRef.nativeElement;
