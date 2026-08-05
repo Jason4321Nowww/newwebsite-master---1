@@ -41,8 +41,9 @@ export class SpecialMemberPageComponent implements OnInit {
   loadEvents(): void {
     this.eventService.getEvents().subscribe({
       next: (events: any) => {
-        // Server already applies role+location filtering — use result directly
-        this.events = Array.isArray(events) ? events : [];
+        // Server already applies role+location filtering — sort newest-first here
+        this.events = (Array.isArray(events) ? events : [])
+          .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
         this.loading = false;
         this.cdr.markForCheck();
       },
