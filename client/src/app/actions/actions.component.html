@@ -11,7 +11,7 @@
           [class.gallery-hidden]="i > 0"
           [attr.data-src]="isImage(item) ? item : null"
           [attr.data-video]="isVideo(item) ? videoData(item) : null"
-          [attr.data-sub-html]="'<h4>' + langService.getField(action, 'title') + '</h4>'"
+          [attr.data-sub-html]="'<h4>' + langService.getField(action, 'title') + '</h4><p>' + langService.getField(action, 'description') + '</p>'"
         >
           <!--
             Always render <img> so lightgallery thumbnail strip can read it.
