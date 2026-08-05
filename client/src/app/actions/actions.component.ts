@@ -35,7 +35,12 @@ export class ActionsComponent implements OnInit, OnDestroy {
     zoomFromOrigin: true,
     allowMediaOverlap: false,
     toggleThumb: true,
-    appendSubHtmlTo: '.lg-item',
+    mobileSettings: {
+      controls: true,
+      showCloseIcon: true,
+      download: false,
+      rotate: false,
+    },
   };
 
   constructor(
