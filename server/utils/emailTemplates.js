@@ -458,7 +458,7 @@ const orderConfirmationEmail = (customerName, invoiceNumber, paymentNumber, item
   const bankIban    = process.env.BANK_IBAN    || 'CH60 0900 0000 1581 0867 8';
   const bankHolder  = process.env.BANK_HOLDER  || 'Büezer und KMU Partei (BKP)';
   const bankName    = process.env.BANK_NAME    || 'PostFinance AG';
-  const bankAddress = process.env.BANK_ADDRESS || 'Zürichstrasse 23, 8607 Aathal-Seegräben';
+  const bankAddress = process.env.BANK_ADDRESS || 'Party name, 8625 Gossau ZH';
 
   return {
     subject: t.confirmed_subject(invoiceNumber),
