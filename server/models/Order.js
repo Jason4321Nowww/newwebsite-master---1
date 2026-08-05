@@ -26,7 +26,8 @@ const orderSchema = new mongoose.Schema({
     enum: ['pending', 'paid', 'shipped', 'cancelled'],
     default: 'pending'
   },
-  paymentNumber: { type: String },   // Auto-generated Kaufnummer shown to customer for bank transfer reference
+  paidAt: { type: Date, default: null },  // set when admin confirms payment via markAsPaid
+  paymentNumber: { type: String },
   invoiceNumber: { type: String, unique: true, sparse: true }, // 10-char alphanumeric, generated on create
   lang: { type: String, enum: ['de', 'fr', 'it', 'en'], default: 'de' }, // Customer's UI language
   createdAt: { type: Date, default: Date.now }
