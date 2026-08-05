@@ -132,19 +132,22 @@ export class CalendarComponent implements OnInit, OnChanges {
 
   getTooltipText(event: Event): string {
     const repeatInterval = (event as any).repeatEveryWeeks;
-    let repeatLabel: string;
+    const isRepeating = (repeatInterval > 0) || (!!event.repeat && event.repeat !== 'none');
+
+    let repeatLine = '';
     if (repeatInterval > 0) {
-      repeatLabel = `${this.langService.t('calendar.every')} ${repeatInterval} ${this.langService.t('calendar.weeksUnit')}`;
-    } else if (!event.repeat || event.repeat === 'none') {
-      repeatLabel = this.langService.t('calendar.onetime');
-    } else {
-      repeatLabel = this.langService.t(`events.repeat.${event.repeat}`) || event.repeat;
+      repeatLine = `\n${this.langService.t('calendar.repeat')}: ${this.langService.t('calendar.every')} ${repeatInterval} ${this.langService.t('calendar.weeksUnit')}`;
+    } else if (isRepeating) {
+      const label = this.langService.t(`events.repeat.${event.repeat}`) || event.repeat;
+      repeatLine = `\n${this.langService.t('calendar.repeat')}: ${label}`;
     }
+
     const d = this.parseLocalDate(event.eventDate as any);
     const dateStr = d.toLocaleDateString(this.langService.current === 'de' ? 'de-CH'
-      : this.langService.current === 'fr' ? 'fr-CH'
-        : this.langService.current === 'it' ? 'it-CH' : 'en-GB');
-    return `${this.langService.getField(event, 'title')}\n${this.langService.t('calendar.repeat')}: ${repeatLabel}\n${this.langService.t('calendar.date')}: ${dateStr}`;
+        : this.langService.current === 'fr' ? 'fr-CH'
+          : this.langService.current === 'it' ? 'it-CH' : 'en-GB',
+      {day: '2-digit', month: '2-digit', year: 'numeric'});
+    return `${this.langService.getField(event, 'title')}\n\n${repeatLine.trim()}${repeatLine ? '\n' : ''}${this.langService.t('calendar.date')}: ${dateStr}`;
   }
 
   isRepeating(event: Event): boolean {
