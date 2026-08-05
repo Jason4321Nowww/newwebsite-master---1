@@ -109,8 +109,11 @@
 }
 
 @media (max-width: 480px) {
-  .announcement-link { display: none; }
-  .ticker-wrapper { max-width: 200px; }
+  .announcement-link {
+    flex-shrink: 0;
+    font-size: 0.72rem;
+  }
+  .ticker-wrapper { max-width: 140px; }
 }
 
 // ── Page spinner overlay ──────────────────────────────────────
