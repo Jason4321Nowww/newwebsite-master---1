@@ -14,6 +14,7 @@ export interface AdminOrder {
   totalAmount: number;
   status: 'pending' | 'paid' | 'shipped' | 'cancelled';
   createdAt: string;
+  paidAt?: string | null;
   items: { product: any; quantity: number }[];
 }
 

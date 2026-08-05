@@ -123,9 +123,9 @@ const markAsPaid = async (req, res) => {
     // Atomically decrement stock now that payment is confirmed
     for (const item of order.items) {
       const updated = await Product.findOneAndUpdate(
-        { _id: item.product._id, stock: { $gte: item.quantity } },
-        { $inc: { stock: -item.quantity, orderCount: item.quantity } },
-        { new: true }
+          { _id: item.product._id, stock: { $gte: item.quantity } },
+          { $inc: { stock: -item.quantity, orderCount: item.quantity } },
+          { new: true }
       );
       if (!updated) {
         return res.status(409).json({
@@ -135,6 +135,7 @@ const markAsPaid = async (req, res) => {
     }
 
     order.status = 'paid';
+    order.paidAt = new Date();
     await order.save();
     res.json({ message: 'Order marked as paid', order });
   } catch (err) {

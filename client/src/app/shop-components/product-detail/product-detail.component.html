@@ -4,16 +4,16 @@
   </div>
 
   <div class="product-detail__info">
-     <!-- Warning if stock is 0 or exceeded -->
-      <p *ngIf="product.stockWarning" class="stock-warning">
-               No more items left in stock!
-      </p>
+    <!-- Warning if stock is 0 or exceeded -->
+    <p *ngIf="product.stockWarning" class="stock-warning">
+      {{ langService.t('shop.noStock') }}
+    </p>
     <h2>{{ langService.getField(product, 'name') }}</h2>
     <p class="description">{{ langService.getField(product, 'description') }}</p>
 
     <!-- ✅ Show only for NON-external products -->
     <ng-container *ngIf="!product.isExternal; else externalBlock">
-      <p class="price">Price: {{ product.price.toFixed(2) }}</p>
+      <p class="price">{{ langService.t('shop.price') }}: {{ product.price.toFixed(2) }}</p>
 
       <div class="quantity-controls">
         <button (click)="decreaseQty()">−</button>
@@ -21,14 +21,14 @@
         <button (click)="increaseQty()">+</button>
       </div>
 
-      <button class="btn primary" (click)="addToCart()">Add to Cart</button>
-      <button class="btn secondary" routerLink="/order">Go to Cart</button>
+      <button class="btn primary" (click)="addToCart()">{{ langService.t('shop.addToCart') }}</button>
+      <button class="btn secondary" routerLink="/order">{{ langService.t('shop.goToCart') }}</button>
     </ng-container>
 
     <!-- ✅ External product block -->
     <ng-template #externalBlock>
       <a [href]="product.externalUrl" target="_blank" class="btn primary">
-        External Item
+        {{ langService.t('shop.externalItem') }}
       </a>
     </ng-template>
   </div>

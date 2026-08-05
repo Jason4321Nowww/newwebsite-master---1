@@ -21,6 +21,7 @@
 
       <div class="cart-row" *ngFor="let item of cartItems">
         <div class="product-info">
+          <span class="mobile-label">{{ langService.t('cart.product') }}</span>
           <img [src]="'' + item.mediaUrl" alt="{{ item.name }}" />
           <span>{{ item.name }}</span>
         </div>
@@ -28,6 +29,7 @@
         <div>CHF {{ item.price.toFixed(2) }}</div>
 
         <div class="quantity-controls">
+          <span class="mobile-label">{{ langService.t('cart.quantity') }}</span>
           <button (click)="decrease(item)">−</button>
           <span>{{ item.quantity }}</span>
           <button (click)="increase(item)" [disabled]="item.quantity >= item.stock">+</button>

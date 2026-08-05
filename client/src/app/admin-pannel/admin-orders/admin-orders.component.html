@@ -16,27 +16,29 @@
   <div class="table-wrap">
     <table class="orders-table">
       <thead>
-        <tr>
-          <th>Invoice #</th>
-          <th>Kaufnummer</th>
-          <th>Customer</th>
-          <th>Email</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
+      <tr>
+        <th>Invoice #</th>
+        <th>Kaufnummer</th>
+        <th>Customer</th>
+        <th>Email</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Paid On</th>
+        <th>Actions</th>
+      </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let order of orders">
-          <td class="invoice-num" data-label="Invoice #">{{ order.invoiceNumber || '—' }}</td>
-          <td class="payment-num" data-label="Kaufnummer">{{ order.paymentNumber || '—' }}</td>
-          <td data-label="Customer">{{ order.customerName }}</td>
-          <td data-label="Email">{{ order.customerEmail }}</td>
-          <td data-label="Total">CHF {{ order.totalAmount }}</td>
-          <td data-label="Status">
-            <span class="status-badge status-{{ order.status }}">{{ order.status | titlecase }}</span>
-          </td>
-          <td class="actions-cell" data-label="Actions">
+      <tr *ngFor="let order of orders">
+        <td class="invoice-num" data-label="Invoice #">{{ order.invoiceNumber || '—' }}</td>
+        <td class="payment-num" data-label="Kaufnummer">{{ order.paymentNumber || '—' }}</td>
+        <td data-label="Customer">{{ order.customerName }}</td>
+        <td data-label="Email">{{ order.customerEmail }}</td>
+        <td data-label="Total">CHF {{ order.totalAmount }}</td>
+        <td data-label="Status">
+          <span class="status-badge status-{{ order.status }}">{{ order.status | titlecase }}</span>
+        </td>
+        <td data-label="Paid On">{{ order.paidAt ? (order.paidAt | date:'dd.MM.yyyy HH:mm') : '—' }}</td>
+        <td class="actions-cell" data-label="Actions">
             <button *ngIf="order.status === 'pending'" class="btn-paid" (click)="markAsPaid(order._id)">Mark Paid</button>
             <button *ngIf="order.status === 'paid'" class="btn-shipped" (click)="markAsShipped(order._id)">Mark Shipped</button>
             <button *ngIf="order.status !== 'cancelled' && order.status !== 'shipped'" class="btn-cancel" (click)="cancelOrder(order._id)">Cancel</button>
@@ -57,11 +59,10 @@
       <h3>Order Details</h3>
 
       <div class="modal-section">
-        <div class="modal-row"><span>Invoice #</span><strong class="invoice-num">{{ selectedOrder.invoiceNumber || '—' }}</strong></div>
+        <h4>Payment</h4>
+        <div class="modal-row"><span>Method</span><span>{{ selectedOrder.paymentMethod | titlecase }}</span></div>
         <div class="modal-row"><span>Kaufnummer</span><strong class="payment-num">{{ selectedOrder.paymentNumber || '—' }}</strong></div>
-        <div class="modal-row"><span>Status</span><span class="status-badge status-{{ selectedOrder.status }}">{{ selectedOrder.status | titlecase }}</span></div>
-        <div class="modal-row"><span>Date</span><span>{{ selectedOrder.createdAt | date:'dd.MM.yyyy HH:mm' }}</span></div>
-        <div class="modal-row"><span>Language</span><span>{{ selectedOrder.lang | uppercase }}</span></div>
+        <div class="modal-row"><span>Paid On</span><span>{{ selectedOrder.paidAt ? (selectedOrder.paidAt | date:'dd.MM.yyyy HH:mm') : 'Not yet paid' }}</span></div>
       </div>
 
       <div class="modal-section">

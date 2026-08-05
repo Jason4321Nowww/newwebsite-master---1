@@ -69,12 +69,19 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let e of listEmails">
+      <ng-container *ngFor="let e of listEmails">
+        <tr>
           <!-- View mode -->
           <ng-container *ngIf="editingEmailId !== e._id">
             <td data-label="Name">{{ e.name }}</td>
             <td data-label="Email">{{ e.email }}</td>
             <td data-label="Actions" class="actions-cell">
+              <button class="btn-icon assign-btn" (click)="startAssign(e)" title="Add to another list">
+                <mat-icon>add</mat-icon>
+              </button>
+              <button *ngIf="selectedList" class="btn-icon remove-btn" (click)="removeFromCurrentList(e)" title="Remove from this list">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
               <button class="btn-icon edit-btn" (click)="startEditEmail(e)" title="Edit">
                 <mat-icon>edit</mat-icon>
               </button>
@@ -83,6 +90,7 @@
               </button>
             </td>
           </ng-container>
+
           <!-- Edit mode -->
           <ng-container *ngIf="editingEmailId === e._id">
             <td data-label="Name">
@@ -101,6 +109,21 @@
             </td>
           </ng-container>
         </tr>
+
+        <!-- Assign-to-list picker row -->
+        <tr *ngIf="assigningEmailId === e._id">
+          <td colspan="3">
+            <div class="inline-form">
+              <select [(ngModel)]="assignListTarget">
+                <option value="" disabled selected>Select a list</option>
+                <option *ngFor="let l of assignableLists" [value]="l">{{ l }}</option>
+              </select>
+              <button class="btn-primary" (click)="confirmAssign()">Add</button>
+              <button class="btn-cancel" (click)="cancelAssign()">Cancel</button>
+            </div>
+          </td>
+        </tr>
+      </ng-container>
       </tbody>
     </table>
   </div>

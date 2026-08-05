@@ -34,11 +34,13 @@ export class EventsComponent implements OnInit, OnDestroy {
     // Server filters events by role+location; client just renders what it receives
     this.eventService.getEvents().subscribe({
       next: (events: any[]) => {
-        this.events = events.map(e => ({
-          ...e,
-          attendeesCount: e.attendeesCount ?? e.attendees?.length ?? 0,
-          isAttending: e.isAttending ?? false,
-        }));
+        this.events = events
+          .map(e => ({
+            ...e,
+            attendeesCount: e.attendeesCount ?? e.attendees?.length ?? 0,
+            isAttending: e.isAttending ?? false,
+          }))
+          .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
         this.loading = false;
       },
       error: (err) => {
@@ -61,10 +63,6 @@ export class EventsComponent implements OnInit, OnDestroy {
 
   isExpanded(eventId: string): boolean {
     return this.expandedEventIds.has(eventId);
-  }
-
-  hasShortDescription(desc?: string): boolean {
-    return !!desc && desc.length > 0;
   }
 
   hasLongDescription(desc?: string): boolean {

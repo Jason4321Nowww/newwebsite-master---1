@@ -2,15 +2,16 @@
   <h2 class="gallery-heading scroll-reveal">{{ langService.t('actions.gallery') }}</h2>
 
   <div class="gallery-grid stagger">
-    <div class="gallery-card" *ngFor="let action of allActions">
+    <div class="gallery-card" *ngFor="let action of allActions" (click)="openCard($event, cardGallery)">
 
-      <lightgallery [settings]="settings" class="card-gallery" (onInit)="onGalleryInit($event)">
-        <a
+      <lightgallery #cardGallery [settings]="settings" class="card-gallery" (onInit)="onGalleryInit($event)">
+
+      <a
           *ngFor="let item of action.media; let i = index"
           [class.gallery-hidden]="i > 0"
           [attr.data-src]="isImage(item) ? item : null"
           [attr.data-video]="isVideo(item) ? videoData(item) : null"
-          [attr.data-sub-html]="'<h4>' + langService.getField(action, 'title') + '</h4>'"
+          [attr.data-sub-html]="'<h4>' + langService.getField(action, 'title') + '</h4><p>' + langService.getField(action, 'description') + '</p>'"
         >
           <!--
             Always render <img> so lightgallery thumbnail strip can read it.

@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { AdminemailService } from '../admin-services/adminemail.service';
+import {Component, OnInit} from '@angular/core';
+import {AdminemailService} from '../admin-services/adminemail.service';
 
 @Component({
   selector: 'app-admin-email',
@@ -31,12 +31,47 @@ export class AdminEmailComponent implements OnInit {
   editingEmailId: string | null = null;
   editEmailName = '';
   editEmailAddress = '';
+  assigningEmailId: string | null = null;
+  assignListTarget = '';
 
-  constructor(private emailService: AdminemailService) {}
+  constructor(private emailService: AdminemailService) {
+  }
 
   ngOnInit() {
     this.loadLists();
     this.loadListEmails();
+  }
+
+  get assignableLists(): string[] {
+    // Lists this email isn't already a member of
+    const email = this.listEmails.find(e => e._id === this.assigningEmailId);
+    if (!email) return this.lists;
+    return this.lists.filter(l => !email.lists?.includes(l));
+  }
+
+  startAssign(e: any) {
+    this.assigningEmailId = e._id;
+    this.assignListTarget = '';
+  }
+
+  cancelAssign() {
+    this.assigningEmailId = null;
+    this.assignListTarget = '';
+  }
+
+  confirmAssign() {
+    if (!this.assigningEmailId || !this.assignListTarget) return;
+    this.emailService.addToList(this.assigningEmailId, this.assignListTarget).subscribe(() => {
+      this.assigningEmailId = null;
+      this.assignListTarget = '';
+      this.loadListEmails();
+    });
+  }
+
+  removeFromCurrentList(e: any) {
+    if (!this.selectedList) return;
+    if (!confirm(`Remove "${e.name}" from "${this.selectedList}"?`)) return;
+    this.emailService.removeFromList(e._id, this.selectedList).subscribe(() => this.loadListEmails());
   }
 
   loadLists() {
@@ -58,9 +93,13 @@ export class AdminEmailComponent implements OnInit {
 
   loadListEmails() {
     if (!this.selectedList) {
-      this.emailService.getAllEmails().subscribe(data => { this.listEmails = data; });
+      this.emailService.getAllEmails().subscribe(data => {
+        this.listEmails = data;
+      });
     } else {
-      this.emailService.getEmailsByList(this.selectedList).subscribe(data => { this.listEmails = data; });
+      this.emailService.getEmailsByList(this.selectedList).subscribe(data => {
+        this.listEmails = data;
+      });
     }
   }
 
@@ -107,7 +146,8 @@ export class AdminEmailComponent implements OnInit {
 
   deleteList() {
     if (!this.selectedList) return;
-    if (!confirm(`Delete list "${this.selectedList}" and remove it from all emails?`)) return;
+    if (!confirm(`Delete
+    list "${this.selectedList}" and remove it from all emails?`)) return;
     this.emailService.deleteList(this.selectedList).subscribe(() => {
       this.selectedList = '';
       this.listEmails = [];
@@ -121,7 +161,7 @@ export class AdminEmailComponent implements OnInit {
     const name = this.emailName.trim();
     const email = this.emailAddress.trim();
     if (!name || !email) return;
-    this.emailService.createEmail({ name, email }).subscribe((created: any) => {
+    this.emailService.createEmail({name, email}).subscribe((created: any) => {
       const finish = () => {
         this.emailName = '';
         this.emailAddress = '';

@@ -16,7 +16,7 @@
     <p *ngIf="formatLocation(event.eventLocation)">
       <strong>{{ langService.t('member.location') }}</strong> {{ formatLocation(event.eventLocation) }}
     </p>
-    <div [innerHTML]="truncateHtml(langService.getField(event, 'description'), 125)"></div>
+    <div [innerHTML]="convertToParagraphs(truncateHtml(langService.getField(event, 'description'), 125))"></div>
   </div>
 
 </div>

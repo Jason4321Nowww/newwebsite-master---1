@@ -132,6 +132,8 @@ export const fr: Record<string, string> = {
   'verify.resendSuccess':       'Un nouveau code a été envoyé à votre adresse e-mail.',
 
   // ── Shop ─────────────────────────────────────────────────────
+  'shop.price':      'Prix',
+  'shop.goToCart':   'Aller au panier',
   'shop.orderSuccessTitle': 'Commande passée !',
   'shop.orderSuccessMsg':   'Merci pour votre commande. Un e-mail de confirmation vous a été envoyé.',
   'shop.orderSuccessBtn':   'Continuer mes achats',

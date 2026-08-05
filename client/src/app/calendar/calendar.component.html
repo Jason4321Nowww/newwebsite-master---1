@@ -23,19 +23,19 @@
       >
         <div class="date-label">{{ date!.date.getDate() }}</div>
 
-        <!-- Event indicator -->
-        <div
-          *ngIf="date!.event"
-          class="event-dot"
-          [ngClass]="{ 'mobile-view': isMobile, 'desktop-view': !isMobile }"
-          [matTooltip]="getTooltipText(date!.event)"
-          matTooltipPosition="above"
-          matTooltipClass="custom-tooltip"
-        >
-          <!-- Repeating event -->
-          <mat-icon *ngIf="isRepeating(date!.event)" class="repeat-icon">autorenew</mat-icon>
-          <!-- One-time event -->
-          <mat-icon *ngIf="!isRepeating(date!.event)" class="one-time-icon">event</mat-icon>
+        <!-- Event indicators (one per event on this day) -->
+        <div class="event-dots">
+          <div
+            *ngFor="let evt of date!.events"
+            class="event-dot"
+            [ngClass]="{ 'mobile-view': isMobile, 'desktop-view': !isMobile }"
+            [matTooltip]="getTooltipText(evt)"
+            matTooltipPosition="above"
+            matTooltipClass="custom-tooltip"
+          >
+            <mat-icon *ngIf="isRepeating(evt)" class="repeat-icon">autorenew</mat-icon>
+            <mat-icon *ngIf="!isRepeating(evt)" class="one-time-icon">event</mat-icon>
+          </div>
         </div>
       </div>
 

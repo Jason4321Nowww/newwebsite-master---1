@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
-import { Action } from '../_models/action';
-import { ActionService } from '../services/action.service';
-import { LanguageService } from '../services/language.service';
-import { Subscription } from 'rxjs';
+import {ChangeDetectorRef, Component, OnDestroy, OnInit} from '@angular/core';
+import {Action} from '../_models/action';
+import {ActionService} from '../services/action.service';
+import {LanguageService} from '../services/language.service';
+import {Subscription} from 'rxjs';
 import lgThumbnail from 'lightgallery/plugins/thumbnail';
 import lgFullscreen from 'lightgallery/plugins/fullscreen';
 import lgZoom from 'lightgallery/plugins/zoom';
@@ -35,13 +35,20 @@ export class ActionsComponent implements OnInit, OnDestroy {
     zoomFromOrigin: true,
     allowMediaOverlap: false,
     toggleThumb: true,
+    mobileSettings: {
+      controls: true,
+      showCloseIcon: true,
+      download: false,
+      rotate: false,
+    },
   };
 
   constructor(
     private actionService: ActionService,
     public langService: LanguageService,
     private cdr: ChangeDetectorRef,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.langSub = this.langService.lang$.subscribe(() => this.cdr.markForCheck());
@@ -53,18 +60,20 @@ export class ActionsComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void { this.langSub?.unsubscribe(); }
+  ngOnDestroy(): void {
+    this.langSub?.unsubscribe();
+  }
 
   captureVideoThumb(url: string): void {
     const video = document.createElement('video');
-    video.muted       = true;
-    video.preload     = 'auto';
+    video.muted = true;
+    video.preload = 'auto';
     video.playsInline = true;
 
     const capture = () => {
       try {
         const canvas = document.createElement('canvas');
-        canvas.width  = video.videoWidth  || 320;
+        canvas.width = video.videoWidth || 320;
         canvas.height = video.videoHeight || 180;
         canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height);
         const thumb = canvas.toDataURL('image/jpeg', 0.8);
@@ -73,16 +82,17 @@ export class ActionsComponent implements OnInit, OnDestroy {
           this.videoThumbs.set(url, thumb);
           this.refreshGalleries();
         }
-      } catch { /* CORS or security restriction */ }
+      } catch { /* CORS or security restriction */
+      }
       video.src = ''; // release resource
     };
 
     // loadeddata fires when the first frame is genuinely available
-    video.addEventListener('loadeddata', capture, { once: true });
+    video.addEventListener('loadeddata', capture, {once: true});
 
     video.addEventListener('canplay', () => {
       if (!this.videoThumbs.has(url)) capture();
-    }, { once: true });
+    }, {once: true});
 
     video.src = url;
     video.load();
@@ -96,7 +106,12 @@ export class ActionsComponent implements OnInit, OnDestroy {
     // After detectChanges updates data-thumb in the DOM, tell lightgallery to re-read it
     this.cdr.detectChanges();
     setTimeout(() => {
-      this.lgRefs.forEach(lg => { try { lg.refresh(); } catch { /* gallery may be closed */ } });
+      this.lgRefs.forEach(lg => {
+        try {
+          lg.refresh();
+        } catch { /* gallery may be closed */
+        }
+      });
     }, 0);
   }
 
@@ -112,13 +127,23 @@ export class ActionsComponent implements OnInit, OnDestroy {
     return /\.(mp4|webm|ogg)$/i.test(file);
   }
 
+  openCard(event: MouseEvent, galleryEl: any): void {
+    // If the click already landed inside the gallery's own trigger (<a>/img/icon),
+    // let lightgallery handle it natively — don't double-trigger.
+    const target = event.target as HTMLElement;
+    if (target.closest('.card-gallery')) return;
+
+    const firstLink: HTMLElement | null = galleryEl?.el?.nativeElement?.querySelector('a');
+    firstLink?.click();
+  }
+
   videoData(url: string): string {
     const ext = url.split('.').pop()?.toLowerCase();
-    const mimeMap: Record<string, string> = { mp4: 'video/mp4', webm: 'video/webm', ogg: 'video/ogg' };
+    const mimeMap: Record<string, string> = {mp4: 'video/mp4', webm: 'video/webm', ogg: 'video/ogg'};
     const type = mimeMap[ext ?? ''] ?? 'video/mp4';
     return JSON.stringify({
-      source: [{ src: url, type }],
-      attributes: { preload: 'auto', controls: true },
+      source: [{src: url, type}],
+      attributes: {preload: 'auto', controls: true},
     });
   }
 }

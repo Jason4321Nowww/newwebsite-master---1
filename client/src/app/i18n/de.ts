@@ -191,6 +191,8 @@ export const de: Record<string, string> = {
   'adminAcceptInvite.loading':             'Einladung wird geprüft…',
 
   // ── Shop ─────────────────────────────────────────────────────
+  'shop.price':      'Preis',
+  'shop.goToCart':   'Zum Warenkorb',
   'shop.orderSuccessTitle': 'Bestellung aufgegeben!',
   'shop.orderSuccessMsg':   'Vielen Dank für Ihre Bestellung. Eine Bestätigungs-E-Mail wurde an Sie gesendet.',
   'shop.orderSuccessBtn':   'Weiter einkaufen',
