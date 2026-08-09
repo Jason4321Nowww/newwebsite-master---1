@@ -127,13 +127,11 @@ export class ActionsComponent implements OnInit, OnDestroy {
     return /\.(mp4|webm|ogg)$/i.test(file);
   }
 
-  openCard(event: MouseEvent, galleryEl: any): void {
-    // If the click already landed inside the gallery's own trigger (<a>/img/icon),
-    // let lightgallery handle it natively — don't double-trigger.
+  openCard(event: MouseEvent, cardEl: HTMLElement): void {
     const target = event.target as HTMLElement;
     if (target.closest('.card-gallery')) return;
 
-    const firstLink: HTMLElement | null = galleryEl?.el?.nativeElement?.querySelector('a');
+    const firstLink = cardEl.querySelector('a');
     firstLink?.click();
   }
 

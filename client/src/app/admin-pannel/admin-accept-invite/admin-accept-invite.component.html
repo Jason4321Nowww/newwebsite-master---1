@@ -31,46 +31,28 @@
       <form (ngSubmit)="onSubmit()" #f="ngForm" class="invite-form">
         <div class="field">
           <label>{{ langService.t('adminAcceptInvite.nameLabel') }}</label>
-          <input [(ngModel)]="name" name="name" required [placeholder]="langService.t('adminAcceptInvite.namePlaceholder')" />
+          <input [(ngModel)]="name" name="name" required
+                 [placeholder]="langService.t('adminAcceptInvite.namePlaceholder')"/>
         </div>
 
         <div class="field">
           <label>{{ langService.t('adminAcceptInvite.passwordLabel') }}</label>
           <input [(ngModel)]="password" name="password" type="password" required
-                 minlength="8" [placeholder]="langService.t('adminAcceptInvite.passwordPlaceholder')" />
+                 minlength="8" [placeholder]="langService.t('adminAcceptInvite.passwordPlaceholder')"/>
         </div>
 
         <div class="field">
           <label>{{ langService.t('adminAcceptInvite.confirmLabel') }}</label>
           <input [(ngModel)]="confirmPassword" name="confirmPassword" type="password"
-                 required [placeholder]="langService.t('adminAcceptInvite.confirmPlaceholder')" />
-          <span class="field-error" *ngIf="passwordMismatch">{{ langService.t('adminAcceptInvite.passwordMismatch') }}</span>
-        </div>
-
-        <div class="field key-field">
-          <label>{{ langService.t('adminAcceptInvite.regKeyLabel') }}</label>
-          <div class="key-input-wrap">
-            <input [(ngModel)]="registrationKey" name="registrationKey"
-                   #regKeyInput="ngModel"
-                   required minlength="20" maxlength="20"
-                   [class.error]="keyValid === false"
-                   [class.success]="keyValid === true"
-                   [placeholder]="langService.t('adminAcceptInvite.regKeyPlaceholder')"
-                   autocomplete="off"
-                   (ngModelChange)="onRegKeyChange($event)"
-                   (blur)="onRegKeyBlur()" />
-            <mat-icon class="key-status-icon spinning" *ngIf="keyChecking">sync</mat-icon>
-            <mat-icon class="key-status-icon valid"    *ngIf="keyValid === true">check_circle</mat-icon>
-            <mat-icon class="key-status-icon invalid"  *ngIf="keyValid === false">cancel</mat-icon>
-          </div>
-          <span class="field-error" *ngIf="keyValid === false">{{ langService.t('signup.invalidRegKey') }}</span>
-          <span class="field-error" *ngIf="keyValid === null && regKeyInput.touched && regKeyInput.invalid">{{ langService.t('signup.regKeyRequired') }}</span>
+                 required [placeholder]="langService.t('adminAcceptInvite.confirmPlaceholder')"/>
+          <span class="field-error"
+                *ngIf="passwordMismatch">{{ langService.t('adminAcceptInvite.passwordMismatch') }}</span>
         </div>
 
         <p *ngIf="submitError" class="submit-error">{{ submitError }}</p>
 
         <button type="submit"
-                [disabled]="f.invalid || passwordMismatch || keyValid !== true || submitting">
+                [disabled]="f.invalid || passwordMismatch || submitting">
           {{ submitting ? langService.t('adminAcceptInvite.submitting') : langService.t('adminAcceptInvite.submitBtn') }}
         </button>
       </form>

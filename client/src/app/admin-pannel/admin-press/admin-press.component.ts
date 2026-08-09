@@ -267,22 +267,22 @@ export class AdminPressComponent implements OnInit {
       .join('<br>');
 
     const contentHtml = `
-  <div style="max-width: 900px; margin: auto; padding: 40px; font-family: 'Georgia', serif; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); line-height: 1.8; color: #222; text-align: justify;">
+  <div style="max-width: 900px; margin: auto; padding: 24px; font-family: 'Georgia', serif; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08); line-height: 1.6; color: #222; text-align: left;">
     <div style="display: flex; align-items: center; justify-content: center; gap: 30px; margin-bottom: 30px;">
       <img src="${leftFlag}" style="height: 50px;" crossOrigin="anonymous"/>
-      <h1 style="margin: 0; font-size: 1.5rem; font-weight: 500; text-align: center; color: #2c3e50;">${langTitle}</h1>
+      <h1 style="margin: 0; font-size: 1.2rem; font-weight: 500; text-align: center; color: #2c3e50;">${langTitle}</h1>
       <img src="${rightFlag}" style="height: 50px;" crossOrigin="anonymous"/>
     </div>
     <hr style="border: none; border-top: 2px solid #aaa; margin: 20px 0;" />
      ${pressImageHtml}
-    <div style="font-size: 1rem; margin-bottom: 30px;">${langContent}</div>
+    <div style="font-size: 0.85rem; margin-bottom: 30px;">${langContent}</div>
 
-    <div style="display: flex; align-items: center; font-size: 0.95rem; color: #555; font-style: italic; border-left: 4px solid #ccc; padding-left: 8px; max-width: 300px;">
+    <div style="display: flex; align-items: center; font-size: 0.85rem; color: #555; font-style: italic; border-left: 4px solid #ccc; padding-left: 8px; max-width: 300px;">
       ${calendarIconSVG}<span>${releaseDate}</span>
     </div>
 
     <hr style="border: none; border-top: 2px solid #009d63; margin: 30px 0 16px;" />
-    <div style="font-size: 0.85rem; color: #555; line-height: 1.6;">
+    <div style="font-size: 0.8rem; color: #555; line-height: 1.5;">
       ${footerText}<br>
       <strong>${releaseDate}</strong>
     </div>
@@ -294,11 +294,12 @@ export class AdminPressComponent implements OnInit {
     document.body.appendChild(container);
 
     const opt = {
-      margin: 0,
+      margin: [10, 10, 10, 10],
       filename: 'press-release.pdf',
       image: {type: 'jpeg', quality: 0.98},
       html2canvas: {scale: 2, useCORS: true, allowTaint: true},
-      jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'}
+      jsPDF: {unit: 'mm', format: 'a4', orientation: 'portrait'},
+      pagebreak: {mode: ['avoid-all', 'css', 'legacy']}
     };
 
     try {
