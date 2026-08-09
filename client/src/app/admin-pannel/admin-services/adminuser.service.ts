@@ -86,8 +86,8 @@ getAllUsers(): Observable<any[]> {
     return this.http.get(`${this.adminApi}/invite/${token}`);
   }
 
-  acceptInvite(token: string, name: string, password: string, registrationKey: string): Observable<any> {
-    return this.http.post(`${this.adminApi}/invite/${token}/accept`, { name, password, registrationKey });
+  acceptInvite(token: string, name: string, password: string): Observable<any> {
+    return this.http.post(`${this.adminApi}/invite/${token}/accept`, { name, password });
   }
 
   // ── User invite (sends invite to regular users) ──

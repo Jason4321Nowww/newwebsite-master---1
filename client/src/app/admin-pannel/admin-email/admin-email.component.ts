@@ -112,7 +112,9 @@ export class AdminEmailComponent implements OnInit {
       next: () => {
         this.newListName = '';
         this.showNewListInput = false;
+        this.selectedList = name;
         this.loadLists();
+        this.loadListEmails();
       },
       error: err => alert(err.error?.error || 'Failed to create list')
     });

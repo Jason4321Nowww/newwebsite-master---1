@@ -41,19 +41,19 @@
         <div class="field">
           <label>{{ langService.t('acceptInvite.usernameLabel') }}</label>
           <input [(ngModel)]="username" name="username" required
-                 minlength="3" [placeholder]="langService.t('acceptInvite.usernamePlaceholder')" />
+                 minlength="3" [placeholder]="langService.t('acceptInvite.usernamePlaceholder')"/>
         </div>
 
         <div class="field">
           <label>{{ langService.t('acceptInvite.passwordLabel') }}</label>
           <input [(ngModel)]="password" name="password" type="password"
-                 required minlength="8" [placeholder]="langService.t('acceptInvite.passwordPlaceholder')" />
+                 required minlength="8" [placeholder]="langService.t('acceptInvite.passwordPlaceholder')"/>
         </div>
 
         <div class="field">
           <label>{{ langService.t('acceptInvite.confirmLabel') }}</label>
           <input [(ngModel)]="confirmPassword" name="confirmPassword" type="password"
-                 required [placeholder]="langService.t('acceptInvite.confirmPlaceholder')" />
+                 required [placeholder]="langService.t('acceptInvite.confirmPlaceholder')"/>
           <span class="field-error" *ngIf="passwordMismatch">{{ langService.t('acceptInvite.passwordMismatch') }}</span>
         </div>
 
@@ -61,34 +61,14 @@
           <label>{{ langService.t('acceptInvite.otpLabel') }}</label>
           <input [(ngModel)]="otp" name="otp" required
                  maxlength="6" [placeholder]="langService.t('acceptInvite.otpPlaceholder')"
-                 inputmode="numeric" autocomplete="one-time-code" />
+                 inputmode="numeric" autocomplete="one-time-code"/>
           <p class="otp-hint">{{ langService.t('acceptInvite.otpHint') }}</p>
-        </div>
-
-        <div class="field key-field">
-          <label>{{ langService.t('acceptInvite.regKeyLabel') }}</label>
-          <div class="key-input-wrap">
-            <input [(ngModel)]="registrationKey" name="registrationKey"
-                   #regKeyInput="ngModel"
-                   required minlength="20" maxlength="20"
-                   [class.error]="keyValid === false"
-                   [class.success]="keyValid === true"
-                   [placeholder]="langService.t('acceptInvite.regKeyPlaceholder')"
-                   autocomplete="off"
-                   (ngModelChange)="onRegKeyChange($event)"
-                   (blur)="onRegKeyBlur()" />
-            <mat-icon class="key-status-icon spinning" *ngIf="keyChecking">sync</mat-icon>
-            <mat-icon class="key-status-icon valid"    *ngIf="keyValid === true">check_circle</mat-icon>
-            <mat-icon class="key-status-icon invalid"  *ngIf="keyValid === false">cancel</mat-icon>
-          </div>
-          <span class="field-error" *ngIf="keyValid === false">{{ langService.t('signup.invalidRegKey') }}</span>
-          <span class="field-error" *ngIf="keyValid === null && regKeyInput.touched && regKeyInput.invalid">{{ langService.t('signup.regKeyRequired') }}</span>
         </div>
 
         <p *ngIf="submitError" class="submit-error">{{ submitError }}</p>
 
         <button type="submit"
-                [disabled]="f.invalid || passwordMismatch || keyValid !== true || submitting">
+                [disabled]="f.invalid || passwordMismatch || submitting">
           {{ submitting ? langService.t('acceptInvite.submitting') : langService.t('acceptInvite.submitBtn') }}
         </button>
       </form>
