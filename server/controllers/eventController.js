@@ -189,7 +189,7 @@ const deleteEvent = async (req, res) => {
 };
 
 // Attend/Unattend
-// Uniqueness: logged-in users by userId; guests by visitorId OR IP
+// Uniqueness: logged-in users by userId; guests by visitorId only (IP is stored for anti-abuse but not used for uniqueness — multiple guests can share a network)
 const toggleAttendance = async (req, res) => {
     try {
         const {eventId, attend, anonymous, visitorId} = req.body;
@@ -203,13 +203,18 @@ const toggleAttendance = async (req, res) => {
             if (userId) {
                 // Logged-in users are keyed purely by their account — visitorId is irrelevant here
                 condition = {_id: eventId, 'attendees.user': {$ne: userId}};
-            } else {
+            } else if (visitorId) {
+                // Guests are keyed purely by their own visitorId — IP is not part of uniqueness,
+                // since multiple genuine guests can share a network/public WiFi.
                 condition = {
                     _id: eventId,
-                    $nor: [
-                        ...(visitorId ? [{attendees: {$elemMatch: {visitorId}}}] : []),
-                        {attendees: {$elemMatch: {ip: clientIp, user: null}}},
-                    ],
+                    attendees: {$not: {$elemMatch: {visitorId}}},
+                };
+            } else {
+                // No visitorId at all (should be rare) — fall back to IP so we don't push duplicates blindly
+                condition = {
+                    _id: eventId,
+                    attendees: {$not: {$elemMatch: {ip: clientIp, user: null, visitorId: null}}},
                 };
             }
 
@@ -235,7 +240,7 @@ const toggleAttendance = async (req, res) => {
             } else if (visitorId) {
                 pullFilter = {visitorId};
             } else {
-                pullFilter = {ip: clientIp, user: null};
+                pullFilter = {ip: clientIp, user: null, visitorId: null};
             }
 
             updated = await Event.findByIdAndUpdate(

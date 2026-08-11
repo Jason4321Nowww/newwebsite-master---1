@@ -147,7 +147,7 @@ export class CalendarComponent implements OnInit, OnChanges {
         : this.langService.current === 'fr' ? 'fr-CH'
           : this.langService.current === 'it' ? 'it-CH' : 'en-GB',
       {day: '2-digit', month: '2-digit', year: 'numeric'});
-    return `${this.langService.getField(event, 'title')}\n\n${repeatLine.trim()}${repeatLine ? '\n' : ''}${this.langService.t('calendar.date')}: ${dateStr}`;
+    return `${this.langService.getField(event, 'title')}\n\n${repeatLine.trim()}${repeatLine ? '\n' : ''}${dateStr}`;
   }
 
   isRepeating(event: Event): boolean {
