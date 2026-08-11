@@ -777,3 +777,10 @@ router-outlet + [class*="admin-"] {
     height: 60px !important;
   }
 }
+
+.lg-sub-html {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  max-height: 30vh;
+  overflow-y: auto;
+}

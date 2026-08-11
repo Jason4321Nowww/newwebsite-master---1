@@ -25,7 +25,6 @@ export class BankPaymentComponent implements OnInit {
   readonly bankDetails = {
     iban:    'CH60 0900 0000 1581 0867 8',
     holder:  'Büezer und KMU Partei (BKP)',
-    bank:    'PostFinance AG',
     address: '8625 Gossau ZH',
   };
 
