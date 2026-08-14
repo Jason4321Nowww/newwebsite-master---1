@@ -1,4 +1,4 @@
-import {Component, OnInit, ChangeDetectorRef} from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 import {AuthService} from '../services/auth.service';
 import {EventsService} from '../services/events.service';
 import {Event} from '../_models/event';
@@ -42,8 +42,11 @@ export class SpecialMemberPageComponent implements OnInit {
   loadEvents(): void {
     this.eventService.getEvents().subscribe({
       next: (events: any) => {
-        // Server already applies role+location filtering — sort newest-first here
+        const cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - 5);
+
         this.events = (Array.isArray(events) ? events : [])
+          .filter(e => new Date(e.eventDate) >= cutoff)
           .sort((a, b) => new Date(b.eventDate).getTime() - new Date(a.eventDate).getTime());
         this.loading = false;
         this.cdr.markForCheck();

@@ -142,6 +142,13 @@
         <option value="">— Alle Kantone —</option>
         <option *ngFor="let c of cantons" [value]="c.kantonCode">{{ c.kantonName }}</option>
       </select>
+
+      <label for="timeFilter">Filter by Time:</label>
+      <select id="timeFilter" name="timeFilter" [(ngModel)]="selectedTimeFilter" (change)="applyFilterByTime()">
+        <option value="all">— Alle —</option>
+        <option value="upcoming">Nur zukünftige</option>
+        <option value="past">Nur vergangene</option>
+      </select>
     </div>
 
     <div class="table-wrapper">

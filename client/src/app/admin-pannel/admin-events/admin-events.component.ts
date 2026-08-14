@@ -1,13 +1,8 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild, HostListener } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdmineventService } from '../admin-services/adminevent.service';
-import { Event } from 'src/app/_models/event';
-import { LocationService, Canton } from 'src/app/services/location.service';
+import {AfterViewInit, Component, ElementRef, HostListener, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AdmineventService} from '../admin-services/adminevent.service';
+import {Event} from 'src/app/_models/event';
+import {Canton, LocationService} from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-admin-events',
@@ -27,12 +22,13 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   formError: string = '';
   selectedEventTypeFilter: string = 'all';
   selectedLocationFilter: string = '';
+  selectedTimeFilter: string = 'all';
   activeLang: string = 'de';
   readonly langMeta: Record<string, { label: string; flag: string }> = {
-    de: { label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg' },
-    it: { label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg' },
-    fr: { label: 'Français (FR)', flag: 'assets/images/flags/fr.svg' },
-    en: { label: 'English (EN)', flag: 'assets/images/flags/gb.svg' },
+    de: {label: 'Deutsch (DE)', flag: 'assets/images/flags/de.svg'},
+    it: {label: 'Italiano (IT)', flag: 'assets/images/flags/it.svg'},
+    fr: {label: 'Français (FR)', flag: 'assets/images/flags/fr.svg'},
+    en: {label: 'English (EN)', flag: 'assets/images/flags/gb.svg'},
   };
   selectedLangs: string[] = ['de'];
 
@@ -49,37 +45,40 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
 
 
   eventTypeOptions = [
-    { label: 'Admin',               value: 'admin' },
-    { label: 'Vorsitzende',         value: 'vorsitzende' },
-    { label: 'Vorstand',            value: 'vorstand' },
-    { label: 'Nationalversammlung', value: 'nationalversammlung' },
-    { label: 'Regionalversammlung', value: 'regionalversammlung' },
-    { label: 'Lokalversammlung',    value: 'lokalversammlung' },
-    { label: 'RV-Zusammenkunft',    value: 'rv_zusammenkunft' },
-    { label: 'LV-Zusammenkunft',    value: 'lv_zusammenkunft' },
-    { label: 'Intern',              value: 'intern' },
-    { label: 'Öffentlich',          value: 'oeffentlich' },
+    {label: 'Admin', value: 'admin'},
+    {label: 'Vorsitzende', value: 'vorsitzende'},
+    {label: 'Vorstand', value: 'vorstand'},
+    {label: 'Nationalversammlung', value: 'nationalversammlung'},
+    {label: 'Regionalversammlung', value: 'regionalversammlung'},
+    {label: 'Lokalversammlung', value: 'lokalversammlung'},
+    {label: 'RV-Zusammenkunft', value: 'rv_zusammenkunft'},
+    {label: 'LV-Zusammenkunft', value: 'lv_zusammenkunft'},
+    {label: 'Intern', value: 'intern'},
+    {label: 'Öffentlich', value: 'oeffentlich'},
   ];
 
   repeatOptions = ['none', 'weekly', 'biweekly', 'monthly', 'annually'];
 
   // ── Cascading location for form ──────────────────────────────
-  cantons:   Canton[] = [];
-  bezirke:   string[] = [];
+  cantons: Canton[] = [];
+  bezirke: string[] = [];
   gemeinden: string[] = [];
   evtKantonCode = '';
   evtKantonName = '';
-  evtBezirk     = '';
-  evtGemeinde   = '';
+  evtBezirk = '';
+  evtGemeinde = '';
 
   // ── Filter: kanton-level only (simple dropdown from loaded cantons) ──
-  get filterCantons(): Canton[] { return this.cantons; }
+  get filterCantons(): Canton[] {
+    return this.cantons;
+  }
 
   constructor(
-    private fb:          FormBuilder,
-    private adminevent:  AdmineventService,
+    private fb: FormBuilder,
+    private adminevent: AdmineventService,
     private locationSvc: LocationService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.eventForm = this.fb.group({
@@ -99,8 +98,11 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     });
 
     this.locationSvc.getCantons().subscribe({
-      next: (data) => { this.cantons = data; },
-      error: () => {},
+      next: (data) => {
+        this.cantons = data;
+      },
+      error: () => {
+      },
     });
 
     this.getEvents();
@@ -122,27 +124,6 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
         this.loading = false;
       },
     });
-  }
-
-  applyFilter() {
-    if (this.selectedEventTypeFilter === 'all') {
-      this.filteredEvents = [...this.events];
-    } else {
-      this.filteredEvents = this.events.filter(
-        (e) => e.eventType === this.selectedEventTypeFilter
-      );
-    }
-  }
-
-  applyFilterByLocation() {
-    const selected = this.selectedLocationFilter;
-    if (!selected) {
-      this.filteredEvents = [...this.events];
-    } else {
-      this.filteredEvents = this.events.filter(
-        (e) => e.eventLocation?.kantonCode === selected
-      );
-    }
   }
 
   onLangChange(lang: string): void {
@@ -171,26 +152,32 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     const c = this.cantons.find(x => x.kantonCode === kantonCode);
     this.evtKantonCode = kantonCode;
     this.evtKantonName = c?.kantonName || '';
-    this.evtBezirk     = '';
-    this.evtGemeinde   = '';
-    this.bezirke       = [];
-    this.gemeinden     = [];
+    this.evtBezirk = '';
+    this.evtGemeinde = '';
+    this.bezirke = [];
+    this.gemeinden = [];
     if (kantonCode) {
       this.locationSvc.getBezirke(kantonCode).subscribe({
-        next: (d) => { this.bezirke = d; },
-        error: () => {},
+        next: (d) => {
+          this.bezirke = d;
+        },
+        error: () => {
+        },
       });
     }
   }
 
   onEvtBezirkChange(bezirk: string): void {
-    this.evtBezirk   = bezirk;
+    this.evtBezirk = bezirk;
     this.evtGemeinde = '';
-    this.gemeinden   = [];
+    this.gemeinden = [];
     if (bezirk && this.evtKantonCode) {
       this.locationSvc.getGemeinden(this.evtKantonCode, bezirk).subscribe({
-        next: (d) => { this.gemeinden = d; },
-        error: () => {},
+        next: (d) => {
+          this.gemeinden = d;
+        },
+        error: () => {
+        },
       });
     }
   }
@@ -198,10 +185,10 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   private resetLocationState(): void {
     this.evtKantonCode = '';
     this.evtKantonName = '';
-    this.evtBezirk     = '';
-    this.evtGemeinde   = '';
-    this.bezirke       = [];
-    this.gemeinden     = [];
+    this.evtBezirk = '';
+    this.evtGemeinde = '';
+    this.bezirke = [];
+    this.gemeinden = [];
   }
 
   getEventLocationLabel(loc: any): string {
@@ -235,15 +222,15 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     formData.append('eventType', formValues.eventType);
     formData.append('eventLocation', JSON.stringify({
       kantonCode: this.evtKantonCode,
-      bezirk:     this.evtBezirk,
-      gemeinde:   this.evtGemeinde,
+      bezirk: this.evtBezirk,
+      gemeinde: this.evtGemeinde,
     }));
     formData.append('date', formValues.eventDate);
     formData.append('image', this.selectedFile);
 
     this.adminevent.createEvent(formData).subscribe({
       next: () => {
-        this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
+        this.eventForm.reset({repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false});
         this.selectedFile = null;
         if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
         this.formError = '';
@@ -279,22 +266,26 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     // Restore location state from saved event
     const loc = event.eventLocation;
     this.evtKantonCode = loc?.kantonCode || '';
-    this.evtBezirk     = loc?.bezirk     || '';
-    this.evtGemeinde   = loc?.gemeinde   || '';
-    this.bezirke       = [];
-    this.gemeinden     = [];
+    this.evtBezirk = loc?.bezirk || '';
+    this.evtGemeinde = loc?.gemeinde || '';
+    this.bezirke = [];
+    this.gemeinden = [];
     if (this.evtKantonCode) {
       this.locationSvc.getBezirke(this.evtKantonCode).subscribe({
         next: (d) => {
           this.bezirke = d;
           if (this.evtBezirk) {
             this.locationSvc.getGemeinden(this.evtKantonCode, this.evtBezirk).subscribe({
-              next: (g) => { this.gemeinden = g; },
-              error: () => {},
+              next: (g) => {
+                this.gemeinden = g;
+              },
+              error: () => {
+              },
             });
           }
         },
-        error: () => {},
+        error: () => {
+        },
       });
     }
 
@@ -330,8 +321,8 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
     formData.append('eventType', formValues.eventType);
     formData.append('eventLocation', JSON.stringify({
       kantonCode: this.evtKantonCode,
-      bezirk:     this.evtBezirk,
-      gemeinde:   this.evtGemeinde,
+      bezirk: this.evtBezirk,
+      gemeinde: this.evtGemeinde,
     }));
     formData.append('date', formValues.eventDate);
     if (this.selectedFile) {
@@ -340,7 +331,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
 
     this.adminevent.updatEvent(this.editingEventId, formData).subscribe({
       next: () => {
-        this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
+        this.eventForm.reset({repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false});
         this.selectedFile = null;
         this.editingEventId = null;
         this.formError = '';
@@ -356,7 +347,7 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   }
 
   cancelEdit() {
-    this.eventForm.reset({ repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false });
+    this.eventForm.reset({repeat: 'none', repeatEndDate: '', eventType: 'oeffentlich', isMandatory: false});
     this.selectedFile = null;
     this.resetLocationState();
     if (this.fileInputRef) this.fileInputRef.nativeElement.value = '';
@@ -448,14 +439,44 @@ export class AdminEventsComponent implements OnInit, AfterViewInit {
   }
 
   private readonly allRoleOptions = [
-    { label: 'Superadmin',         value: 0 },
-    { label: 'Vorsitzende',        value: 1 },
-    { label: 'Vorstand',           value: 2 },
-    { label: 'Admin',              value: 3 },
-    { label: 'Regionalverwaltung', value: 4 },
-    { label: 'Lokalverwaltung',    value: 5 },
-    { label: 'Vollmitglied',       value: 6 },
-    { label: 'Regulaermitglied',   value: 7 },
-    { label: 'Oeffentlich',        value: 8 },
+    {label: 'Superadmin', value: 0},
+    {label: 'Vorsitzende', value: 1},
+    {label: 'Vorstand', value: 2},
+    {label: 'Admin', value: 3},
+    {label: 'Regionalverwaltung', value: 4},
+    {label: 'Lokalverwaltung', value: 5},
+    {label: 'Vollmitglied', value: 6},
+    {label: 'Regulaermitglied', value: 7},
+    {label: 'Oeffentlich', value: 8},
   ];
+
+  applyFilterByTime() {
+    this.applyCombinedFilters();
+  }
+
+  applyFilter() {
+    this.applyCombinedFilters();
+  }
+
+  applyFilterByLocation() {
+    this.applyCombinedFilters();
+  }
+
+  private applyCombinedFilters() {
+    const now = new Date();
+
+    this.filteredEvents = this.events.filter(e => {
+      const typeMatch = this.selectedEventTypeFilter === 'all' || e.eventType === this.selectedEventTypeFilter;
+      const locationMatch = !this.selectedLocationFilter || e.eventLocation?.kantonCode === this.selectedLocationFilter;
+
+      let timeMatch = true;
+      if (this.selectedTimeFilter === 'upcoming') {
+        timeMatch = new Date(e.eventDate) >= now;
+      } else if (this.selectedTimeFilter === 'past') {
+        timeMatch = new Date(e.eventDate) < now;
+      }
+
+      return typeMatch && locationMatch && timeMatch;
+    });
+  }
 }
