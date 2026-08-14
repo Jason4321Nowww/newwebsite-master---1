@@ -9,15 +9,12 @@
 }
 
 .event-dots {
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  right: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 4px;
   flex-wrap: wrap;
+  margin-top: 4px;
 }
 
 .event-dot {
@@ -101,6 +98,8 @@
     text-align: right;
     background: var(--calendar-cell-bg);
     border-radius: var(--radius-sm);
+    display: flex;
+    flex-direction: column;
     transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out;
 
     &.other-month {
@@ -157,10 +156,6 @@
       }
 
       .event-dots {
-        position: absolute;
-        bottom: 4px;
-        left: 4px;
-        right: 4px;
         display: flex;
         justify-content: center;
         align-items: center;
