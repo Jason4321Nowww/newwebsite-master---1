@@ -277,6 +277,10 @@ export class AdminPressComponent implements OnInit {
      ${pressImageHtml}
     <div style="font-size: 0.85rem; margin-bottom: 30px;">${langContent}</div>
 
+    <div style="display: flex; align-items: center; font-size: 0.95rem; color: #555; font-style: italic; border-left: 4px solid #ccc; padding-left: 8px; max-width: 300px; margin-bottom: 16px;">
+      ${calendarIconSVG}<span>${releaseDate}</span>
+    </div>
+
     <hr style="border: none; border-top: 2px solid #009d63; margin: 30px 0 16px;" />
     <div style="font-size: 0.8rem; color: #555; line-height: 1.5;">
       ${footerText}
